@@ -387,9 +387,6 @@ public:
   virtual void enterComponent_table(ELDOParser::Component_tableContext * /*ctx*/) override { }
   virtual void exitComponent_table(ELDOParser::Component_tableContext * /*ctx*/) override { }
 
-  virtual void enterComponent_arithmetic_expression(ELDOParser::Component_arithmetic_expressionContext * /*ctx*/) override { }
-  virtual void exitComponent_arithmetic_expression(ELDOParser::Component_arithmetic_expressionContext * /*ctx*/) override { }
-
   virtual void enterComponent_value_list(ELDOParser::Component_value_listContext * /*ctx*/) override { }
   virtual void exitComponent_value_list(ELDOParser::Component_value_listContext * /*ctx*/) override { }
 

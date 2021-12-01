@@ -1420,7 +1420,8 @@ node_list
     :            (node_list_item COMMA?)+
     | OPEN_ROUND (node_list_item COMMA?)+ CLOSE_ROUND;
 node_list_item
-    : node ;
+    : node
+    | node_mapping;
 node_mapping
     : node EQUAL node;
 node

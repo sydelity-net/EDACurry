@@ -21,14 +21,25 @@ from colorama import Fore, Back, Style
 import difflib
 import sys
 import os
+import re
 
 def compare(filepath1:str, filepath2:str):
     # Compare the two files.
     print("Comparing `{}` and `{}`...".format(filepath1, filepath2))
     with open(filepath1) as f1, open(filepath2) as f2:
         # Get the content.
-        content_f1 = [line for line in f1 if not line.startswith('#') and not line.startswith('//')]
-        content_f2 = [line for line in f2 if not line.startswith('#') and not line.startswith('//')]
+        content_f1 = []
+        for line in f1:
+            if not line.startswith('#') and not line.startswith('//'):
+                if re.match(r'^ +\+', line):
+                    previous_line :str= content_f1.pop()
+                    content_f1.append(previous_line.replace('\n', '') + re.sub(r'^ +\+', '', line))
+                else:
+                    content_f1.append(line)
+        content_f2 = []
+        for line in f2:
+            if not line.startswith('#') and not line.startswith('//'):
+                content_f2.append(line.replace(r'\+', 'AAAAAAAAAAAAAAAAAAAAAAAAAAAA'))
         # Compute the differences.
         differ = difflib.Differ()
         differences = differ.compare(content_f1, content_f2)
@@ -64,8 +75,10 @@ def compare(filepath1:str, filepath2:str):
 
 def test_xml(inp:str, outp:str):
     # Get the content.
+    print("Parsing `{}`".format(inp))
     content = edacurry.parse_to_xml(inp)
     # If required generate the output file.
+    print("Writing `{}`".format(outp))
     with open(outp, 'w') as outf:
         outf.write(content)
 
@@ -73,12 +86,10 @@ def test_eldo(inp:str, outp:str):
     # Get the content.
     print("Parsing `{}`".format(inp))
     content = edacurry.parse_to_eldo(inp)
-    
     # If required generate the output file.
     print("Writing `{}`".format(outp))
     with open(outp, 'w') as outf:
         outf.write(content)
-    
     # Compare the two files.
     compare(inp, outp)
 
@@ -101,18 +112,18 @@ for i in range(1, len(sys.argv)):
             name, _ = os.path.splitext(filename)
             # Set the input path.
             inp = os.path.join(argument, filename)
-            # Set the output path.
-            outp =os.path.join("eldo_result/", filename)
             # Parse to ELDO.
-            test_eldo(inp, outp)
+            test_eldo(inp, os.path.join("eldo_result/", "{}.cir".format(name)))
+            # Parse to XML.
+            test_xml(inp, os.path.join("eldo_result/", "{}.xml".format(name)))
     elif os.path.isfile(argument):
         # Get the basename.
         basename = os.path.basename(argument)
         # Get just the name.
         name, _ = os.path.splitext(basename)
-        # Set the output path.
-        outp = os.path.join("eldo_result/", basename)
         # Parse to ELDO.
-        test_eldo(argument, outp)
+        test_eldo(argument, os.path.join("eldo_result/", "{}.cir".format(name)))
+        # Parse to XML.
+        test_xml(argument, os.path.join("eldo_result/", "{}.xml".format(name)))
     else:
         print("The argument `{}` is not valid!".format(argument))

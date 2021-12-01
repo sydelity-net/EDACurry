@@ -266,8 +266,6 @@ public:
 
     virtual antlrcpp::Any visitComponent_table(ELDOParser::Component_tableContext *context) = 0;
 
-    virtual antlrcpp::Any visitComponent_arithmetic_expression(ELDOParser::Component_arithmetic_expressionContext *context) = 0;
-
     virtual antlrcpp::Any visitComponent_value_list(ELDOParser::Component_value_listContext *context) = 0;
 
     virtual antlrcpp::Any visitInterp_type(ELDOParser::Interp_typeContext *context) = 0;

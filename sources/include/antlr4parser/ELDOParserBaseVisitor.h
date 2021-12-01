@@ -509,10 +509,6 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitComponent_arithmetic_expression(ELDOParser::Component_arithmetic_expressionContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
   virtual antlrcpp::Any visitComponent_value_list(ELDOParser::Component_value_listContext *ctx) override {
     return visitChildren(ctx);
   }

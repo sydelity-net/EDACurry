@@ -20,28 +20,28 @@ Y1 LDTL 2 3 4 0 5 6 7 0
     + C(1,2)=-22p C(2,3)=-22p
     + L(1,2)=125n L(2,3)=125n
     + R(3)=15 L(3,3)=418n C(3,3)=94p G(3,3)=0.02p
-Y1 LDTL PIN:2 3 4 0 5 6 7 0
+Y2 LDTL PIN:2 3 4 0 5 6 7 0
     + param: LEVEL=1 length=0.677
     + model:level1_mod
-Y1 LDTL 1 2 3 4 0
+Y3 LDTL 1 2 3 4 0
     + param: LEVEL=2 length=0.1 xfx_idf=12
-Y1 LDTL 1 2 3 4 0
+Y4 LDTL 1 2 3 4 0
     + param: model:level2_mod
-Y1 ldtl 1 2 0
+Y5 ldtl 1 2 0
     + param: LEVEL=3 length=100 R=1
     + ZC=50 VREL=0.66 FR1=100Meg
-Y1 ldtl 1 2 0
+Y6 ldtl 1 2 0
     + param: LEVEL=3 length=100 R=1
     + ZC=50 model: level3_mod
-Y1 LDTL 1 2 0
+Y7 LDTL 1 2 0
     + param: LEVEL=4 length=10 PLEV=0 DLEV=1
     + h=400u w=50u t=5u rho=17E-09 er=9.8
-Y1 LDTL PIN:1 2 0 3 4 0
+Y8 LDTL PIN:1 2 0 3 4 0
     + param: LEVEL=4 length=10e-3 PLEV=1 DLEV=1
     + h=635u w=88u t=2u s=90u h2=935u
     + rho=1.72E-08 tand=0.01 thickness=1
     + dispersive=1
-Y1 LDTL 1 2 0 3 4 0
+Y9 LDTL 1 2 0 3 4 0
     + param: LEVEL=4 length=10 PLEV=1 DLEV=1
     + h=635u w=88u model:level4_mod
 

@@ -54,7 +54,7 @@ void XmlBackend::visit(const structure::Analysis *e)
 
 void XmlBackend::visit(const structure::Component *e)
 {
-    ss << "<component name='" << e->getName() << "'>\n"
+    ss << "<component name='" << e->getName() << "' master='" << e->getMaster() << "'>\n"
        << ind_increase;
 
     ss << "<nodes>\n"

@@ -269,8 +269,6 @@ public:
     antlrcpp::Any visitComponent_coupling_list(ELDOParser::Component_coupling_listContext *ctx) override;
 
     antlrcpp::Any visitComponent_table(ELDOParser::Component_tableContext *ctx) override;
-    
-    antlrcpp::Any visitComponent_arithmetic_expression(ELDOParser::Component_arithmetic_expressionContext *ctx) override;
 
     antlrcpp::Any visitComponent_value_list(ELDOParser::Component_value_listContext *ctx) override;
 

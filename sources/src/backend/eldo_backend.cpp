@@ -161,7 +161,7 @@ void EldoBackend::visit(const structure::Parameter *e)
         if (!e->getName().empty() && !e->getHideName())
             ss << e->getName();
         if (e->getValue()) {
-            if (!e->getName().empty()) {
+            if (!e->getName().empty() && !e->getHideName()) {
                 ss << '=';
             }
             if (e->getType() == param_arithmetic)
