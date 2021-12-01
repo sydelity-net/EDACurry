@@ -1,0 +1,26 @@
+//============================================================================
+// Subcircuit Instance
+// Xxx NN {NN} NAME [PAR=VAL] [PAR={EXPR}] [M=VAL] [TEMP=VAL] [DTEMP=VAL]
+//    + [STATISTICAL=0|1] [(ANALOG|OSR|DIGITAL)] [NONOISE|NOISE=0]
+//      [MODEL:] MNAME PIN: {pin=net}
+//
+//    + PARAM: {par=val} KEYWORD: {keywords} [STATISTICAL=0|1]
+//
+//      [MODEL:] MNAME NET: {net=pin}
+//    + PARAM: {par=val} KEYWORD: {keywords} [STATISTICAL=0|1]
+//============================================================================
+X1 1 2 FOO A=1 B=1
+X2 1 2 FOO A=1 B=1
+X3 1 2 FOO A=1.0 B=1
+X1 1 2 FOO A=1 B=1 M=2
+x1 1 48 inv
+x1 1 2 inv rval=6 rval2={rval1+1k}
+x2 2 3 inv rval=4
+X1 P1 P2 foo p1=1
+X1 foo PARAM: p1=1 PIN: B=P2 A=P1
+X1 a net1 inv ln=0.18u wn=2.0u lp=0.18u wp=4.0u
+X2 net1 y inv ln=0.18u wn=2.0u lp=0.18u wp=4.0u
+X1 in out1 inv2
+X2 MODEL: inv2 PIN: a=in y=out2
+X3 MODEL: inv2 NET: in=a out3=y
+x1 1 0 r dtemp=10

@@ -10,6 +10,7 @@
 #include "features/named_object.hpp"
 #include "features/object_list.hpp"
 #include "object.hpp"
+#include "enums.hpp"
 #include "value.hpp"
 
 namespace edacurry::structure
@@ -19,16 +20,18 @@ class Parameter : public Object, public features::NamedObject, public features::
 public:
     /// @brief Construct a new Parameter object.
     /// @param value the initial value of the parameter.
+    /// @param type the parameter's type.
     /// @param reference The reference to another parameter.
     /// @param hide_name hide the name during code generation.
-    Parameter(Value *value, structure::Object *reference = nullptr, bool hide_name = false);
+    Parameter(Value *value, ParameterType type = param_assign, structure::Object *reference = nullptr, bool hide_name = false);
 
     /// @brief Construct a new Parameter object.
     /// @param name  the name of the parameter.
     /// @param value the initial value of the parameter.
+    /// @param type the parameter's type.
     /// @param reference The reference to another parameter.
     /// @param hide_name hide the name during code generation.
-    Parameter(const std::string &name, Value *value, structure::Object *reference = nullptr, bool hide_name = false);
+    Parameter(const std::string &name, Value *value, ParameterType type = param_assign, structure::Object *reference = nullptr, bool hide_name = false);
 
     /// @brief Destroy the Parameter object.
     ~Parameter() override;
@@ -43,6 +46,20 @@ public:
     /// different from the new one, nullptr otherwise.
     Value *setValue(Value *value);
 
+    /// @brief Sets the type of parameter.
+    /// @param type the parameter's type.
+    inline void setType(ParameterType type)
+    {
+        _type = type;
+    }
+
+    /// @brief Returns the type of parameter.
+    /// @return the type of parameter.
+    inline auto getType() const
+    {
+        return _type;
+    }
+
     /// @brief Sets if the name is hidden during code generation.
     /// @param hide_name if the name should be hidden.
     inline void setHideName(bool hide_name)
@@ -50,7 +67,7 @@ public:
         _hide_name = hide_name;
     }
 
-    /// @brief Hets if the name is hidden during code generation.
+    /// @brief Sets if the name is hidden during code generation.
     /// @return if the name should be hidden.
     inline bool getHideName() const
     {
@@ -71,6 +88,8 @@ public:
 private:
     /// The initial value of the parameter.
     Value *_value;
+    /// The type of parameter.
+    ParameterType _type;
     /// Hide the name during code generation.
     bool _hide_name;
 };

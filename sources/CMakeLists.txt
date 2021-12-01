@@ -50,7 +50,7 @@ FetchContent_Declare(
 FetchContent_GetProperties(${PYBIND11})
 if(NOT ${PYBIND11}_POPULATED)
         FetchContent_MakeAvailable(${PYBIND11})
-endif()
+endif(NOT ${PYBIND11}_POPULATED)
 
 # -----------------------------------------------------------------------------
 # Set the compilation flags.
@@ -125,6 +125,7 @@ pybind11_add_module(
     ./src/frontend/eldo_frontend.cpp
 
     ./src/backend/xml_backend.cpp
+    ./src/backend/eldo_backend.cpp
     
     ./src/features/named_object.cpp
 
@@ -145,7 +146,7 @@ pybind11_add_module(
 # Add a macro inside the C++, so that we can de-activate the python wrapping code.
 target_compile_definitions(
     ${PROJECT_NAME} PRIVATE
-    PYTHON_WRAPPER
+    PYTHON_INTERFACE_ENABLED
 )
 
 # Include the python directories.

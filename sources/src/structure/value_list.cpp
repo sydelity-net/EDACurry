@@ -40,7 +40,7 @@ void ValueList::setDelimiterType(DelimiterType delimiter)
 std::string ValueList::toString() const
 {
     std::stringstream ss;
-    ss << "ValueList(" << delimitertype_to_plain_string(_delimiter) << ", "
+    ss << "ValueList(" << delimiter_type_to_plain_string(_delimiter) << ", "
        << values.toString() << ")";
     return ss.str();
 }

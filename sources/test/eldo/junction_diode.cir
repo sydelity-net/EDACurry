@@ -1,0 +1,16 @@
+//============================================================================
+// Junction Diode
+// Dxx NP NN
+//      [NM] MNAME [[AREA=]AREA_VAL] [PERI|PJ|PD=PERIVAL]
+//    + [PGATE=PGATE_VAL] [T[EMP]=VAL] [DTEMP=VAL] [M=VAL] [OFF=0|1]
+//    + [STATISTICAL=0|1] [NOISE=0|1] [NONOISE]
+//
+//      [NM] MNAME [FMIN=VAL] [FMAX=VAL] [NBF=VAL] [STATISTICAL=0|1]
+//============================================================================
+d1 1 2 diode1
+d2 1 2 diode1
+d3 1 3 diode1
+d1 1 2 diode1 M=2
+d1 1 2 diode1 T=50
+d1 2 10 dio
+dbridge 2 10 diode1

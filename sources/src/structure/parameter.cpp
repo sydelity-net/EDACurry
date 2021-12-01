@@ -10,14 +10,24 @@
 
 namespace edacurry::structure
 {
-Parameter::Parameter(Value *value, structure::Object *reference, bool hide_name)
-    : Object(), features::NamedObject(), features::ObjectReference(reference), _value(value), _hide_name(hide_name)
+Parameter::Parameter(Value *value, ParameterType type, structure::Object *reference, bool hide_name)
+    : Object(),
+      features::NamedObject(),
+      features::ObjectReference(reference),
+      _value(value),
+      _type(type),
+      _hide_name(hide_name)
 {
     // Nothing to do.
 }
 
-Parameter::Parameter(const std::string &name, Value *value, structure::Object *reference, bool hide_name)
-    : Object(), features::NamedObject(name), features::ObjectReference(reference), _value(value), _hide_name(hide_name)
+Parameter::Parameter(const std::string &name, Value *value, ParameterType type, structure::Object *reference, bool hide_name)
+    : Object(),
+      features::NamedObject(name),
+      features::ObjectReference(reference),
+      _value(value),
+      _type(type),
+      _hide_name(hide_name)
 {
     // Nothing to do.
 }
@@ -41,8 +51,10 @@ std::string Parameter::toString() const
 {
     return "Parameter(" +
            this->getName() + ", " +
-           (_value ? _value->toString() : "NULL") +
-           (_hide_name ? ", hide_name" : "") + ")";
+           (_value ? _value->toString() : "NULL") + ", " +
+           parameter_type_to_plain_string(_type) + ", " +
+           "hide_name=" + (_hide_name ? "true" : "false") +
+           ")";
 }
 
 } // namespace edacurry::structure

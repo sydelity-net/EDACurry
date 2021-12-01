@@ -32,7 +32,7 @@ std::string Control::toString() const
     std::stringstream ss;
     ss << "Control("
        << this->getName() << ", "
-       << controltype_to_plain_string(this->getControlType()) << ", "
+       << control_type_to_plain_string(this->getControlType()) << ", "
        << parameters.toString()
        << ")";
     return ss.str();

@@ -39,7 +39,7 @@ std::string ControlScope::toString() const
     std::stringstream ss;
     ss << "ControlScope("
        << this->getName() << ", "
-       << controltype_to_plain_string(this->getControlType()) << ", "
+       << control_type_to_plain_string(this->getControlType()) << ", "
        << parameters.toString() << ", "
        << nodes.toString() << ", "
        << content.toString() << ")";

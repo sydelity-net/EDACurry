@@ -85,17 +85,19 @@ public:
     /// @param op     the operator.
     /// @param value the operand.
     /// @return the newly generated object, **remember to delete it**.
-    structure::ExpressionUnary *
-    expressionUnary(Operator op, structure::Value *value = nullptr);
+    structure::ExpressionUnary *expressionUnary(
+        Operator op,
+        structure::Value *value = nullptr);
 
     /// @brief Creates a new expression.
     /// @param op     the operator.
     /// @param value1 the first operand.
     /// @param value2 the second operand.
     /// @return the newly generated object, **remember to delete it**.
-    structure::Expression *expression(Operator op,
-                                      structure::Value *value1 = nullptr,
-                                      structure::Value *value2 = nullptr);
+    structure::Expression *expression(
+        Operator op,
+        structure::Value *value1 = nullptr,
+        structure::Value *value2 = nullptr);
 
     /// @brief Creates a new function call.
     /// @param name the name of the function called.
@@ -130,8 +132,7 @@ public:
     /// @brief Creates a new Library object.
     /// @param name the name of the library.
     /// @param path the path to the library file.
-    structure::Library *library(const std::string &name,
-                                const std::string &path);
+    structure::Library *library(const std::string &name, const std::string &path);
 
     /// @brief Creates a new model.
     /// @param name the name.
@@ -151,8 +152,9 @@ public:
     /// @param name The name of the identifier.
     /// @param reference The reference to another node.
     /// @return the newly generated object, **remember to delete it**.
-    structure::Node *node(const std::string &name,
-                          structure::Object *reference = nullptr);
+    structure::Node *node(
+        const std::string &name,
+        structure::Object *reference = nullptr);
 
     /// @brief Creates a new number.
     /// @tparam T The type of the number.
@@ -168,19 +170,23 @@ public:
     /// @param value the initial value of the parameter.
     /// @param reference The reference to another parameter.
     /// @return the newly generated object, **remember to delete it**.
-    structure::Parameter *parameter(structure::Value *value,
-                                    structure::Object *reference = nullptr,
-                                    bool hide_name = false);
+    structure::Parameter *parameter(
+        structure::Value *value,
+        ParameterType type           = param_assign,
+        structure::Object *reference = nullptr,
+        bool hide_name               = false);
 
     /// @brief Creates a new parameter.
     /// @param name  the name of the parameter.
     /// @param value the initial value of the parameter.
     /// @param reference The reference to another parameter.
     /// @return the newly generated object, **remember to delete it**.
-    structure::Parameter *parameter(const std::string &name,
-                                    structure::Value *value,
-                                    structure::Object *reference = nullptr,
-                                    bool hide_name = false);
+    structure::Parameter *parameter(
+        const std::string &name,
+        structure::Value *value,
+        ParameterType type           = param_assign,
+        structure::Object *reference = nullptr,
+        bool hide_name               = false);
 
     /// @brief Creates a new subckt.
     /// @param name       the name of the subckt.
@@ -203,16 +209,17 @@ public:
     /// @param delimiter external delimiters to the list.
     /// @param values the values of the list.
     /// @return the newly generated object, **remember to delete it**.
-    structure::ValueList *
-    valueList(DelimiterType delimiter,
-              const features::ObjectList<structure::Value>::base_type &values);
+    structure::ValueList *valueList(
+        DelimiterType delimiter,
+        const features::ObjectList<structure::Value>::base_type &values);
 
     /// @brief Creates a new value pair.
     /// @param first The first value. Default value is <tt>nullptr</tt>.
     /// @param second The second value. Default value is <tt>nullptr</tt>.
     /// @return the newly generated object, **remember to delete it**.
-    structure::ValuePair *valuePair(structure::Value *first  = nullptr,
-                                    structure::Value *second = nullptr);
+    structure::ValuePair *valuePair(
+        structure::Value *first  = nullptr,
+        structure::Value *second = nullptr);
 
     /// @}
 };

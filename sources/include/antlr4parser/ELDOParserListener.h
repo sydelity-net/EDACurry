@@ -385,6 +385,9 @@ public:
   virtual void enterComponent_table(ELDOParser::Component_tableContext *ctx) = 0;
   virtual void exitComponent_table(ELDOParser::Component_tableContext *ctx) = 0;
 
+  virtual void enterComponent_arithmetic_expression(ELDOParser::Component_arithmetic_expressionContext *ctx) = 0;
+  virtual void exitComponent_arithmetic_expression(ELDOParser::Component_arithmetic_expressionContext *ctx) = 0;
+
   virtual void enterComponent_value_list(ELDOParser::Component_value_listContext *ctx) = 0;
   virtual void exitComponent_value_list(ELDOParser::Component_value_listContext *ctx) = 0;
 

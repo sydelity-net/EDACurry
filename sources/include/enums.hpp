@@ -106,12 +106,22 @@ enum DelimiterType {
 /// @brief Return the string representation of the given type of delimiter enum name (e.g. dlm_round returns "dlm_round").
 /// @param e The type of delimiter.
 /// @return The string representation of given type of delimiter.
-std::string delimitertype_to_plain_string(DelimiterType e);
+std::string delimiter_type_to_plain_string(DelimiterType e);
 
 /// @brief Return the type of delimiter for given string (e.g. "dlm_round" returns dlm_round).
 /// @param s the plain string.
 /// @return The type of delimiter.
-DelimiterType plain_string_to_delimitertype(const std::string &s);
+DelimiterType plain_string_to_delimiter_type(const std::string &s);
+
+/// @brief Return the opening character for the given type of delimiter (e.g. dlm_round returns '(').
+/// @param e The type of delimiter.
+/// @return The opening character for the delimiter.
+char delimiter_type_open_char(DelimiterType e);
+
+/// @brief Return the closing character for the given type of delimiter (e.g. dlm_round returns '(').
+/// @param e The type of delimiter.
+/// @return The closing character for the delimiter.
+char delimiter_type_close_char(DelimiterType e);
 
 /// @brief International System of Units (SI)
 enum SiPrefix {
@@ -165,6 +175,24 @@ double siprefix_to_scaling_factor(SiPrefix e);
 double letter_to_scaling_factor(char l);
 
 /// @brief The type of control statement.
+enum ParameterType {
+    param_none,       ///< No type of parameter.
+    param_assign,     ///< Normal parameter assign.
+    param_tabular,    ///< A tabular parameter.
+    param_arithmetic, ///< An arithmetic expression.
+};
+
+/// @brief Return the string representation of the given type of parameter (e.g. param_assign returns "param_assign").
+/// @param e The type of parameter.
+/// @return The string representation of given type of parameter.
+std::string parameter_type_to_plain_string(ParameterType e);
+
+/// @brief Return the type of parameter for given string (e.g. "ctrl_alter" returns ctrl_alter).
+/// @param s the plain string.
+/// @return The type of parameter.
+ParameterType plain_string_to_parameter_type(const std::string &s);
+
+/// @brief The type of control statement.
 enum ControlType {
     ctrl_none,       ///< No control statement.
     ctrl_alter,      ///< A single alter statement.
@@ -191,11 +219,11 @@ enum ControlType {
 /// @brief Return the string representation of the given type of control statement (e.g. ctrl_alter returns "ctrl_alter").
 /// @param e The type of control statement.
 /// @return The string representation of given type of control statement.
-std::string controltype_to_plain_string(ControlType e);
+std::string control_type_to_plain_string(ControlType e);
 
 /// @brief Return the type of control statement for given string (e.g. "ctrl_alter" returns ctrl_alter).
 /// @param s the plain string.
 /// @return The type of control statement.
-ControlType plain_string_to_controltype(const std::string &s);
+ControlType plain_string_to_control_type(const std::string &s);
 
 } // namespace edacurry

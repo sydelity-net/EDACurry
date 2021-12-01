@@ -19,8 +19,10 @@ class Number : public Value {
 public:
     /// @brief Construct a new Number object.
     /// @param value the value of the Number.
-    Number(T value) : Value(), _value(value)
+    Number(T value, std::string unit = std::string())
+        : Value(), _value(value), _unit(unit)
     {
+        // Nothing to do.
     }
 
     /// @brief Destroy the Number object.
@@ -40,12 +42,26 @@ public:
         _value = value;
     }
 
+    /// @brief Returns the unit of the number.
+    /// @return The unit of the number.
+    std::string getUnit() const
+    {
+        return _unit;
+    }
+
+    /// @brief Sets the unit of the number.
+    /// @param unit the unit of the number to be set.
+    void setUnit(std::string unit)
+    {
+        _unit = unit;
+    }
+
     /// @brief Provides a string representation of the object for **debugging** purposes.
     /// @return the string representation.
     std::string toString() const override
     {
         std::stringstream ss;
-        ss << "Number(" << _value << ")";
+        ss << "Number(" << _value << ", " << _unit << ")";
         return ss.str();
     }
 
@@ -59,6 +75,8 @@ public:
 private:
     /// @brief The value of the number.
     T _value;
+    /// @brief The unit of the number.
+    std::string _unit;
 };
 
 } // namespace edacurry::structure

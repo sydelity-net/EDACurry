@@ -1,0 +1,17 @@
+//============================================================================
+// BJT - Bipolar Junction Transistor
+// Qxx NC NB NE
+//      [NS] [TH] MNAME [[AREA=]AREA_VAL] [AREAB=AREA_VAL]
+//    + [AREAC=AREA_VAL] [T[EMP]=VAL] [DTEMP=VAL] [M=VAL] [OFF=0|1]
+//    + [STATISTICAL=0|1] [NOISE=0|1] [NONOISE]
+//
+//      [NS] MNAME [FMIN=VAL] [FMAX=VAL] [NBF=VAL] [STATISTICAL=0|1]
+//============================================================================
+q1 1 2 3 bipol1 t=50
+q1 1 2 3 bipol1
+q2 1 2 3 bipol1
+q3 1 2 4 bipol1
+q1 1 2 3 bipol1 M=2
+Q1 vplus in out 0 QND_model area=10
+Q1 C B S QND AREA=10
+q23 10 24 13 qmod

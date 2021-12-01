@@ -4,8 +4,6 @@
 /// Distributed under the MIT License (MIT) (See accompanying LICENSE file or
 ///  copy at http://opensource.org/licenses/MIT)
 
-
-
 #pragma once
 
 #include "antlr4-runtime.h"
@@ -19,7 +17,12 @@ namespace edacurry::frontend
 ///
 class ELDOFrontend : public ELDOParserBaseVisitor {
 public:
-    ELDOFrontend() = default;
+    antlr4::CommonTokenStream &tokens;
+
+    ELDOFrontend(antlr4::CommonTokenStream &_tokens)
+        : tokens(_tokens)
+    {
+    }
 
     ~ELDOFrontend() = default;
 
@@ -134,7 +137,7 @@ public:
     antlrcpp::Any visitSnf(ELDOParser::SnfContext *ctx) override;
 
     antlrcpp::Any visitSolve(ELDOParser::SolveContext *ctx) override;
-    
+
     antlrcpp::Any visitSolve_parameter(ELDOParser::Solve_parameterContext *ctx) override;
 
     antlrcpp::Any visitSolve_object(ELDOParser::Solve_objectContext *ctx) override;
@@ -266,6 +269,8 @@ public:
     antlrcpp::Any visitComponent_coupling_list(ELDOParser::Component_coupling_listContext *ctx) override;
 
     antlrcpp::Any visitComponent_table(ELDOParser::Component_tableContext *ctx) override;
+    
+    antlrcpp::Any visitComponent_arithmetic_expression(ELDOParser::Component_arithmetic_expressionContext *ctx) override;
 
     antlrcpp::Any visitComponent_value_list(ELDOParser::Component_value_listContext *ctx) override;
 

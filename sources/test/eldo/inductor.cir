@@ -1,0 +1,34 @@
+//============================================================================
+// INDUCTOR
+// Lxx NP NN 
+//      [MOD[EL]=MNAME] [DCFEED] [VAL] [M=VAL1] [T[EMP]=VAL] [DTEMP=VAL]
+//    + [IC=VAL3] [TC1=T1] [TC2=T2] [TC3=T3] [R=VAL4] [STATISTICAL=0|1]
+//
+//      POLY VAL {LN} [IC=VAL] [R=VAL] [TC1=T1] [TC2=T2] [TC3=T3]
+//    + [STATISTICAL=0|1]
+//
+//      [VALUE=]{EXPR} [ACDERFUNC=0|1] [RESTORE_CAUSALITY=0|1]
+//    + [R=VAL|R VALUE=EXPR|R
+//    + TABLE {fval rval}] [TC1=T1] [TC2=T2] [TC3=T3] [STATISTICAL=0|1]
+//
+//      {port_list} KMATRIX=data_block [STATISTICAL=0|1]
+//
+//      {port_list} RELUCTANCE=({rn,cn,valn}) <options> [STATISTICAL=0|1]
+//
+//      {port_list} RELUCTANCE {FILE=”file”} <options> [STATISTICAL=0|1]
+//============================================================================
+l1 n13 n8 5u
+l1 n10 n5 poly 7u 0.15 0.03
+l3 n1 n2 lval
+l1 1 2 value={2u*v(3, 4)*i(v5)}
+l1 1 s lmodel 0.5ph
+l1 1 s lmodel 2ph
+L1 1 2 MOD=foo
+
+//============================================================================
+// Coupled Inductor - K**
+// Kxx Lyy Lzz KVAL [KR=KRVAL]
+//============================================================================
+l7 4 3 0.7m
+l8 5 9 0.4m
+k12 l7 l8 0.2

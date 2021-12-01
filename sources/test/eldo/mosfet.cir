@@ -1,0 +1,22 @@
+//============================================================================
+// MOSFET - M**
+// Mxx ND NG NS
+//      [NB] [{NN}] [MOD[EL]=]MNAME [[L=]VAL] [[W=]VAL]
+//    + [AD=VAL] [AS=VAL] [PD=VAL] [PS=VAL] [GEO=VAL] [NRD=VAL] [NRS=VAL]
+//    + [M=VAL] [RDC=VAL] [RSC=VAL] [T[EMP]=VAL] [DTEMP=VAL] [STATISTICAL=0|1]
+//    + [NONOISE] [NOISE=1]
+//
+//      [NB] [{NN}] [MOD[EL]=]MNAME [W=VAL] [L=VAL]
+//    + [FMIN=VAL] [FMAX=VAL] [NBF=VAL] [STATISTICAL=0|1]
+//============================================================================
+M1 1 2 3 4 MOS1 w=10u l=3u
+M1 1 2 3 4 MOD=MOS1 w=10u l=3u
+M1 1 2 3 4 MODEL=MOS1 w=10u l=3u
+M1 1 2 3 4 5 MOS1 w=10u l=3u
+M1 1 2 3 4 5 MOD=MOS1 w=10u l=3u
+M1 1 2 3 4 5 MODEL=MOS1 w=10u l=3u
+M1 1 2 3 4 MOS1 w=10u l=3u
+M2 1 2 3 4 MOS1 w=10u l=3u
+M3 1 2 3 4 MOS2 w=10u l=3u
+M1 1 2 3 4 MOS1 w=10u l=3u M=2
+M1 1 2 3 4 MODROOT w=2u l=3u

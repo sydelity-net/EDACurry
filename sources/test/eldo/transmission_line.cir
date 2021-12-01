@@ -1,0 +1,59 @@
+//============================================================================
+// Transmission Line
+// Txx NAP NAN NBP NBN [Z0=VAL1] TD=VAL2 [STATISTICAL=0|1]
+// Txx NAP NAN NBP NBN [Z0=VAL1] F=VAL3 [NL=VAL4] [STATISTICAL=0|1]
+//============================================================================
+t1 1 2 3 4 zo=220 td=111ns
+t2 1 2 3 4 zo=220 f=2.25meg
+t3 1 2 3 4 zo=220 f=4.5meg nl=0.5
+
+//============================================================================
+// Lossy Transmission Line
+// Yxx LDTL [PIN:] P1...PN [REFin] PN+1...P2N REFout
+//      + [PARAM: [LEVEL=1] [LENGTH=val] [SAVEFIT=val] [M=VAL]
+//      + [R(i)=val] [L(i,j)=val] [C(i,j)=val] [G(i,j)=val] [FR1=val]]
+//============================================================================
+Y1 LDTL 2 3 4 0 5 6 7 0
+    + param: LEVEL=1 length=0.677
+    + R(1)=15 L(1,1)=418n C(1,1)=94p G(1,1)=0.02p
+    + R(2)=15 L(2,2)=418n C(2,2)=94p G(2,2)=0.02p
+    + C(1,2)=-22p C(2,3)=-22p
+    + L(1,2)=125n L(2,3)=125n
+    + R(3)=15 L(3,3)=418n C(3,3)=94p G(3,3)=0.02p
+Y1 LDTL PIN:2 3 4 0 5 6 7 0
+    + param: LEVEL=1 length=0.677
+    + model:level1_mod
+Y1 LDTL 1 2 3 4 0
+    + param: LEVEL=2 length=0.1 xfx_idf=12
+Y1 LDTL 1 2 3 4 0
+    + param: model:level2_mod
+Y1 ldtl 1 2 0
+    + param: LEVEL=3 length=100 R=1
+    + ZC=50 VREL=0.66 FR1=100Meg
+Y1 ldtl 1 2 0
+    + param: LEVEL=3 length=100 R=1
+    + ZC=50 model: level3_mod
+Y1 LDTL 1 2 0
+    + param: LEVEL=4 length=10 PLEV=0 DLEV=1
+    + h=400u w=50u t=5u rho=17E-09 er=9.8
+Y1 LDTL PIN:1 2 0 3 4 0
+    + param: LEVEL=4 length=10e-3 PLEV=1 DLEV=1
+    + h=635u w=88u t=2u s=90u h2=935u
+    + rho=1.72E-08 tand=0.01 thickness=1
+    + dispersive=1
+Y1 LDTL 1 2 0 3 4 0
+    + param: LEVEL=4 length=10 PLEV=1 DLEV=1
+    + h=635u w=88u model:level4_mod
+
+//============================================================================
+// Lossy Transmission Line - W Model
+// Wxx N=nb_line
+//      + P1...PN PGNDin PN+1...P2N PGNDout
+//      + RLGCfile=file_name L=length [FP=val]
+//      + [MULTIDEBYE=val] [SAVEFIT=val] [COMPAT=val] [FGD=val]
+//============================================================================
+
+//============================================================================
+// Lossy Transmission Line - W Model
+// Uxx P1...PN PGNDin PN+1...P2N PGNDout UNAME L=length [SAVEFIT=val]
+//============================================================================

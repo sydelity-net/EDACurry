@@ -1,4 +1,4 @@
-/// @file xml_backend.hpp
+/// @file eldo_backend.hpp
 /// @author Enrico Fraccaroli (enrico.fraccaroli@gmail.com)
 /// @copyright Copyright (c) 2021 sydelity.net (info@sydelity.com)
 /// Distributed under the MIT License (MIT) (See accompanying LICENSE file or
@@ -11,9 +11,9 @@
 
 namespace edacurry::backend
 {
-class XmlBackend : public features::Visitor {
+class EldoBackend : public features::Visitor {
 public:
-    XmlBackend();
+    EldoBackend();
 
     void visit(const structure::Circuit *e) override;
     void visit(const structure::Analysis *e) override;

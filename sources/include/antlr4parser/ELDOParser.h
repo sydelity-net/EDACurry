@@ -19,34 +19,34 @@ public:
     CALL_TCL = 18, CHRENT = 19, CONNECT = 20, DEFMAC = 21, DEFWAVE = 22, 
     FFILE = 23, IC = 24, MEAS = 25, PLOT = 26, PRINT = 27, PROBE = 28, TEMP_SET = 29, 
     USE_TCL = 30, PARAM = 31, TEMP = 32, KEY = 33, NONOISE = 34, TABLE = 35, 
-    PWL = 36, SIN = 37, SFFM = 38, PULSE = 39, INTERP = 40, MOD = 41, MODEL = 42, 
-    WHEN = 43, START = 44, START_OF_RUN = 45, END_OF_RUN = 46, END = 47, 
-    FIND = 48, PP = 49, TRIG = 50, TARG = 51, PARAM_LIST_START = 52, PIN_LIST_START = 53, 
-    NET_LIST_START = 54, PORT_LIST_START = 55, COUPLING_LIST_START = 56, 
-    GENERIC_LIST_START = 57, AC = 58, AGE = 59, CHECKSOA = 60, DC = 61, 
-    DCHIZ = 62, DCMISMATCH = 63, DEX = 64, DSP = 65, DSPMOD = 66, FOUR = 67, 
-    LSTB = 68, MC = 69, NOISE = 70, NOISETRAN = 71, OP = 72, OPTFOUR = 73, 
-    OPTIMIZE = 74, OPTNOISE = 75, PZ = 76, RAMP = 77, SENS = 78, SENSAC = 79, 
-    SENSPARAM = 80, SNF = 81, SOLVE = 82, TF = 83, TRAN = 84, WCASE = 85, 
-    EXTRACT = 86, RESISTOR = 87, CAPACITOR = 88, INDUCTOR = 89, COUPLED_INDUCTOR = 90, 
-    DIFFUSION_RESISTOR = 91, TRANSMISSION_LINE = 92, LOSSY_TRANSMISSION_LINE = 93, 
-    LTL_W_MODEL = 94, LTL_U_MODEL = 95, JUNCTION_DIODE = 96, BJT = 97, JFET = 98, 
-    MOSFET = 99, S_DOMAIN_FILTER = 100, Z_DOMAIN_FILTER = 101, SUBCK_INSTANCE = 102, 
-    IVSOURCE = 103, ICSOURCE = 104, VCVS = 105, CCCS = 106, VCCS = 107, 
-    CCVS = 108, OPA = 109, SW = 110, NOISE_FUNCTION = 111, DIG_NAND = 112, 
-    DIG_AND = 113, DIG_NOR = 114, DIG_OR = 115, DIG_XOR = 116, EQUAL = 117, 
-    EXCLAMATION_MARK = 118, LESS_THAN = 119, GREATER_THAN = 120, LESS_THAN_EQUAL = 121, 
-    GREATER_THAN_EQUAL = 122, LOGIC_EQUAL = 123, LOGIC_NOT_EQUAL = 124, 
-    LOGIC_AND = 125, LOGIC_OR = 126, LOGIC_BITWISE_AND = 127, LOGIC_BITWISE_OR = 128, 
-    LOGIC_XOR = 129, BITWISE_SHIFT_LEFT = 130, BITWISE_SHIFT_RIGHT = 131, 
-    POWER_OPERATOR = 132, AND = 133, OR = 134, COLON = 135, SEMICOLON = 136, 
-    PLUS = 137, MINUS = 138, STAR = 139, OPEN_ROUND = 140, CLOSE_ROUND = 141, 
-    OPEN_SQUARE = 142, CLOSE_SQUARE = 143, OPEN_CURLY = 144, CLOSE_CURLY = 145, 
-    QUESTION_MARK = 146, COMMA = 147, DOLLAR = 148, AMPERSAND = 149, DOT = 150, 
-    UNDERSCORE = 151, AT_SIGN = 152, POUND_SIGN = 153, BACKSLASH = 154, 
-    SLASH = 155, APEX = 156, QUOTES = 157, PIPE = 158, PERCENT = 159, CARET = 160, 
-    TILDE = 161, ARROW = 162, PERCENTAGE = 163, COMPLEX = 164, NUMBER = 165, 
-    ID = 166, STRING = 167, NL = 168, WS = 169, CNL = 170
+    VALUE = 36, PWL = 37, SIN = 38, SFFM = 39, PULSE = 40, INTERP = 41, 
+    MOD = 42, MODEL = 43, WHEN = 44, START = 45, START_OF_RUN = 46, END_OF_RUN = 47, 
+    END = 48, FIND = 49, PP = 50, TRIG = 51, TARG = 52, PARAM_LIST_START = 53, 
+    PIN_LIST_START = 54, NET_LIST_START = 55, PORT_LIST_START = 56, COUPLING_LIST_START = 57, 
+    GENERIC_LIST_START = 58, AC = 59, AGE = 60, CHECKSOA = 61, DC = 62, 
+    DCHIZ = 63, DCMISMATCH = 64, DEX = 65, DSP = 66, DSPMOD = 67, FOUR = 68, 
+    LSTB = 69, MC = 70, NOISE = 71, NOISETRAN = 72, OP = 73, OPTFOUR = 74, 
+    OPTIMIZE = 75, OPTNOISE = 76, PZ = 77, RAMP = 78, SENS = 79, SENSAC = 80, 
+    SENSPARAM = 81, SNF = 82, SOLVE = 83, TF = 84, TRAN = 85, WCASE = 86, 
+    EXTRACT = 87, RESISTOR = 88, CAPACITOR = 89, INDUCTOR = 90, COUPLED_INDUCTOR = 91, 
+    DIFFUSION_RESISTOR = 92, TRANSMISSION_LINE = 93, LOSSY_TRANSMISSION_LINE = 94, 
+    LTL_W_MODEL = 95, LTL_U_MODEL = 96, JUNCTION_DIODE = 97, BJT = 98, JFET = 99, 
+    MOSFET = 100, S_DOMAIN_FILTER = 101, Z_DOMAIN_FILTER = 102, SUBCK_INSTANCE = 103, 
+    IVSOURCE = 104, ICSOURCE = 105, VCVS = 106, CCCS = 107, VCCS = 108, 
+    CCVS = 109, OPA = 110, SW = 111, NOISE_FUNCTION = 112, DIG_NAND = 113, 
+    DIG_AND = 114, DIG_NOR = 115, DIG_OR = 116, DIG_XOR = 117, EQUAL = 118, 
+    EXCLAMATION_MARK = 119, LESS_THAN = 120, GREATER_THAN = 121, LESS_THAN_EQUAL = 122, 
+    GREATER_THAN_EQUAL = 123, LOGIC_EQUAL = 124, LOGIC_NOT_EQUAL = 125, 
+    LOGIC_AND = 126, LOGIC_OR = 127, LOGIC_BITWISE_AND = 128, LOGIC_BITWISE_OR = 129, 
+    LOGIC_XOR = 130, BITWISE_SHIFT_LEFT = 131, BITWISE_SHIFT_RIGHT = 132, 
+    POWER_OPERATOR = 133, AND = 134, OR = 135, COLON = 136, SEMICOLON = 137, 
+    PLUS = 138, MINUS = 139, STAR = 140, OPEN_ROUND = 141, CLOSE_ROUND = 142, 
+    OPEN_SQUARE = 143, CLOSE_SQUARE = 144, OPEN_CURLY = 145, CLOSE_CURLY = 146, 
+    QUESTION_MARK = 147, COMMA = 148, DOLLAR = 149, AMPERSAND = 150, DOT = 151, 
+    UNDERSCORE = 152, AT_SIGN = 153, POUND_SIGN = 154, BACKSLASH = 155, 
+    SLASH = 156, APEX = 157, QUOTES = 158, PIPE = 159, PERCENT = 160, CARET = 161, 
+    TILDE = 162, ARROW = 163, PERCENTAGE = 164, COMPLEX = 165, NUMBER = 166, 
+    ID = 167, STRING = 168, NL = 169, WS = 170, CNL = 171
   };
 
   enum {
@@ -83,20 +83,21 @@ public:
     RuleComponent_attribute = 113, RuleComponent_value = 114, RuleComponent_parameter_list = 115, 
     RuleComponent_analysis = 116, RuleComponent_positional_keywork = 117, 
     RuleComponent_pin_list = 118, RuleComponent_port_list = 119, RuleComponent_net_list = 120, 
-    RuleComponent_coupling_list = 121, RuleComponent_table = 122, RuleComponent_value_list = 123, 
-    RuleInterp_type = 124, RuleResistor = 125, RuleCapacitor = 126, RuleInductor = 127, 
-    RuleCoupled_inductor = 128, RuleDiffusion_resistor = 129, RuleTransmission_line = 130, 
-    RuleLossy_transmission_line = 131, RuleLtl_w_model = 132, RuleLtl_u_model = 133, 
-    RuleJunction_diode = 134, RuleBjt = 135, RuleJfet = 136, RuleMosfet = 137, 
-    RuleSubckt_instance = 138, RuleIvsource = 139, RuleIcsource = 140, RuleVcvs = 141, 
-    RuleCccs = 142, RuleVccs = 143, RuleCcvs = 144, RuleNoise_function = 145, 
-    RuleSw = 146, RuleOperational_amplifier = 147, RuleTwo_input_gate = 148, 
-    RuleEnd = 149, RuleExpression = 150, RuleExpression_unary = 151, RuleExpression_function_call = 152, 
-    RuleExpression_list = 153, RuleExpression_operator = 154, RuleExpression_atom = 155, 
-    RuleNode_list = 156, RuleNode_list_item = 157, RuleNode_mapping = 158, 
-    RuleNode = 159, RuleParameter_list = 160, RuleParameter_list_item = 161, 
-    RuleParameter = 162, RuleParameter_id = 163, RuleParameter_id_access = 164, 
-    RuleFilepath = 165, RuleFilepath_element = 166, RuleEnd_of_line = 167
+    RuleComponent_coupling_list = 121, RuleComponent_table = 122, RuleComponent_arithmetic_expression = 123, 
+    RuleComponent_value_list = 124, RuleInterp_type = 125, RuleResistor = 126, 
+    RuleCapacitor = 127, RuleInductor = 128, RuleCoupled_inductor = 129, 
+    RuleDiffusion_resistor = 130, RuleTransmission_line = 131, RuleLossy_transmission_line = 132, 
+    RuleLtl_w_model = 133, RuleLtl_u_model = 134, RuleJunction_diode = 135, 
+    RuleBjt = 136, RuleJfet = 137, RuleMosfet = 138, RuleSubckt_instance = 139, 
+    RuleIvsource = 140, RuleIcsource = 141, RuleVcvs = 142, RuleCccs = 143, 
+    RuleVccs = 144, RuleCcvs = 145, RuleNoise_function = 146, RuleSw = 147, 
+    RuleOperational_amplifier = 148, RuleTwo_input_gate = 149, RuleEnd = 150, 
+    RuleExpression = 151, RuleExpression_unary = 152, RuleExpression_function_call = 153, 
+    RuleExpression_list = 154, RuleExpression_operator = 155, RuleExpression_atom = 156, 
+    RuleNode_list = 157, RuleNode_list_item = 158, RuleNode_mapping = 159, 
+    RuleNode = 160, RuleParameter_list = 161, RuleParameter_list_item = 162, 
+    RuleParameter = 163, RuleParameter_id = 164, RuleParameter_id_access = 165, 
+    RuleFilepath = 166, RuleFilepath_element = 167, RuleEnd_of_line = 168
   };
 
   ELDOParser(antlr4::TokenStream *input);
@@ -232,6 +233,7 @@ public:
   class Component_net_listContext;
   class Component_coupling_listContext;
   class Component_tableContext;
+  class Component_arithmetic_expressionContext;
   class Component_value_listContext;
   class Interp_typeContext;
   class ResistorContext;
@@ -2353,6 +2355,7 @@ public:
     Component_coupling_listContext *component_coupling_list();
     Component_value_listContext *component_value_list();
     Component_tableContext *component_table();
+    Component_arithmetic_expressionContext *component_arithmetic_expression();
     Component_positional_keyworkContext *component_positional_keywork();
     Interp_typeContext *interp_type();
 
@@ -2504,10 +2507,9 @@ public:
     Component_tableContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *TABLE();
-    ExpressionContext *expression();
+    std::vector<ExpressionContext *> expression();
+    ExpressionContext* expression(size_t i);
     antlr4::tree::TerminalNode *EQUAL();
-    std::vector<Expression_listContext *> expression_list();
-    Expression_listContext* expression_list(size_t i);
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -2517,6 +2519,25 @@ public:
   };
 
   Component_tableContext* component_table();
+
+  class  Component_arithmetic_expressionContext : public antlr4::ParserRuleContext {
+  public:
+    Component_arithmetic_expressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *VALUE();
+    antlr4::tree::TerminalNode *EQUAL();
+    antlr4::tree::TerminalNode *OPEN_CURLY();
+    ExpressionContext *expression();
+    antlr4::tree::TerminalNode *CLOSE_CURLY();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Component_arithmetic_expressionContext* component_arithmetic_expression();
 
   class  Component_value_listContext : public antlr4::ParserRuleContext {
   public:
@@ -3038,10 +3059,15 @@ public:
   public:
     Expression_function_callContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    Expression_listContext *expression_list();
+    antlr4::tree::TerminalNode *OPEN_ROUND();
+    antlr4::tree::TerminalNode *CLOSE_ROUND();
     antlr4::tree::TerminalNode *ID();
     antlr4::tree::TerminalNode *MOD();
     antlr4::tree::TerminalNode *MODEL();
+    std::vector<ExpressionContext *> expression();
+    ExpressionContext* expression(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> COMMA();
+    antlr4::tree::TerminalNode* COMMA(size_t i);
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;

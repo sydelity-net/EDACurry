@@ -10,13 +10,13 @@
 
 namespace edacurry
 {
-std::string netlist_type_to_plain_string(NetlistType netlist_type)
+std::string netlist_type_to_plain_string(NetlistType e)
 {
-    if (netlist_type == net_spice)
+    if (e == net_spice)
         return "net_spice";
-    if (netlist_type == net_spectre)
+    if (e == net_spectre)
         return "net_spectre";
-    if (netlist_type == net_eldo)
+    if (e == net_eldo)
         return "net_eldo";
     return "net_none";
 }
@@ -32,15 +32,15 @@ NetlistType plain_string_to_netlist_type(const std::string &s)
     return net_none;
 }
 
-std::string include_type_to_plain_string(IncludeType include_type)
+std::string include_type_to_plain_string(IncludeType e)
 {
-    if (include_type == inc_standard)
+    if (e == inc_standard)
         return "inc_standard";
-    if (include_type == inc_hdl)
+    if (e == inc_hdl)
         return "inc_hdl";
-    if (include_type == inc_ahdl)
+    if (e == inc_ahdl)
         return "inc_ahdl";
-    if (include_type == inc_cpp)
+    if (e == inc_cpp)
         return "inc_cpp";
     return "inc_none";
 }
@@ -58,9 +58,9 @@ IncludeType plain_string_to_include_type(const std::string &s)
     return inc_none;
 }
 
-std::string operator_to_string(Operator op)
+std::string operator_to_string(Operator e)
 {
-    switch (op) {
+    switch (e) {
     case op_assign:
         return "=";
     case op_plus:
@@ -156,49 +156,49 @@ Operator string_to_operator(const std::string &s)
     return op_none;
 }
 
-std::string operator_to_plain_string(Operator op)
+std::string operator_to_plain_string(Operator e)
 {
-    if (op == op_assign)
+    if (e == op_assign)
         return "op_assign";
-    if (op == op_plus)
+    if (e == op_plus)
         return "op_plus";
-    if (op == op_minus)
+    if (e == op_minus)
         return "op_minus";
-    if (op == op_mult)
+    if (e == op_mult)
         return "op_mult";
-    if (op == op_div)
+    if (e == op_div)
         return "op_div";
-    if (op == op_or)
+    if (e == op_or)
         return "op_or";
-    if (op == op_and)
+    if (e == op_and)
         return "op_and";
-    if (op == op_xor)
+    if (e == op_xor)
         return "op_xor";
-    if (op == op_not)
+    if (e == op_not)
         return "op_not";
-    if (op == op_bor)
+    if (e == op_bor)
         return "op_bor";
-    if (op == op_band)
+    if (e == op_band)
         return "op_band";
-    if (op == op_bsl)
+    if (e == op_bsl)
         return "op_bsl";
-    if (op == op_bsr)
+    if (e == op_bsr)
         return "op_bsr";
-    if (op == op_eq)
+    if (e == op_eq)
         return "op_eq";
-    if (op == op_neq)
+    if (e == op_neq)
         return "op_neq";
-    if (op == op_lt)
+    if (e == op_lt)
         return "op_lt";
-    if (op == op_gt)
+    if (e == op_gt)
         return "op_gt";
-    if (op == op_le)
+    if (e == op_le)
         return "op_le";
-    if (op == op_ge)
+    if (e == op_ge)
         return "op_ge";
-    if (op == op_mod)
+    if (e == op_mod)
         return "op_mod";
-    if (op == op_pow)
+    if (e == op_pow)
         return "op_pow";
     return "op_none";
 }
@@ -250,22 +250,22 @@ Operator plain_string_to_operator(const std::string &s)
     return op_none;
 }
 
-std::string delimitertype_to_plain_string(DelimiterType scp)
+std::string delimiter_type_to_plain_string(DelimiterType e)
 {
-    if (scp == dlm_round)
+    if (e == dlm_round)
         return "dlm_round";
-    if (scp == dlm_square)
+    if (e == dlm_square)
         return "dlm_square";
-    if (scp == dlm_curly)
+    if (e == dlm_curly)
         return "dlm_curly";
-    if (scp == dlm_apex)
+    if (e == dlm_apex)
         return "dlm_apex";
-    if (scp == dlm_quotes)
+    if (e == dlm_quotes)
         return "dlm_quotes";
     return "dlm_none";
 }
 
-DelimiterType plain_string_to_delimitertype(const std::string &s)
+DelimiterType plain_string_to_delimiter_type(const std::string &s)
 {
     if (s == "dlm_round")
         return dlm_round;
@@ -280,39 +280,69 @@ DelimiterType plain_string_to_delimitertype(const std::string &s)
     return dlm_none;
 }
 
-std::string siprefix_to_plain_string(SiPrefix op)
+char delimiter_type_open_char(DelimiterType e)
 {
-    if (op == si_yotta)
+    if (e == dlm_round)
+        return '(';
+    if (e == dlm_square)
+        return '[';
+    if (e == dlm_curly)
+        return '{';
+    if (e == dlm_apex)
+        return '\'';
+    if (e == dlm_quotes)
+        return '\"';
+    return ' ';
+}
+
+char delimiter_type_close_char(DelimiterType e)
+{
+    if (e == dlm_round)
+        return ')';
+    if (e == dlm_square)
+        return ']';
+    if (e == dlm_curly)
+        return '}';
+    if (e == dlm_apex)
+        return '\'';
+    if (e == dlm_quotes)
+        return '\"';
+    return ' ';
+}
+
+std::string siprefix_to_plain_string(SiPrefix e)
+{
+    if (e == si_yotta)
         return "si_yotta";
-    if (op == si_zetta)
+    if (e == si_zetta)
         return "si_zetta";
-    if (op == si_exa)
+    if (e == si_exa)
         return "si_exa";
-    if (op == si_peta)
+    if (e == si_peta)
         return "si_peta";
-    if (op == si_tera)
+    if (e == si_tera)
         return "si_tera";
-    if (op == si_giga)
+    if (e == si_giga)
         return "si_giga";
-    if (op == si_mega)
+    if (e == si_mega)
         return "si_mega";
-    if (op == si_chilo)
+    if (e == si_chilo)
         return "si_chilo";
-    if (op == si_milli)
+    if (e == si_milli)
         return "si_milli";
-    if (op == si_micro)
+    if (e == si_micro)
         return "si_micro";
-    if (op == si_nano)
+    if (e == si_nano)
         return "si_nano";
-    if (op == si_pico)
+    if (e == si_pico)
         return "si_pico";
-    if (op == si_femto)
+    if (e == si_femto)
         return "si_femto";
-    if (op == si_atto)
+    if (e == si_atto)
         return "si_atto";
-    if (op == si_zepto)
+    if (e == si_zepto)
         return "si_zepto";
-    if (op == si_yocto)
+    if (e == si_yocto)
         return "si_yocto";
     return "si_none";
 }
@@ -391,76 +421,76 @@ SiPrefix letter_to_siprefix(char l)
     return si_none;
 }
 
-char siprefix_to_letter(SiPrefix op)
+char siprefix_to_letter(SiPrefix e)
 {
-    if (op == si_yotta)
+    if (e == si_yotta)
         return 'Y';
-    if (op == si_zetta)
+    if (e == si_zetta)
         return 'Z';
-    if (op == si_exa)
+    if (e == si_exa)
         return 'E';
-    if (op == si_peta)
+    if (e == si_peta)
         return 'P';
-    if (op == si_tera)
+    if (e == si_tera)
         return 'T';
-    if (op == si_giga)
+    if (e == si_giga)
         return 'G';
-    if (op == si_mega)
+    if (e == si_mega)
         return 'M';
-    if (op == si_chilo)
+    if (e == si_chilo)
         return 'k';
-    if (op == si_milli)
+    if (e == si_milli)
         return 'm';
-    if (op == si_micro)
+    if (e == si_micro)
         return 'u';
-    if (op == si_nano)
+    if (e == si_nano)
         return 'n';
-    if (op == si_pico)
+    if (e == si_pico)
         return 'p';
-    if (op == si_femto)
+    if (e == si_femto)
         return 'f';
-    if (op == si_atto)
+    if (e == si_atto)
         return 'a';
-    if (op == si_zepto)
+    if (e == si_zepto)
         return 'z';
-    if (op == si_yocto)
+    if (e == si_yocto)
         return 'y';
     return ' ';
 }
 
-double siprefix_to_scaling_factor(SiPrefix op)
+double siprefix_to_scaling_factor(SiPrefix e)
 {
-    if (op == si_yotta)
+    if (e == si_yotta)
         return 1e+24;
-    if (op == si_zetta)
+    if (e == si_zetta)
         return 1e+21;
-    if (op == si_exa)
+    if (e == si_exa)
         return 1e+18;
-    if (op == si_peta)
+    if (e == si_peta)
         return 1e+15;
-    if (op == si_tera)
+    if (e == si_tera)
         return 1e+12;
-    if (op == si_giga)
+    if (e == si_giga)
         return 1e+9;
-    if (op == si_mega)
+    if (e == si_mega)
         return 1e+6;
-    if (op == si_chilo)
+    if (e == si_chilo)
         return 1e+3;
-    if (op == si_milli)
+    if (e == si_milli)
         return 1e-3;
-    if (op == si_micro)
+    if (e == si_micro)
         return 1e-6;
-    if (op == si_nano)
+    if (e == si_nano)
         return 1e-9;
-    if (op == si_pico)
+    if (e == si_pico)
         return 1e-12;
-    if (op == si_femto)
+    if (e == si_femto)
         return 1e-15;
-    if (op == si_atto)
+    if (e == si_atto)
         return 1e-18;
-    if (op == si_zepto)
+    if (e == si_zepto)
         return 1e-21;
-    if (op == si_yocto)
+    if (e == si_yocto)
         return 1e-24;
     return 1;
 }
@@ -502,28 +532,50 @@ double letter_to_scaling_factor(char e)
     return 1;
 }
 
-std::string controltype_to_plain_string(ControlType ctrl)
+std::string parameter_type_to_plain_string(ParameterType e)
 {
-    if (ctrl == ctrl_alter)
+    if (e == param_assign)
+        return "param_assign";
+    if (e == param_tabular)
+        return "param_tabular";
+    if (e == param_arithmetic)
+        return "param_arithmetic";
+    return "param_none";
+}
+
+ParameterType plain_string_to_parameter_type(const std::string &s)
+{
+    if (s == "param_assign")
+        return param_assign;
+    if (s == "param_tabular")
+        return param_tabular;
+    if (s == "param_arithmetic")
+        return param_arithmetic;
+    return param_none;
+}
+
+std::string control_type_to_plain_string(ControlType e)
+{
+    if (e == ctrl_alter)
         return "ctrl_alter";
-    if (ctrl == ctrl_altergroup)
+    if (e == ctrl_altergroup)
         return "ctrl_altergroup";
-    if (ctrl == ctrl_save)
+    if (e == ctrl_save)
         return "ctrl_save";
-    if (ctrl == ctrl_option)
+    if (e == ctrl_option)
         return "ctrl_option";
-    if (ctrl == ctrl_nodeset)
+    if (e == ctrl_nodeset)
         return "ctrl_nodeset";
-    if (ctrl == ctrl_plot)
+    if (e == ctrl_plot)
         return "ctrl_plot";
-    if (ctrl == ctrl_chrent)
+    if (e == ctrl_chrent)
         return "ctrl_chrent";
-    if (ctrl == ctrl_defmac)
+    if (e == ctrl_defmac)
         return "ctrl_defmac";
     return "ctrl_none";
 }
 
-ControlType plain_string_to_controltype(const std::string &s)
+ControlType plain_string_to_control_type(const std::string &s)
 {
     if (s == "ctrl_alter")
         return ctrl_alter;

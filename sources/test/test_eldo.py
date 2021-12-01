@@ -17,20 +17,102 @@ logger.addHandler(ch)
 # =============================================================================
 # Import the EDACurry library.
 import edacurry
+from colorama import Fore, Back, Style
+import difflib
+import sys
 import os
 
-files = os.listdir("../test/eldo")
+def compare(filepath1:str, filepath2:str):
+    # Compare the two files.
+    print("Comparing `{}` and `{}`...".format(filepath1, filepath2))
+    with open(filepath1) as f1, open(filepath2) as f2:
+        # Get the content.
+        content_f1 = [line for line in f1 if not line.startswith('#') and not line.startswith('//')]
+        content_f2 = [line for line in f2 if not line.startswith('#') and not line.startswith('//')]
+        # Compute the differences.
+        differ = difflib.Differ()
+        differences = differ.compare(content_f1, content_f2)
+        line_num = 0
+        # 
+        previous = 0
+        # Print the differences.
+        for line in differences:
+            # Split off the tag.
+            line = line.rstrip()
+            tag = line[:2]
+            remaining = line[2:].strip()
+            if not remaining:
+                continue
+            # If the line is in both files or just b, increment the line number.
+            if tag in ("  ", "- "):
+                line_num += 1
+            ## If this line is only in b, print the line number and the text on the line
+            if tag == "+ ":
+                print(Fore.YELLOW, "%3d"%line_num, line, Fore.RESET)
+                previous = 1
+            elif tag == "- ":
+                print(Fore.RED, "%3d"%line_num, line, Fore.RESET)
+                previous = 2
+            elif tag == "? ":
+                if previous == 1:
+                    print(Fore.YELLOW, "%3d"%line_num, line, Fore.RESET)
+                elif previous == 2:
+                    print(Fore.RED, "%3d"%line_num, line, Fore.RESET)
+                previous = 0
+            else:
+                previous = 0
 
-if not os.path.exists("../test/eldo_result"):
-    os.mkdir("../test/eldo_result")
+def test_xml(inp:str, outp:str):
+    # Get the content.
+    content = edacurry.parse_to_xml(inp)
+    # If required generate the output file.
+    with open(outp, 'w') as outf:
+        outf.write(content)
 
-for in_file in files:
-    path = os.path.join("../test/eldo/", in_file)
-    base = os.path.basename(in_file)
-    split = os.path.splitext(base)
-    print("Parsing `{}`".format(path))
-    content = edacurry.parse(path)
-    out_path = os.path.join("../test/eldo_result/", split[0] + ".xml")
-    print("Writing `{}`".format(out_path))
-    with open(out_path, 'w') as out_file:
-        out_file.write(content)
+def test_eldo(inp:str, outp:str):
+    # Get the content.
+    print("Parsing `{}`".format(inp))
+    content = edacurry.parse_to_eldo(inp)
+    
+    # If required generate the output file.
+    print("Writing `{}`".format(outp))
+    with open(outp, 'w') as outf:
+        outf.write(content)
+    
+    # Compare the two files.
+    compare(inp, outp)
+
+if not os.path.exists("eldo_result"):
+    os.mkdir("eldo_result")
+
+if len(sys.argv) == 1:
+    print("You must provide either input files or folders.")
+    print("Usage:")
+    print("    {}".format(sys.argv[0]))
+    exit(1)
+
+for i in range(1, len(sys.argv)):
+    argument = sys.argv[i]
+
+    if os.path.isdir(argument):
+        # Iterate the files inside the directory.
+        for filename in os.listdir(argument):
+            # Get just the name.
+            name, _ = os.path.splitext(filename)
+            # Set the input path.
+            inp = os.path.join(argument, filename)
+            # Set the output path.
+            outp =os.path.join("eldo_result/", filename)
+            # Parse to ELDO.
+            test_eldo(inp, outp)
+    elif os.path.isfile(argument):
+        # Get the basename.
+        basename = os.path.basename(argument)
+        # Get just the name.
+        name, _ = os.path.splitext(basename)
+        # Set the output path.
+        outp = os.path.join("eldo_result/", basename)
+        # Parse to ELDO.
+        test_eldo(argument, outp)
+    else:
+        print("The argument `{}` is not valid!".format(argument))

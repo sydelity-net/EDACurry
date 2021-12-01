@@ -53,8 +53,7 @@ structure::Control *Factory::control(
     return new structure::Control(name, type, parameters);
 }
 
-structure::ExpressionUnary *Factory::expressionUnary(Operator op,
-                                                     structure::Value *value)
+structure::ExpressionUnary *Factory::expressionUnary(Operator op, structure::Value *value)
 {
     return new structure::ExpressionUnary(op, value);
 }
@@ -93,8 +92,7 @@ structure::LibraryDef *Factory::libraryDef(
     return new structure::LibraryDef(name, content);
 }
 
-structure::Library *Factory::library(const std::string &name,
-                                     const std::string &path)
+structure::Library *Factory::library(const std::string &name, const std::string &path)
 {
     return new structure::Library(name, path);
 }
@@ -110,25 +108,28 @@ structure::Model *Factory::model(
                                 parameters);
 }
 
-structure::Node *Factory::node(const std::string &name,
-                               structure::Object *reference)
+structure::Node *Factory::node(const std::string &name, structure::Object *reference)
 {
     return new structure::Node(name, reference);
 }
 
-structure::Parameter *Factory::parameter(structure::Value *value,
-                                         structure::Object *reference,
-                                         bool hide_name)
+structure::Parameter *Factory::parameter(
+    structure::Value *value,
+    ParameterType type,
+    structure::Object *reference,
+    bool hide_name)
 {
-    return new structure::Parameter(value, reference, hide_name);
+    return new structure::Parameter(value, type, reference, hide_name);
 }
 
-structure::Parameter *Factory::parameter(const std::string &name,
-                                         structure::Value *value,
-                                         structure::Object *reference,
-                                         bool hide_name)
+structure::Parameter *Factory::parameter(
+    const std::string &name,
+    structure::Value *value,
+    ParameterType type,
+    structure::Object *reference,
+    bool hide_name)
 {
-    return new structure::Parameter(name, value, reference, hide_name);
+    return new structure::Parameter(name, value, type, reference, hide_name);
 }
 
 structure::Subckt *Factory::subckt(
@@ -152,8 +153,7 @@ structure::ValueList *Factory::valueList(
     return new structure::ValueList(delimiter, values);
 }
 
-structure::ValuePair *Factory::valuePair(structure::Value *first,
-                                         structure::Value *second)
+structure::ValuePair *Factory::valuePair(structure::Value *first, structure::Value *second)
 {
     return new structure::ValuePair(first, second);
 }

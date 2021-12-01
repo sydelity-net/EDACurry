@@ -1,0 +1,17 @@
+//============================================================================
+// JFET - Junction Field Effect Transistor - J**
+// Jxx ND NG NS MNAME
+//      [[AREA=]AREA_VAL] [L=VAL] [W=VAL]
+//    + [T[EMP]=VAL] [DTEMP=VAL] [M=VAL] [OFF=0|1] [STATISTICAL=0|1]
+//    + [NONOISE] [NOISE=1]
+//
+//      [FMIN=VAL] [FMAX=VAL] [NBF=VAL] [STATISTICAL=0|1]
+//
+// MESFET
+//      [AREA] [L=VAL] [W=VAL] [T[EMP]=VAL] [DTEMP=VAL]
+//    + [M=VAL] [OFF=0|1] [STATISTICAL=0|1] [NONOISE] [NOISE=1]
+//
+//      [FMIN=VAL] [FMAX=VAL] [NBF=VAL] [STATISTICAL=0|1]
+//============================================================================
+j1 1 2 3 fet2 t=50
+j1 3 2 0 je20

@@ -4,15 +4,14 @@
 /// Distributed under the MIT License (MIT) (See accompanying LICENSE file or
 ///  copy at http://opensource.org/licenses/MIT)
 
-
-
 #pragma once
 
 #include "named_object.hpp"
 #include "structure/object.hpp"
 
-#include <string>
 #include <type_traits>
+#include <cassert>
+#include <string>
 
 namespace edacurry::features
 {
@@ -22,7 +21,8 @@ public:
     using value_type = T *;
     using base_type  = std::vector<value_type>;
 
-    ObjectList(structure::Object *owner) : _owner(owner), _objects()
+    ObjectList(structure::Object *owner)
+        : _owner(owner), _objects()
     {
         // Nothing to do.
     }
@@ -48,6 +48,17 @@ public:
 
     ObjectList &operator=(const ObjectList &) = delete;
 
+    operator bool() const
+    {
+        return !_objects.empty();
+    }
+
+    inline const value_type operator[](size_t pos) const
+    {
+        assert(pos < _objects.size());
+        return _objects[pos];
+    }
+
     ObjectList(const ObjectList &) = delete;
 
     ~ObjectList()
@@ -55,9 +66,14 @@ public:
         for (auto object : _objects) delete object;
     }
 
+    inline size_t size() const
+    {
+        return _objects.size();
+    }
+
     /// @brief Add a new object.
     /// @param object the new object to add.
-    void push_back(value_type object)
+    inline void push_back(value_type object)
     {
         _objects.emplace_back(object);
         object->setParent(_owner);
@@ -65,7 +81,7 @@ public:
 
     /// @brief Removes the given object.
     /// @param object the object to remove.
-    value_type remove(value_type object)
+    inline value_type remove(value_type object)
     {
         return structure::Object::removeFromList(_objects, object);
     }
