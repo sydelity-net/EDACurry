@@ -346,9 +346,9 @@ public:
 
     virtual antlrcpp::Any visitParameter(ELDOParser::ParameterContext *context) = 0;
 
-    virtual antlrcpp::Any visitParameter_id(ELDOParser::Parameter_idContext *context) = 0;
+    virtual antlrcpp::Any visitParameter_lhs(ELDOParser::Parameter_lhsContext *context) = 0;
 
-    virtual antlrcpp::Any visitParameter_id_access(ELDOParser::Parameter_id_accessContext *context) = 0;
+    virtual antlrcpp::Any visitParameter_rhs(ELDOParser::Parameter_rhsContext *context) = 0;
 
     virtual antlrcpp::Any visitFilepath(ELDOParser::FilepathContext *context) = 0;
 

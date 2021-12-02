@@ -1383,7 +1383,7 @@ expression
 expression_unary
     : (PLUS | MINUS) expression;
 expression_function_call
-    : (ID | MOD | MODEL) expression_list;
+    : (ID | MOD | MODEL) (OPEN_ROUND | OPEN_CURLY | OPEN_SQUARE) (expression COMMA?)+ (CLOSE_ROUND | CLOSE_CURLY | CLOSE_SQUARE);
 expression_list
     : (OPEN_ROUND | OPEN_CURLY | OPEN_SQUARE) (expression COMMA?)+ (CLOSE_ROUND | CLOSE_CURLY | CLOSE_SQUARE);
 expression_operator
@@ -1433,11 +1433,14 @@ parameter_list
 parameter_list_item
     : parameter;
 parameter
-    : parameter_id (EQUAL expression)?;
-parameter_id
-    : (ID | MOD | MODEL) parameter_id_access?;
-parameter_id_access
-    : OPEN_ROUND (ID COMMA?)+ CLOSE_ROUND;
+    : parameter_lhs parameter_rhs?;
+parameter_lhs
+    : expression_function_call
+    | expression_list
+    | (ID | MOD | MODEL)
+    ;
+parameter_rhs
+    : EQUAL expression;
 
 // ============================================================================
 // filepath

@@ -337,10 +337,14 @@ public:
     antlrcpp::Any visitExpression_atom(ELDOParser::Expression_atomContext *ctx) override;
 
     antlrcpp::Any visitNode_mapping(ELDOParser::Node_mappingContext *ctx) override;
+    
     antlrcpp::Any visitNode(ELDOParser::NodeContext *ctx) override;
 
     antlrcpp::Any visitParameter(ELDOParser::ParameterContext *ctx) override;
-    antlrcpp::Any visitParameter_id(ELDOParser::Parameter_idContext *ctx) override;
+
+    antlrcpp::Any visitParameter_lhs(ELDOParser::Parameter_lhsContext *ctx) override;
+
+    antlrcpp::Any visitParameter_rhs(ELDOParser::Parameter_rhsContext *ctx) override;
 
     antlrcpp::Any visitFilepath(ELDOParser::FilepathContext *ctx) override;
 

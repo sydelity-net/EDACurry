@@ -507,11 +507,11 @@ public:
   virtual void enterParameter(ELDOParser::ParameterContext * /*ctx*/) override { }
   virtual void exitParameter(ELDOParser::ParameterContext * /*ctx*/) override { }
 
-  virtual void enterParameter_id(ELDOParser::Parameter_idContext * /*ctx*/) override { }
-  virtual void exitParameter_id(ELDOParser::Parameter_idContext * /*ctx*/) override { }
+  virtual void enterParameter_lhs(ELDOParser::Parameter_lhsContext * /*ctx*/) override { }
+  virtual void exitParameter_lhs(ELDOParser::Parameter_lhsContext * /*ctx*/) override { }
 
-  virtual void enterParameter_id_access(ELDOParser::Parameter_id_accessContext * /*ctx*/) override { }
-  virtual void exitParameter_id_access(ELDOParser::Parameter_id_accessContext * /*ctx*/) override { }
+  virtual void enterParameter_rhs(ELDOParser::Parameter_rhsContext * /*ctx*/) override { }
+  virtual void exitParameter_rhs(ELDOParser::Parameter_rhsContext * /*ctx*/) override { }
 
   virtual void enterFilepath(ELDOParser::FilepathContext * /*ctx*/) override { }
   virtual void exitFilepath(ELDOParser::FilepathContext * /*ctx*/) override { }

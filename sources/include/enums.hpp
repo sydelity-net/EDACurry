@@ -206,10 +206,10 @@ enum ControlType {
     ctrl_defmac, ///< Macro Definition
     ctrl_chrent, ///< Piece Wise Linear Source
     // ctrl_ic, ///<
-    // ctrl_print, ///<
-    ctrl_plot, ///< Plotting of Simulation Results
+    ctrl_print, ///< Print contents of a tabular listing.
+    ctrl_plot,  ///< Plotting of Simulation Results
     // ctrl_ffile, ///<
-    // ctrl_probe, ///<
+    ctrl_probe, ///<
     // ctrl_defwave, ///<
     // ctrl_temp, ///<
     // ctrl_meas, ///<

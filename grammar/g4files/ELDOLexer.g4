@@ -339,11 +339,11 @@ fragment DIGIT       : [0-9];
 fragment HEXDIGIT    : '0x' ('0'..'9' | 'a'..'f' | 'A'..'F')+;
 fragment OCTALDIGIT  : '0' '0'..'7'+;
 fragment EXPONENTIAL : ('E' | 'e') ('+' | '-')? INT ;
-fragment INT         : ('+' | '-')? DIGIT+ [Ll]? LETTER?;
-fragment FLOAT       : ('+' | '-')? DIGIT+ '.' DIGIT* EXPONENTIAL? [Ll]? LETTER?
-                     | ('+' | '-')? DIGIT+ EXPONENTIAL? [Ll]? LETTER?
-                     | ('+' | '-')? '.' DIGIT+ EXPONENTIAL? [Ll]? LETTER?;
-fragment HEX         : '0' ('x'|'X') HEXDIGIT+ [Ll]? ;
+fragment INT         : ('+' | '-')? DIGIT+ LETTER? LETTER? LETTER?;
+fragment FLOAT       : ('+' | '-')? DIGIT+ '.' DIGIT* EXPONENTIAL? LETTER? LETTER? LETTER?
+                     | ('+' | '-')? DIGIT+ EXPONENTIAL? LETTER? LETTER? LETTER?
+                     | ('+' | '-')? '.' DIGIT+ EXPONENTIAL? LETTER? LETTER? LETTER?;
+fragment HEX         : '0' ('x'|'X') HEXDIGIT+ LETTER? LETTER?;
 PERCENTAGE           : FLOAT '%'  ;
 COMPLEX              : INT 'i' | FLOAT 'i' ;
 NUMBER               : INT | FLOAT | HEX;

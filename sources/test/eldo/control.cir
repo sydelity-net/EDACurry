@@ -1,0 +1,18 @@
+// SAVE
+.save i(vin) input output
+
+// PRINT
+.print AC VM(2)
+.print TRAN V(1) V(2)
+.print TRAN V(4) I(VIN)
+.print DC V(2) I(VSRC) V(23, 17)
+.print AC VM(4, 2) VR(7) VP(8, 3)
+
+// PLOT
+.plot TRAN V(1) V(2)
+.plot AC VM(2)
+.plot DC V(4) V(5) V(1)
+.plot TRAN V(17, 5) (2, 5) I(VIN) V(17) (1, 9)
+.plot AC VM(5) VM(31, 24) VDB(5) VP(5)
+.plot DISTO HD2 HD3(R) SIM2
+.plot TRAN V(5, 3) V(4) (0, 5) V(7) (0, 10)

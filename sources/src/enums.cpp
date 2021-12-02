@@ -570,6 +570,8 @@ std::string control_type_to_plain_string(ControlType e)
         return "ctrl_option";
     if (e == ctrl_nodeset)
         return "ctrl_nodeset";
+    if (e == ctrl_print)
+        return "ctrl_print";
     if (e == ctrl_plot)
         return "ctrl_plot";
     if (e == ctrl_chrent)
@@ -591,6 +593,8 @@ ControlType plain_string_to_control_type(const std::string &s)
         return ctrl_option;
     if (s == "ctrl_nodeset")
         return ctrl_nodeset;
+    if (s == "ctrl_print")
+        return ctrl_print;
     if (s == "ctrl_plot")
         return ctrl_plot;
     if (s == "ctrl_chrent")

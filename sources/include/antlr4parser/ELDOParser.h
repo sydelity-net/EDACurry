@@ -95,7 +95,7 @@ public:
     RuleExpression_list = 153, RuleExpression_operator = 154, RuleExpression_atom = 155, 
     RuleNode_list = 156, RuleNode_list_item = 157, RuleNode_mapping = 158, 
     RuleNode = 159, RuleParameter_list = 160, RuleParameter_list_item = 161, 
-    RuleParameter = 162, RuleParameter_id = 163, RuleParameter_id_access = 164, 
+    RuleParameter = 162, RuleParameter_lhs = 163, RuleParameter_rhs = 164, 
     RuleFilepath = 165, RuleFilepath_element = 166, RuleEnd_of_line = 167
   };
 
@@ -272,8 +272,8 @@ public:
   class Parameter_listContext;
   class Parameter_list_itemContext;
   class ParameterContext;
-  class Parameter_idContext;
-  class Parameter_id_accessContext;
+  class Parameter_lhsContext;
+  class Parameter_rhsContext;
   class FilepathContext;
   class Filepath_elementContext;
   class End_of_lineContext; 
@@ -3039,10 +3039,19 @@ public:
   public:
     Expression_function_callContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    Expression_listContext *expression_list();
     antlr4::tree::TerminalNode *ID();
     antlr4::tree::TerminalNode *MOD();
     antlr4::tree::TerminalNode *MODEL();
+    antlr4::tree::TerminalNode *OPEN_ROUND();
+    antlr4::tree::TerminalNode *OPEN_CURLY();
+    antlr4::tree::TerminalNode *OPEN_SQUARE();
+    antlr4::tree::TerminalNode *CLOSE_ROUND();
+    antlr4::tree::TerminalNode *CLOSE_CURLY();
+    antlr4::tree::TerminalNode *CLOSE_SQUARE();
+    std::vector<ExpressionContext *> expression();
+    ExpressionContext* expression(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> COMMA();
+    antlr4::tree::TerminalNode* COMMA(size_t i);
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -3240,9 +3249,8 @@ public:
   public:
     ParameterContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    Parameter_idContext *parameter_id();
-    antlr4::tree::TerminalNode *EQUAL();
-    ExpressionContext *expression();
+    Parameter_lhsContext *parameter_lhs();
+    Parameter_rhsContext *parameter_rhs();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -3253,14 +3261,15 @@ public:
 
   ParameterContext* parameter();
 
-  class  Parameter_idContext : public antlr4::ParserRuleContext {
+  class  Parameter_lhsContext : public antlr4::ParserRuleContext {
   public:
-    Parameter_idContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    Parameter_lhsContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
+    Expression_function_callContext *expression_function_call();
+    Expression_listContext *expression_list();
     antlr4::tree::TerminalNode *ID();
     antlr4::tree::TerminalNode *MOD();
     antlr4::tree::TerminalNode *MODEL();
-    Parameter_id_accessContext *parameter_id_access();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -3269,18 +3278,14 @@ public:
    
   };
 
-  Parameter_idContext* parameter_id();
+  Parameter_lhsContext* parameter_lhs();
 
-  class  Parameter_id_accessContext : public antlr4::ParserRuleContext {
+  class  Parameter_rhsContext : public antlr4::ParserRuleContext {
   public:
-    Parameter_id_accessContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    Parameter_rhsContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *OPEN_ROUND();
-    antlr4::tree::TerminalNode *CLOSE_ROUND();
-    std::vector<antlr4::tree::TerminalNode *> ID();
-    antlr4::tree::TerminalNode* ID(size_t i);
-    std::vector<antlr4::tree::TerminalNode *> COMMA();
-    antlr4::tree::TerminalNode* COMMA(size_t i);
+    antlr4::tree::TerminalNode *EQUAL();
+    ExpressionContext *expression();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -3289,7 +3294,7 @@ public:
    
   };
 
-  Parameter_id_accessContext* parameter_id_access();
+  Parameter_rhsContext* parameter_rhs();
 
   class  FilepathContext : public antlr4::ParserRuleContext {
   public:

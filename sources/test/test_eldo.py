@@ -44,7 +44,7 @@ def parse_lines(file: TextIOWrapper) -> str:
                 previous_line :str= lines.pop()
                 previous_line = previous_line.replace('\n', ' ').replace('  ', ' ')
                 line = previous_line + re.sub(r'^ +\+', '', line)
-            lines.append(line.rstrip())
+            lines.append(line.rstrip().lower())
     return lines
 
 def handle_print(line : str, line_number : int, line_type : Changes, previous_type : Changes) -> Changes:
@@ -74,7 +74,7 @@ def compare(filepath1:str, filepath2:str):
         content_f1 = parse_lines(f1)
         content_f2 = parse_lines(f2)
         # Compute the differences.
-        differences = difflib.Differ().compare(content_f1, content_f2)
+        differences = difflib.ndiff(content_f1, content_f2, charjunk=difflib.IS_CHARACTER_JUNK)
         # Store the line number.
         line_number = 0
         # Store the type of the previous entry.

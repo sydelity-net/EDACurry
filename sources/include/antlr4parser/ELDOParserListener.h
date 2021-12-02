@@ -505,11 +505,11 @@ public:
   virtual void enterParameter(ELDOParser::ParameterContext *ctx) = 0;
   virtual void exitParameter(ELDOParser::ParameterContext *ctx) = 0;
 
-  virtual void enterParameter_id(ELDOParser::Parameter_idContext *ctx) = 0;
-  virtual void exitParameter_id(ELDOParser::Parameter_idContext *ctx) = 0;
+  virtual void enterParameter_lhs(ELDOParser::Parameter_lhsContext *ctx) = 0;
+  virtual void exitParameter_lhs(ELDOParser::Parameter_lhsContext *ctx) = 0;
 
-  virtual void enterParameter_id_access(ELDOParser::Parameter_id_accessContext *ctx) = 0;
-  virtual void exitParameter_id_access(ELDOParser::Parameter_id_accessContext *ctx) = 0;
+  virtual void enterParameter_rhs(ELDOParser::Parameter_rhsContext *ctx) = 0;
+  virtual void exitParameter_rhs(ELDOParser::Parameter_rhsContext *ctx) = 0;
 
   virtual void enterFilepath(ELDOParser::FilepathContext *ctx) = 0;
   virtual void exitFilepath(ELDOParser::FilepathContext *ctx) = 0;

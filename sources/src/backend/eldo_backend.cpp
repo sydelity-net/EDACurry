@@ -39,6 +39,16 @@ void EldoBackend::visit(const structure::Circuit *e)
 
 void EldoBackend::visit(const structure::Analysis *e)
 {
+    if ((e->getName() == "ac_parameter_driven") || (e->getName() == "ac_data_driven") || (e->getName() == "ac_list_driven") || (e->getName() == "ac_adaptive")) {
+        ss << ".ac";
+    } else if ((e->getName() == "tran_point_driven") || (e->getName() == "tran_parameterized") || (e->getName() == "tran_data_driven")) {
+        ss << ".tran";
+    }
+    for (const auto &parameter : e->parameters) {
+        ss << ' ';
+        parameter->accept(this);
+    }
+    ss << '\n';
 }
 
 void EldoBackend::visit(const structure::Component *e)
@@ -72,10 +82,18 @@ void EldoBackend::visit(const structure::Control *e)
 {
     if (e->getControlType() == ctrl_option) {
         ss << ".option";
-        for (const auto &parameter : e->parameters) {
-            ss << ' ';
-            parameter->accept(this);
-        }
+    } else if (e->getControlType() == ctrl_save) {
+        ss << ".save";
+    } else if (e->getControlType() == ctrl_print) {
+        ss << ".print";
+    } else if (e->getControlType() == ctrl_plot) {
+        ss << ".plot";
+    }
+    if (!e->getName().empty())
+        ss << " " << e->getName();
+    for (const auto &parameter : e->parameters) {
+        ss << ' ';
+        parameter->accept(this);
     }
     ss << '\n';
 }

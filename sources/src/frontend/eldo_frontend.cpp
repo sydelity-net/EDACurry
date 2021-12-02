@@ -32,7 +32,7 @@ structure::Number<T> *to_number(antlr4::tree::TerminalNode *ctx)
     ss >> unit;
     if (!unit.empty()) {
         value *= letter_to_scaling_factor(unit[0]);
-        if (unit.size() > 1) {
+        if ((unit.size() > 1) && (utility::to_lower(unit) != "meg")) {
             return new structure::Number<T>(value, unit.substr(1));
         }
     }
@@ -44,6 +44,8 @@ std::string to_string(ELDOParser::Expression_atomContext *ctx);
 std::string to_string(const std::vector<antlr4::tree::TerminalNode *> &ctx);
 
 DelimiterType to_delimiter(ELDOParser::Expression_listContext *ctx);
+
+DelimiterType to_delimiter(ELDOParser::Expression_function_callContext *ctx);
 
 Operator to_operator(ELDOParser::Expression_unaryContext *ctx);
 
@@ -780,17 +782,21 @@ Any ELDOFrontend::visitTran_point_driven(ELDOParser::Tran_point_drivenContext *c
     if (n_numbers < 2) {
         _error("There should be at least TPRINT and TSTOP.");
     }
-    analysis->parameters.push_back(_factory.parameter(
-        "TPRINT", to_number<double>(ctx->NUMBER(0))));
-    analysis->parameters.push_back(_factory.parameter(
-        "TSTOP", to_number<double>(ctx->NUMBER(1))));
+    analysis->parameters.push_back(
+        _factory.parameter(
+            "TPRINT", to_number<double>(ctx->NUMBER(0)), param_assign, nullptr, true));
+    analysis->parameters.push_back(
+        _factory.parameter(
+            "TSTOP", to_number<double>(ctx->NUMBER(1)), param_assign, nullptr, true));
     for (size_t i = 2; i < n_numbers; ++i) {
-        analysis->parameters.push_back(_factory.parameter(
-            "TSTART", to_number<double>(ctx->NUMBER(i))));
+        analysis->parameters.push_back(
+            _factory.parameter(
+                "TSTART", to_number<double>(ctx->NUMBER(i)), param_assign, nullptr, true));
         if ((i + 1) < n_numbers) {
             ++i;
-            analysis->parameters.push_back(_factory.parameter(
-                "HMAX", to_number<double>(ctx->NUMBER(i))));
+            analysis->parameters.push_back(
+                _factory.parameter(
+                    "HMAX", to_number<double>(ctx->NUMBER(i)), param_assign, nullptr, true));
         }
     }
     return visitChildren(ctx);
@@ -810,10 +816,10 @@ Any ELDOFrontend::visitTran_parameterized(ELDOParser::Tran_parameterizedContext 
     for (size_t i = 0; (i + 1) < n_expressions; i += 2) {
         this->advance_visit(
             ctx->expression(i),
-            _factory.parameter("INCRn", nullptr));
+            _factory.parameter("INCRn", nullptr, param_assign, nullptr, true));
         this->advance_visit(
             ctx->expression(i + 1),
-            _factory.parameter("Tn", nullptr));
+            _factory.parameter("Tn", nullptr, param_assign, nullptr, true));
     }
     if (ctx->parameter_list())
         return this->visitChildren(ctx->parameter_list());
@@ -929,23 +935,23 @@ Any ELDOFrontend::visitSave(ELDOParser::SaveContext *ctx)
 
 Any ELDOFrontend::visitSave_file(ELDOParser::Save_fileContext *ctx)
 {
-    auto save = utility::to_check<structure::Control>(this->back());
-    save->parameters.push_back(
+    this->add_to_parent(
         _factory.parameter(
-            (ctx->ID() ? ctx->ID()->toString() : "file"),
+            (ctx->ID() ? ctx->ID()->toString() : ""),
             _factory.string(to_string(ctx->filepath()))));
     return visitChildren(ctx);
 }
 
 Any ELDOFrontend::visitSave_when(ELDOParser::Save_whenContext *ctx)
 {
-    auto save = utility::to_check<structure::Control>(this->back());
     if (ctx->ID()) {
-        save->parameters.push_back(_factory.parameter(
-            "when", _factory.identifier(ctx->ID()->toString())));
+        this->add_to_parent(
+            _factory.parameter(
+                "when", _factory.identifier(ctx->ID()->toString())));
     } else if (ctx->END()) {
-        save->parameters.push_back(_factory.parameter(
-            "when", _factory.identifier(ctx->END()->toString())));
+        this->add_to_parent(
+            _factory.parameter(
+                "when", _factory.identifier(ctx->END()->toString())));
     }
     return visitChildren(ctx);
 }
@@ -1005,9 +1011,10 @@ Any ELDOFrontend::visitChrent_point(ELDOParser::Chrent_pointContext *ctx)
 Any ELDOFrontend::visitChrent_pair(ELDOParser::Chrent_pairContext *ctx)
 {
     auto ctrl = utility::to_check<structure::Control>(this->back());
-    ctrl->parameters.push_back(_factory.parameter(
-        "", _factory.valuePair(to_number<double>(ctx->NUMBER(0)),
-                               to_number<double>(ctx->NUMBER(1)))));
+    this->add_to_parent(
+        _factory.parameter(
+            "", _factory.valuePair(to_number<double>(ctx->NUMBER(0)),
+                                   to_number<double>(ctx->NUMBER(1)))));
     return visitChildren(ctx);
 }
 
@@ -1028,12 +1035,18 @@ Any ELDOFrontend::visitIc_subckt(ELDOParser::Ic_subcktContext *ctx)
 
 Any ELDOFrontend::visitPrint(ELDOParser::PrintContext *ctx)
 {
-    return visitChildren(ctx);
+    return this->advance_visit(
+        ctx,
+        _factory.control(
+            ctx->ID() ? ctx->ID()->toString() : "", ctrl_print, {}));
 }
 
 Any ELDOFrontend::visitPlot(ELDOParser::PlotContext *ctx)
 {
-    return this->advance_visit(ctx, _factory.control("", ctrl_plot, {}));
+    return this->advance_visit(
+        ctx,
+        _factory.control(
+            ctx->ID() ? ctx->ID()->toString() : "", ctrl_plot, {}));
 }
 
 Any ELDOFrontend::visitFfile(ELDOParser::FfileContext *ctx)
@@ -1468,12 +1481,22 @@ Any ELDOFrontend::visitExpression_unary(ELDOParser::Expression_unaryContext *ctx
 
 Any ELDOFrontend::visitExpression_function_call(ELDOParser::Expression_function_callContext *ctx)
 {
-    assert(ctx->ID() && "There is a function without ID!");
-    return this->advance_visit(
-        ctx,
-        _factory.functionCall(
-            ctx->ID()->toString(),
-            {}));
+    std::string name;
+    if (ctx->ID()) {
+        name = ctx->ID()->toString();
+    } else if (ctx->MOD()) {
+        name = ctx->MOD()->toString();
+    } else {
+        name = ctx->MODEL()->toString();
+    }
+    auto function_call = _factory.functionCall(name, {});
+    this->push(function_call);
+    for (size_t i = 0; i < ctx->expression().size(); ++i) {
+        this->visitChildren(ctx->expression(i));
+    }
+    this->pop();
+    this->add_to_parent(function_call);
+    return Any();
 }
 
 Any ELDOFrontend::visitExpression_list(ELDOParser::Expression_listContext *ctx)
@@ -1540,35 +1563,22 @@ Any ELDOFrontend::visitParameter(ELDOParser::ParameterContext *ctx)
     return result;
 }
 
-Any ELDOFrontend::visitParameter_id(ELDOParser::Parameter_idContext *ctx)
+Any ELDOFrontend::visitParameter_lhs(ELDOParser::Parameter_lhsContext *ctx)
 {
     auto parameter = utility::to<structure::Parameter>(this->back());
-    std::string name;
-    if (parameter) {
-        if (ctx->ID())
-            name = ctx->ID()->toString();
-        if (ctx->MOD())
-            name = ctx->MOD()->toString();
-        if (ctx->MODEL())
-            name = ctx->MODEL()->toString();
-    } else {
-        _error("Parent is not a Parameter.");
+    if (ctx->ID()) {
+        parameter->setName(ctx->ID()->toString());
+    } else if (ctx->MOD()) {
+        parameter->setName(ctx->MOD()->toString());
+    } else if (ctx->MODEL()) {
+        parameter->setName(ctx->MODEL()->toString());
     }
-    if (ctx->parameter_id_access()) {
-        const auto &ids = ctx->parameter_id_access()->ID();
-        name += "(";
-        if (!ids.empty()) {
-            for (size_t i = 0; i < ids.size(); ++i) {
-                name += ids[i]->toString();
-                if ((i + 1) < ids.size()) {
-                    name += " ,";
-                }
-            }
-        }
-        name += ")";
-    }
-    parameter->setName(name);
-    return 0;
+    return visitChildren(ctx);
+}
+
+Any ELDOFrontend::visitParameter_rhs(ELDOParser::Parameter_rhsContext *ctx)
+{
+    return visitChildren(ctx);
 }
 
 Any ELDOFrontend::visitFilepath(ELDOParser::FilepathContext *ctx)
@@ -1882,6 +1892,18 @@ std::string to_string(const std::vector<antlr4::tree::TerminalNode *> &ctx)
 }
 
 DelimiterType to_delimiter(ELDOParser::Expression_listContext *ctx)
+{
+    if (ctx->OPEN_ROUND())
+        return dlm_round;
+    if (ctx->OPEN_SQUARE())
+        return dlm_square;
+    if (ctx->OPEN_CURLY())
+        return dlm_curly;
+    _error("Cannot type delimiter!");
+    return dlm_none;
+}
+
+DelimiterType to_delimiter(ELDOParser::Expression_function_callContext *ctx)
 {
     if (ctx->OPEN_ROUND())
         return dlm_round;

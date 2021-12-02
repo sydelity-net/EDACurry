@@ -669,11 +669,11 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitParameter_id(ELDOParser::Parameter_idContext *ctx) override {
+  virtual antlrcpp::Any visitParameter_lhs(ELDOParser::Parameter_lhsContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitParameter_id_access(ELDOParser::Parameter_id_accessContext *ctx) override {
+  virtual antlrcpp::Any visitParameter_rhs(ELDOParser::Parameter_rhsContext *ctx) override {
     return visitChildren(ctx);
   }
 
