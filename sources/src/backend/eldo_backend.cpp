@@ -70,6 +70,14 @@ void EldoBackend::visit(const structure::ControlScope *e)
 
 void EldoBackend::visit(const structure::Control *e)
 {
+    if (e->getControlType() == ctrl_option) {
+        ss << ".option";
+        for (const auto &parameter : e->parameters) {
+            ss << ' ';
+            parameter->accept(this);
+        }
+    }
+    ss << '\n';
 }
 
 void EldoBackend::visit(const structure::ExpressionUnary *e)
@@ -127,6 +135,13 @@ void EldoBackend::visit(const structure::Library *e)
 
 void EldoBackend::visit(const structure::Model *e)
 {
+    // .MODEL pfet PMOS ( LEVEL = 8
+    ss << ".MODEL " << e->getName() << " " << e->getMaster() << "(";
+    for (const auto &parameter : e->parameters) {
+        ss << ' ';
+        parameter->accept(this);
+    }
+    ss << ")\n";
 }
 
 void EldoBackend::visit(const structure::Node *e)
@@ -196,6 +211,23 @@ void EldoBackend::visit(const structure::Parameter *e)
 
 void EldoBackend::visit(const structure::Subckt *e)
 {
+    ss << ".subckt " << e->getName();
+    for (const auto &node : e->nodes) {
+        ss << ' ';
+        node->accept(this);
+    }
+    ss << '\n';
+    ss << ind_increase;
+    for (const auto &parameter : e->parameters) {
+        ss << ".param ";
+        parameter->accept(this);
+        ss << '\n';
+    }
+    for (const auto &entry : e->content) {
+        entry->accept(this);
+    }
+    ss << ind_decrease;
+    ss << ".ends " << e->getName() << '\n';
 }
 
 void EldoBackend::visit(const structure::String *e)

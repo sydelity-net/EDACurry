@@ -1136,6 +1136,15 @@ Any ELDOFrontend::visitComponent_attribute(ELDOParser::Component_attributeContex
 
 Any ELDOFrontend::visitComponent_value(ELDOParser::Component_valueContext *ctx)
 {
+    if (ctx->expression()) {
+        return this->advance_visit(
+            ctx->expression(), _factory.parameter(nullptr, param_assign, nullptr, true));
+    }
+    elseif (ctx->STRING()) {
+        this->add_to_parent(
+            _factory.parameter(
+                _factory.string(ctx->STRING()->toString()), param_assign, nullptr, true));
+    }
     return visitChildren(ctx);
 }
 

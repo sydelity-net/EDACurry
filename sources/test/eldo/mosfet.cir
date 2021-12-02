@@ -20,3 +20,36 @@ M2 1 2 3 4 MOS1 w=10u l=3u
 M3 1 2 3 4 MOS2 w=10u l=3u
 M1 1 2 3 4 MOS1 w=10u l=3u M=2
 M1 1 2 3 4 MODROOT w=2u l=3u
+
+// ============================================================================
+// SPICE
+// ============================================================================
+// MOSFETs
+M1 24 2 0 20 TYPE1
+M31 2 17 6 10 MODM L=5U W=2U
+M1 2 9 3 0 MOD1 L=10U W=5U AD=100P AS=100P PD=40U PS=40U
+
+m1000 Vdd Gnd a_n57_n260 Vdd pfet w=1.8u l=43.2u ad=271.08p pd=352.2u as=3.24p ps=7.2u
+m1001 a_6_0 n13 nRb Vdd pfet w=172.8u l=1.8u ad=194.4p pd=252u as=174.96p ps=226.8u
+m1002 n21 n9 a_6_0 Vdd pfet w=43.2u l=1.8u ad=38.88p pd=50.4u as=0p ps=0u
+m1003 a_255_n22 a_255_n22 Vdd Vdd pfet w=28.2u l=0.6u ad=50.76p pd=63.6u as=0p ps=0u
+m1004 n178 n178 a_255_n22 Vdd pfet w=28.2u l=1.8u ad=25.38p pd=31.8u as=0p ps=0u
+m1005 Vdd n9 n9 Vdd pfet w=10.8u l=1.8u ad=0p pd=0u as=19.44p ps=25.2u
+m1006 a_60_n107 n13 Vdd Vdd pfet w=43.2u l=1.8u ad=77.76p pd=100.8u as=0p ps=0u
+m1007 n13 n9 a_60_n107 Vdd pfet w=43.2u l=1.8u ad=38.88p pd=50.4u as=0p ps=0u
+m1008 a_176_n107 n13 Vdd Vdd pfet w=43.2u l=1.8u ad=77.76p pd=100.8u as=0p ps=0u
+m1009 n7 n9 a_176_n107 Vdd pfet w=43.2u l=1.8u ad=38.88p pd=50.4u as=0p ps=0u
+m1010 n152 n13 Vdd Vdd pfet w=21.6u l=1.8u ad=19.44p pd=25.2u as=0p ps=0u
+m1011 a_n57_n260 n7 Gnd Gnd nfet w=14.4u l=1.8u ad=12.96p pd=54u as=121.5p ps=505.2u
+m1012 n13 a_n57_n260 Gnd Gnd nfet w=14.4u l=1.8u ad=25.92p pd=108u as=0p ps=0u
+m1013 n9 a_n57_n260 Gnd Gnd nfet w=14.4u l=1.8u ad=25.92p pd=108u as=0p ps=0u
+m1014 Gnd n21 n178 Gnd nfet w=7.2u l=1.8u ad=0p pd=0u as=12.96p ps=54u
+m1015 a_64_n260 n21 Gnd Gnd nfet w=14.4u l=1.8u ad=25.92p pd=108u as=0p ps=0u
+m1016 n21 n7 a_64_n260 Gnd nfet w=14.4u l=1.8u ad=12.96p pd=54u as=0p ps=0u
+m1017 a_112_n260 n21 Gnd Gnd nfet w=14.4u l=1.8u ad=25.92p pd=108u as=0p ps=0u
+m1018 n13 n7 a_112_n260 Gnd nfet w=14.4u l=1.8u ad=0p pd=0u as=0p ps=0u
+m1019 a_160_n260 n21 Gnd Gnd nfet w=14.4u l=1.8u ad=25.92p pd=108u as=0p ps=0u
+m1020 n9 n7 a_160_n260 Gnd nfet w=14.4u l=1.8u ad=0p pd=0u as=0p ps=0u
+m1021 n7 n7 Gnd Gnd nfet w=3.6u l=1.8u ad=6.48p pd=27.6u as=0p ps=0u
+m1022 a_247_n230 a_247_n230 Gnd Gnd nfet w=9.3u l=0.6u ad=16.74p pd=70.2u as=0p ps=0u
+m1023 n152 n152 a_247_n230 Gnd nfet w=9.3u l=1.8u ad=16.74p pd=70.2u as=0p ps=0u

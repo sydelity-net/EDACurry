@@ -25,7 +25,7 @@ c3 1 s cmodel 0.5pf
 c1 1 2 cmodel1 tc1=25e-3 m=2 dtemp=10
 
 // ============================================================================
-// SPICE Models.
+// SPICE
 // ============================================================================
 // Capacitors
 CBYP 13 0 1UF
@@ -34,3 +34,40 @@ COSC 17 23 10U IC=3V
 // Semiconductor Capacitors
 CLOAD 2 10 10P
 CMOD 3 7 CMODEL L=10u W=1u
+
+C0 Vdd n152 4.3fF
+C1 Vdd n7 5.5fF
+C2 Vdd a_176_n107 3.6fF
+C3 Vdd a_60_n107 3.6fF
+C4 Vdd a_n57_n260 2.7fF
+C5 Vdd n178 15.5fF
+C6 Vdd a_255_n22 3.6fF
+C7 Vdd n21 15.8fF
+C8 n13 a_6_0 3.9fF
+C9 n13 nRb 5.5fF
+C10 Vdd a_6_0 9.7fF
+C11 Vdd nRb 11.2fF
+C12 n13 n9 3.2fF
+C13 Vdd n9 54.8fF
+C14 Vdd Gnd 16.8fF
+C15 Vdd n13 77.2fF
+C16 n21 n7 3.1fF
+C17 nRb a_6_0 3.1fF
+C18 a_160_n260 Gnd 4.8fF
+C19 a_112_n260 Gnd 4.8fF
+C20 a_64_n260 Gnd 4.8fF
+C21 a_247_n230 Gnd 2.9fF
+C22 n152 Gnd 11.0fF
+C23 n7 Gnd 35.9fF
+C24 a_176_n107 Gnd 9.2fF
+C25 a_60_n107 Gnd 9.2fF
+C26 a_n57_n260 Gnd 13.8fF
+C27 n178 Gnd 17.9fF
+C28 a_255_n22 Gnd 6.0fF
+C29 n21 Gnd 30.9fF
+C30 a_6_0 Gnd 23.2fF
+C31 nRb Gnd 22.0fF
+C32 n9 Gnd 20.7fF
+C33 Gnd Gnd 190.2fF
+C34 n13 Gnd 27.0fF
+C35 Vdd Gnd 536.3fF

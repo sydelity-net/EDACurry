@@ -1,0 +1,129 @@
+
+// ============================================================================
+// SPICE
+// ============================================================================
+* nw= NWELL resistor under STI
+.subckt nw n1 n2 l=length w=width
+    .param rsh=1100 tc1=3.48E-03 tc2=1.15E-05 vc1=6.96E-03 vc2=-2.75E-05 t='temper'
+    .param tpar='1.0+tc1*(t-25.0)+tc2*(t-25.0)*(t-25.0)'
+    r1 n1 n2 'rsh*(l/w)*(1+vc1*abs(v(n2,n1))+vc2*v(n2,n1)*v(n2,n1))*tpar'
+.ends nw
+
+* rnps= N+ diffusion resistor salicided
+.subckt rnps n1 n2 l=length w=width
+    .param rsh=4.5 tc1=2.88E-03 tc2=-4.36E-07 vc1=-2.33E-04 vc2=1.29E-04 t='temper'
+    .param tpar='1.0+tc1*(t-25.0)+tc2*(t-25.0)*(t-25.0)'
+    r1 n1 n2 'rsh*(l/w)*(1+vc1*abs(v(n2,n1))+vc2*v(n2,n1)*v(n2,n1))*tpar'
+.ends rnps
+
+* rpps= P+ diffusion resistor salicided
+.subckt rpps n1 n2 l=length w=width
+    .param rsh=4.0 tc1=3.62E-03 tc2=-5.05E-07 vc1=-1.73E-03 vc2=1.37E-03 t='temper'
+    .param tpar='1.0+tc1*(t-25.0)+tc2*(t-25.0)*(t-25.0)'
+    r1 n1 n2 'rsh*(l/w)*(1+vc1*abs(v(n2,n1))+vc2*v(n2,n1)*v(n2,n1))*tpar'
+.ends rpps
+
+* rnpns= N+ Active resistor non-salicided
+.subckt rnpns 1 2 l=length w=width contact=1
+    .param rc=6.4
+    .param rsh=65 dw=0.047u t='temper' trs1=1.55E-03 trs2=-3.51E-07 vrs1=4.00E-04 vrs2=-4.00E-04
+    .param rint=27.608u trt1=5.22E-03 trt2=-2.77E-05 vrt1=-2.68E-03 vrt2=2.18E-02
+    .param trsh='1.0+trs1*(t-25.0)+trs2*(t-25)*(t-25)'
+    .param trint='1.0+trt1*(t-25.0)+trt2*(t-25)*(t-25)'
+    rc1 1 a 'rc/contact'
+    rend1 a b 'rint/(w-dw)*trint*(1.0+vrt1*abs(v(a,b))+vrt2*v(a,b)*v(a,b))'
+    rp b c 'rsh*(l/(w-dw))*trsh*(1.0+vrs1*abs(v(b,c))+vrs2*v(b,c)*v(b,c))'
+    rend2 c d 'rint/(w-dw)*trint*(1.0+vrt1*abs(v(c,d))+vrt2*v(c,d)*v(c,d))'
+    rc2 d 2 'rc/contact'
+.ends rnpns
+
+* rppns= P+ Active resistor non-salicided
+.subckt rppns 1 2 l=length w=width contact=1
+    .param rc=5.4
+    .param rsh=140 dw=0.065u t='temper' trs1=1.44E-03 trs2=3.67E-07 vrs1=5.97E-03 vrs2=-1.10E-03
+    .param rint=190.66u trt1=-2.79e-03 trt2=5.47E-06 vrt1=-1.17E-01 vrt2=1.50E-02
+    .param trsh='1.0+trs1*(t-25.0)+trs2*(t-25)*(t-25)'
+    .param trint='1.0+trt1*(t-25.0)+trt2*(t-25)*(t-25)'
+    rc1 1 a 'rc/contact'
+    rend1 a b 'rint/(w-dw)*trint*(1.0+vrt1*abs(v(a,b))+vrt2*v(a,b)*v(a,b))'
+    rp b c 'rsh*(l/(w-dw))*trsh*(1.0+vrs1*abs(v(b,c))+vrs2*v(b,c)*v(b,c))'
+    rend2 c d 'rint/(w-dw)*trint*(1.0+vrt1*abs(v(c,d))+vrt2*v(c,d)*v(c,d))'
+    rc2 d 2 'rc/contact'
+.ends rppns
+
+* rngps= N+ Poly resistor salicided
+.subckt rngps n1 n2 l=length w=width
+    .param rsh=5.0 tc1=3.22E-03 tc2=-6.61E-07 vc1=-2.00E-04 vc2=9.52E-04 t='temper'
+    .param tpar='1.0+tc1*(t-25.0)+tc2*(t-25.0)*(t-25.0)'
+    r1 n1 n2 'rsh*(l/w)*(1+vc1*abs(v(n2,n1))+vc2*v(n2,n1)*v(n2,n1))*tpar'
+.ends rngps
+
+* rpgps= P+ Poly resistor salicided
+.subckt rpgps n1 n2 l=length w=width
+    .param rsh=5.0 tc1=3.46E-03 tc2=-5.77E-07 vc1=-2.88E-03 vc2=3.13E-03 t='temper'
+    .param tpar='1.0+tc1*(t-25.0)+tc2*(t-25.0)*(t-25.0)'
+    r1 n1 n2 'rsh*(l/w)*(1+vc1*abs(v(n2,n1))+vc2*v(n2,n1)*v(n2,n1))*tpar'
+.ends rpgps
+
+* rngpns= N+ Poly resistor non-salicided
+.subckt rngpns 1 2 l=length w=width contact=1
+    .param rc=4.2
+    .param rsh=190 dw=0.062u t='temper' trs1=-8.99E-04 trs2=2.07E-06 vrs1=-1.34E-04 vrs2=8.71e-04
+    .param rint=48.03u trt1=9.68E-04 trt2=-3.50E-05 vrt1=-3.11E-01 vrt2=-2.31E-02
+    .param trsh='1.0+trs1*(t-25.0)+trs2*(t-25)*(t-25)'
+    .param trint='1.0+trt1*(t-25.0)+trt2*(t-25)*(t-25)'
+    rc1 1 a 'rc/contact'
+    rend1 a b 'rint/(w-dw)*trint*(1.0+vrt1*abs(v(a,b))+vrt2*v(a,b)*v(a,b))'
+    rp b c 'rsh*(l/(w-dw))*trsh*(1.0+vrs1*abs(v(b,c))+vrs2*v(b,c)*v(b,c))'
+    rend2 c d 'rint/(w-dw)*trint*(1.0+vrt1*abs(v(c,d))+vrt2*v(c,d)*v(c,d))'
+    rc2 d 2 'rc/contact'
+.ends rngpns
+
+* rpgpns= P+ Poly resistor non-salicided
+.subckt rpgpns 1 2 l=length w=width contact=1
+    .param rc=4
+    .param rsh=160 dw=0.074u t='temper' trs1=7.42E-04 trs2=1.13E-06 vrs1=1.13E-04 vrs2=-7.51E-04
+    .param rint=124.134u trt1=-1.16E-03 trt2=-1.19E-06 vrt1=-5.59E-04 vrt2=4.61E-02
+    .param trsh='1.0+trs1*(t-25.0)+trs2*(t-25)*(t-25)'
+    .param trint='1.0+trt1*(t-25.0)+trt2*(t-25)*(t-25)'
+    rc1 1 a 'rc/contact'
+    rend1 a b 'rint/(w-dw)*trint*(1.0+vrt1*abs(v(a,b))+vrt2*v(a,b)*v(a,b))'
+    rp b c 'rsh*(l/(w-dw))*trsh*(1.0+vrs1*abs(v(b,c))+vrs2*v(b,c)*v(b,c))'
+    rend2 c d 'rint/(w-dw)*trint*(1.0+vrt1*abs(v(c,d))+vrt2*v(c,d)*v(c,d))'
+    rc2 d 2 'rc/contact'
+.ends rpgpns
+
+* rm1= Metal 1 resistor
+.subckt rm1 n1 n2 l=length w=width
+    .param rsh=0.08 tc1=3.37E-03 tc2=9.00E-07 vc1=0 vc2=0 t='temper'
+    .param tpar='1.0+tc1*(t-25.0)+tc2*(t-25.0)*(t-25.0)'
+    r1 n1 n2 'rsh*(l/w)*(1+vc1*abs(v(n2,n1))+vc2*v(n2,n1)*v(n2,n1))*tpar'
+.ends rm1
+
+* rm2= Metal 2 resistor
+.subckt rm2 n1 n2 l=length w=width
+    .param rsh=0.06 tc1=2.66E-03 tc2=3.83E-06 vc1=0 vc2=0 t='temper'
+    .param tpar='1.0+tc1*(t-25.0)+tc2*(t-25.0)*(t-25.0)'
+    r1 n1 n2 'rsh*(l/w)*(1+vc1*abs(v(n2,n1))+vc2*v(n2,n1)*v(n2,n1))*tpar'
+.ends rm2
+
+* rm3= Metal 3 resistor
+.subckt rm3 n1 n2 l=length w=width
+    .param rsh=0.06 tc1=2.66E-03 tc2=3.83E-06 vc1=0 vc2=0 t='temper'
+    .param tpar='1.0+tc1*(t-25.0)+tc2*(t-25.0)*(t-25.0)'
+    r1 n1 n2 'rsh*(l/w)*(1+vc1*abs(v(n2,n1))+vc2*v(n2,n1)*v(n2,n1))*tpar'
+.ends rm3
+
+* rm4= Metal 4 resistor
+.subckt rm4 n1 n2 l=length w=width
+    .param rsh=0.06 tc1=2.66E-03 tc2=3.83E-06 vc1=0 vc2=0 t='temper'
+    .param tpar='1.0+tc1*(t-25.0)+tc2*(t-25.0)*(t-25.0)'
+    r1 n1 n2 'rsh*(l/w)*(1+vc1*abs(v(n2,n1))+vc2*v(n2,n1)*v(n2,n1))*tpar'
+.ends rm4
+
+* rm5= Metal 5 resistor
+.subckt rm5 n1 n2 l=length w=width
+    .param rsh=0.04 tc1=3.68E-03 tc2=-1.46E-06 vc1=0 vc2=0 t='temper'
+    .param tpar='1.0+tc1*(t-25.0)+tc2*(t-25.0)*(t-25.0)'
+    r1 n1 n2 'rsh*(l/w)*(1+vc1*abs(v(n2,n1))+vc2*v(n2,n1)*v(n2,n1))*tpar'
+.ends rm5

@@ -57,3 +57,17 @@ Y9 LDTL 1 2 0 3 4 0
 // Lossy Transmission Line - W Model
 // Uxx P1...PN PGNDin PN+1...P2N PGNDout UNAME L=length [SAVEFIT=val]
 //============================================================================
+
+// ============================================================================
+// SPICE
+// ============================================================================
+// Lossless Transmission Lines
+T1 1 0 2 0 Z0=50 TD=10NS
+
+// Lossy Transmission Lines
+O23 1 0 2 0 LOSSYMOD
+OCONNECT 10 5 20 5 INTERCONNECT
+
+// Uniform Distributed RC Lines (lossy)
+U1 1 2 0 URCMOD L=50U
+URC2 1 12 2 UMODL l=1MIL N=6

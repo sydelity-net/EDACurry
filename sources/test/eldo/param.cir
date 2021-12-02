@@ -1,0 +1,9 @@
+// ============================================================================
+// SPICE
+// ============================================================================
+.param w=5.7u l=57.0 rsquare=1120 rsh=0.04 tc1=3.68E-03 tc2=-1.46E-06 vc1=0 vc2=0 t='temper' tpar='1.0+tc1*(t-25.0)+tc2*(t-25.0)*(t-25.0)' rsh=1100 tc1=3.48E-03 tc2=1.15E-05 vc1=6.96E-03 vc2=-2.75E-05 t='temper' tpar='1.0+tc1*(t-25.0)+tc2*(t-25.0)*(t-25.0)'
+rc1 1 a 'rc/contact'
+rend1 a b 'rint/(w-dw)*trint*(1.0+vrt1*abs(v(a,b))+vrt2*v(a,b)*v(a,b))'
+rp b c 'rsh*(l/(w-dw))*trsh*(1.0+vrs1*abs(v(b,c))+vrs2*v(b,c)*v(b,c))'
+rend2 c d 'rint/(w-dw)*trint*(1.0+vrt1*abs(v(c,d))+vrt2*v(c,d)*v(c,d))'
+rc2 d 2 'rc/contact'

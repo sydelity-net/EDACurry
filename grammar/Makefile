@@ -43,6 +43,15 @@ generate_cpp:
 	@mv -vf g4files/*.cpp ../sources/src/antlr4parser/
 
 # -----------------------------------------------------------------------------
+# Targets for compiling java parsers
+# -----------------------------------------------------------------------------
+compile:
+	@echo "Compiling JAVA parser..."
+	javac -cp antlr-4.7.1-complete.jar parser_java/*.java
+	@echo "Use the parser with:"
+	@echo "java -cp ${PWD}/antlr-4.7.1-complete.jar:${CLASSPATH}:${PWD}/parser_java/ org.antlr.v4.gui.TestRig ELDO netlist"
+
+# -----------------------------------------------------------------------------
 # Cleaning routines.
 # -----------------------------------------------------------------------------
 clean:
