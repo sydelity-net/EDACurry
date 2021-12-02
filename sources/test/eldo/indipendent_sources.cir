@@ -1,0 +1,27 @@
+// ============================================================================
+// SPICE Models.
+// ============================================================================
+// Independent Sources
+VCC 10 0 DC 6
+VIN 13 2 0.001 AC 1 SIN(0 1 1MEG)
+VMEAS 12 9
+VCARRIER 1 0 DISTOF1 0.1 -90.0
+VMODULATOR 2 0 DISTOF2 0.01
+
+ISRC 23 21 AC 0.333 45.0 SFFM(0 1 10K 5 1K)
+IIN1 1 5 AC 1 DISTOF1 DISTOF2 0.001
+
+// Pulse
+VIN 3 0 PULSE(-1 1 2NS 2NS 2NS 50NS 100NS)
+
+// Sinusoidal
+VIN 3 0 SIN(0 1 100MEG 1NS 1E10)
+
+// Exponential
+VIN 3 0 EXP(-4 -1 2NS 30NS 60NS 40NS)
+
+// Piece-Wise Linear
+VCLOCK 7 5 PWL(0 -7 10NS -7 11NS -3 17NS -3 18NS -7 50NS -7)
+
+// Single-Frequency FM
+V1 12 0 SFFM(0 1M 20K 5 1K)

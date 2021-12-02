@@ -182,6 +182,15 @@ void EldoBackend::visit(const structure::Parameter *e)
                     ss << ' ';
             }
         }
+    } else if (e->getType() == param_list) {
+        ss << e->getName() << "(";
+        auto table = dynamic_cast<const structure::ValueList *>(e->getValue());
+        for (size_t i = 0; table && (i < table->values.size()); ++i) {
+            table->values[i]->accept(this);
+            if (i < (table->values.size() - 1))
+                ss << ' ';
+        }
+        ss << ')';
     }
 }
 

@@ -179,6 +179,7 @@ enum ParameterType {
     param_none,       ///< No type of parameter.
     param_assign,     ///< Normal parameter assign.
     param_tabular,    ///< A tabular parameter.
+    param_list,       ///< A list of values.
     param_arithmetic, ///< An arithmetic expression.
 };
 

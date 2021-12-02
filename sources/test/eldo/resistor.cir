@@ -38,3 +38,14 @@ r12 1 2 value={1k + 2k*v(1)} ACDERFUNC=1
 r13 n1 n19 rmodel 2.5k
 r1 n3 n4 mod1 tc1=0.001
 r2 n1 n2 r rmodel tc1=0.05
+
+// ============================================================================
+// SPICE Models.
+// ============================================================================
+// Resistors
+R1 1 2 100
+RC1 12 17 1K
+
+// Semiconductor Resistors
+RLOAD 2 10 10K
+RMOD 3 7 RMODEL L=10u W=1u

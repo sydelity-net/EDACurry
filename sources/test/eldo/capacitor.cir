@@ -23,3 +23,14 @@ c4 1 0 value={1.0e-9 * v(2, 0)}
 c5 NP NN TES MOD=MNAME 0.5pf 1pf M=1.0 L=2nm W=1nm T=27 DTEMP=0.0 TC1=0.0 TC2=0.0 TC3=0.0 IC=5
 c3 1 s cmodel 0.5pf
 c1 1 2 cmodel1 tc1=25e-3 m=2 dtemp=10
+
+// ============================================================================
+// SPICE Models.
+// ============================================================================
+// Capacitors
+CBYP 13 0 1UF
+COSC 17 23 10U IC=3V
+
+// Semiconductor Capacitors
+CLOAD 2 10 10P
+CMOD 3 7 CMODEL L=10u W=1u

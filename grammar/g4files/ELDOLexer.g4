@@ -154,6 +154,7 @@ KEY          : [kK][eE][yY];
 NONOISE      : [nN][oO][nN][oO][iI][sS][eE];
 TABLE        : [tT][aA][bB][lL][eE];
 PWL          : [pP][wW][lL];
+EXP          : [eE][xX][pP];
 SIN          : [sS][iI][nN];
 SFFM         : [sS][fF][fF][mM];
 PULSE        : [pP][uU][lL][sS][eE];
@@ -334,18 +335,18 @@ ARROW               : MINUS GREATER_THAN;
 // ----------------------------------------------------------------------------
 // NUMERICAL VALUES
 // ----------------------------------------------------------------------------
-fragment DIGIT      : [0-9];
-fragment HEXDIGIT   : '0x' ('0'..'9' | 'a'..'f' | 'A'..'F')+;
-fragment OCTALDIGIT : '0' '0'..'7'+;
-fragment EXP        : ('E' | 'e') ('+' | '-')? INT ;
-fragment INT        : ('+' | '-')? DIGIT+ [Ll]? LETTER?;
-fragment FLOAT      : ('+' | '-')? DIGIT+ '.' DIGIT* EXP? [Ll]? LETTER?
-                    | ('+' | '-')? DIGIT+ EXP? [Ll]? LETTER?
-                    | ('+' | '-')? '.' DIGIT+ EXP? [Ll]? LETTER?;
-fragment HEX        : '0' ('x'|'X') HEXDIGIT+ [Ll]? ;
-PERCENTAGE          : FLOAT '%'  ;
-COMPLEX             : INT 'i' | FLOAT 'i' ;
-NUMBER              : INT | FLOAT | HEX;
+fragment DIGIT       : [0-9];
+fragment HEXDIGIT    : '0x' ('0'..'9' | 'a'..'f' | 'A'..'F')+;
+fragment OCTALDIGIT  : '0' '0'..'7'+;
+fragment EXPONENTIAL : ('E' | 'e') ('+' | '-')? INT ;
+fragment INT         : ('+' | '-')? DIGIT+ [Ll]? LETTER?;
+fragment FLOAT       : ('+' | '-')? DIGIT+ '.' DIGIT* EXPONENTIAL? [Ll]? LETTER?
+                     | ('+' | '-')? DIGIT+ EXPONENTIAL? [Ll]? LETTER?
+                     | ('+' | '-')? '.' DIGIT+ EXPONENTIAL? [Ll]? LETTER?;
+fragment HEX         : '0' ('x'|'X') HEXDIGIT+ [Ll]? ;
+PERCENTAGE           : FLOAT '%'  ;
+COMPLEX              : INT 'i' | FLOAT 'i' ;
+NUMBER               : INT | FLOAT | HEX;
 
 // ----------------------------------------------------------------------------
 // STRINGS

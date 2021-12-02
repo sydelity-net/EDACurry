@@ -1199,7 +1199,31 @@ Any ELDOFrontend::visitComponent_table(ELDOParser::Component_tableContext *ctx)
 
 Any ELDOFrontend::visitComponent_value_list(ELDOParser::Component_value_listContext *ctx)
 {
-    return visitChildren(ctx);
+    std::string name;
+    Any result;
+    if (ctx->PULSE())
+        name = ctx->PULSE()->toString();
+    else if (ctx->SIN())
+        name = ctx->SIN()->toString();
+    else if (ctx->SFFM())
+        name = ctx->SFFM()->toString();
+    else if (ctx->PULSE())
+        name = ctx->PULSE()->toString();
+    else if (ctx->PWL())
+        name = ctx->PWL()->toString();
+    else if (ctx->EXP())
+        name = ctx->EXP()->toString();
+    else
+        std::cerr << "Cannot identify the type of value list.\n";
+    auto table_list = _factory.valueList(dlm_round, {});
+    this->push(table_list);
+    for (size_t i = 0; i < ctx->expression().size(); ++i) {
+        result = visitChildren(ctx->expression(i));
+    }
+    this->pop();
+    auto parameter = _factory.parameter(name, table_list, param_list, nullptr, false);
+    this->add_to_parent(parameter);
+    return result;
 }
 
 Any ELDOFrontend::visitInterp_type(ELDOParser::Interp_typeContext *ctx)

@@ -32,3 +32,21 @@ L1 1 2 MOD=foo
 l7 4 3 0.7m
 l8 5 9 0.4m
 k12 l7 l8 0.2
+
+// ============================================================================
+// SPICE Models.
+// ============================================================================
+// Inductors
+LLINK 42 69 1UH
+LSHUNT 23 51 10U IC=15.7MA
+
+// Coupled (Mutual) Inductors
+K43 LAA LBB 0.999
+KXFRMR L1 L2 0.87
+
+// Switches
+s1 1 2 3 4 switch1 ONs2 5 6 3 0 sm2 off
+Switch1 1 2 10 0 smodel1
+w1 1 2 vclock switchmod1
+W2 3 0 vramp sm1 ON
+wreset 5 6 vclck lossyswitch OFF

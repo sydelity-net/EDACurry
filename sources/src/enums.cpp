@@ -511,17 +511,17 @@ double letter_to_scaling_factor(char e)
         return 1e+9;
     if (e == 'M')
         return 1e+6;
-    if (e == 'k')
+    if ((e == 'k') || (e == 'K'))
         return 1e+3;
     if (e == 'm')
         return 1e-3;
-    if (e == 'u')
+    if ((e == 'u') || (e == 'U'))
         return 1e-6;
-    if (e == 'n')
+    if ((e == 'n') || (e == 'N'))
         return 1e-9;
     if (e == 'p')
         return 1e-12;
-    if (e == 'f')
+    if ((e == 'f') || (e == 'F'))
         return 1e-15;
     if (e == 'a')
         return 1e-18;
@@ -538,6 +538,8 @@ std::string parameter_type_to_plain_string(ParameterType e)
         return "param_assign";
     if (e == param_tabular)
         return "param_tabular";
+    if (e == param_list)
+        return "param_list";
     if (e == param_arithmetic)
         return "param_arithmetic";
     return "param_none";
@@ -549,6 +551,8 @@ ParameterType plain_string_to_parameter_type(const std::string &s)
         return param_assign;
     if (s == "param_tabular")
         return param_tabular;
+    if (s == "param_list")
+        return param_list;
     if (s == "param_arithmetic")
         return param_arithmetic;
     return param_none;

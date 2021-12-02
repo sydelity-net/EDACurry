@@ -1,0 +1,20 @@
+// ============================================================================
+// SPICE Models.
+// ============================================================================
+// Linear Voltage-Controlled Current Sources
+G1 2 0 5 0 0.1MMHO
+
+// Linear Voltage-Controlled Voltage Sources
+E1 2 3 14 1 2.0
+
+// Linear Current-Controlled Current Sources
+F1 13 5 VSENS 5
+
+// Linear Current-Controlled Voltage Sources
+HX 5 17 VZ 0.5K
+
+// Non-linear Dependent Sources
+B1 0 1 I=cos(v(1))+sin(v(2))
+B1 0 1 V=ln(cos(log(v(1,2)^2)))-v(3)^4+v(2)^v(1)
+B1 3 4 I=17
+B1 3 4 V=exp(pi^i(vdd))

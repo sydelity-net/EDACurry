@@ -877,7 +877,7 @@ component_coupling_list
 component_table
     : TABLE expression EQUAL expression_list+;
 component_value_list
-	: ( PWL | SIN | SFFM | PULSE ) OPEN_ROUND expression+ CLOSE_ROUND;
+	: ( PWL | SIN | SFFM | PULSE | EXP ) OPEN_ROUND expression+ CLOSE_ROUND;
 interp_type
     : INTERP EQUAL ID;
 
