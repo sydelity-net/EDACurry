@@ -1467,7 +1467,7 @@ Any ELDOFrontend::visitExpression(ELDOParser::ExpressionContext *ctx)
         return this->advance_visit(
             ctx,
             _factory.expression(
-                op_none,
+                to_operator(ctx->expression_operator()),
                 nullptr,
                 nullptr));
     }
@@ -1476,7 +1476,7 @@ Any ELDOFrontend::visitExpression(ELDOParser::ExpressionContext *ctx)
 
 Any ELDOFrontend::visitExpression_unary(ELDOParser::Expression_unaryContext *ctx)
 {
-    return this->advance_visit(ctx, _factory.expressionUnary(op_none, nullptr));
+    return this->advance_visit(ctx, _factory.expressionUnary(ctx->PLUS() ? op_plus : op_minus, nullptr));
 }
 
 Any ELDOFrontend::visitExpression_function_call(ELDOParser::Expression_function_callContext *ctx)
@@ -1489,14 +1489,15 @@ Any ELDOFrontend::visitExpression_function_call(ELDOParser::Expression_function_
     } else {
         name = ctx->MODEL()->toString();
     }
-    auto function_call = _factory.functionCall(name, {});
-    this->push(function_call);
-    for (size_t i = 0; i < ctx->expression().size(); ++i) {
-        this->visitChildren(ctx->expression(i));
-    }
-    this->pop();
-    this->add_to_parent(function_call);
-    return Any();
+    return this->advance_visit(ctx, _factory.functionCall(name, {}));
+    //auto function_call = _factory.functionCall(name, {});
+    //this->push(function_call);
+    //for (size_t i = 0; i < ctx->expression().size(); ++i) {
+    //    this->visitExpression(ctx->expression(i));
+    //}
+    //this->pop();
+    //this->add_to_parent(function_call);
+    //return Any();
 }
 
 Any ELDOFrontend::visitExpression_list(ELDOParser::Expression_listContext *ctx)
@@ -1506,22 +1507,6 @@ Any ELDOFrontend::visitExpression_list(ELDOParser::Expression_listContext *ctx)
 
 Any ELDOFrontend::visitExpression_operator(ELDOParser::Expression_operatorContext *ctx)
 {
-    auto parent = this->back();
-    assert(parent && "There is no parent!");
-    auto binary = utility::to<structure::Expression>(parent);
-    if (binary) {
-        binary->setOperator(to_operator(ctx));
-    } else {
-        auto unary = utility::to<structure::ExpressionUnary>(parent);
-        if (unary) {
-            unary->setOperator(to_operator(ctx));
-        } else {
-            auto line = ctx->getStart()->getLine();
-            _error(
-                "Parent node is not a binary/unary operator!\nLine : %d\nParent : %s\n",
-                line, parent->toString().c_str());
-        }
-    }
     return visitChildren(ctx);
 }
 

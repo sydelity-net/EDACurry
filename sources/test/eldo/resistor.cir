@@ -31,7 +31,7 @@ r5 n3 n4 3.3k
 r6 n1 n2 rval
 r7 1 2 value={2k*v(3,4)*i(v5)}
 rg8 4 5 table v(p3n)=(0, 1e11) (1v, 1e3)
-r9 1 2 value={50*sqrt(1+(FREQ/10e6))}
+r9 1 2 value={50*sqrt(+(FREQ/10e6))}
 r10 1 2 ac=3 value={2k * v(3,4) * i(v5)}
 r11 3 4 value={50*sqrt(1+(FREQ/10e6))} tc1=0.001 tc2=0.004 tc3=0.003
 r12 1 2 value={1k + 2k*v(1)} ACDERFUNC=1
