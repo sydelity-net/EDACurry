@@ -19,7 +19,7 @@ EldoBackend::EldoBackend()
 void EldoBackend::visit(const structure::Circuit *e)
 {
     if (e->nodes) {
-        ss << "global";
+        ss << ".global";
         for (auto node : e->nodes) {
             ss << ' ';
             node->accept(this);
@@ -27,7 +27,7 @@ void EldoBackend::visit(const structure::Circuit *e)
         ss << '\n';
     }
     if (e->parameters) {
-        ss << "param";
+        ss << ".param";
         for (auto parameter : e->parameters) {
             ss << ' ';
             parameter->accept(this);
@@ -88,7 +88,14 @@ void EldoBackend::visit(const structure::Control *e)
         ss << ".print";
     } else if (e->getControlType() == ctrl_plot) {
         ss << ".plot";
+    } else if (e->getControlType() == ctrl_probe) {
+        ss << ".probe";
+    } else if (e->getControlType() == ctrl_temp) {
+        ss << ".temp";
+    } else if (e->getControlType() == ctrl_meas) {
+        ss << ".meas";
     }
+
     if (!e->getName().empty())
         ss << " " << e->getName();
     for (const auto &parameter : e->parameters) {
@@ -228,9 +235,11 @@ void EldoBackend::visit(const structure::Parameter *e)
     } else if (e->getType() == param_no_equal) {
         if (e->getLeft())
             e->getLeft()->accept(this);
-        ss << " ";
-        if (e->getRight())
+        if (e->getRight()) {
+            if (e->getLeft())
+                ss << " ";
             e->getRight()->accept(this);
+        }
     }
 }
 

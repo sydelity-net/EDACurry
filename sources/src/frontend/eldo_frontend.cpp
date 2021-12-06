@@ -1007,11 +1007,15 @@ Any ELDOFrontend::visitSave_when(ELDOParser::Save_whenContext *ctx)
     if (ctx->ID()) {
         this->add_to_parent(
             _factory.parameter(
-                _factory.identifier("when"), _factory.identifier(ctx->ID()->toString())));
+                _factory.identifier("when"),
+                _factory.identifier(ctx->ID()->toString()),
+                param_assign, nullptr, true));
     } else if (ctx->END()) {
         this->add_to_parent(
             _factory.parameter(
-                _factory.identifier("when"), _factory.identifier(ctx->END()->toString())));
+                _factory.identifier("when"),
+                _factory.identifier(ctx->END()->toString()),
+                param_assign, nullptr, true));
     }
     return visitChildren(ctx);
 }
@@ -1136,7 +1140,12 @@ Any ELDOFrontend::visitFfile_storage_format(ELDOParser::Ffile_storage_formatCont
 
 Any ELDOFrontend::visitProbe(ELDOParser::ProbeContext *ctx)
 {
-    return visitChildren(ctx);
+    return this->advance_visit(
+        ctx,
+        _factory.control(
+            "",
+            ctrl_probe,
+            { _factory.parameter(nullptr, _factory.identifier(ctx->ID()->toString())) }));
 }
 
 Any ELDOFrontend::visitDefwave(ELDOParser::DefwaveContext *ctx)
@@ -1146,7 +1155,7 @@ Any ELDOFrontend::visitDefwave(ELDOParser::DefwaveContext *ctx)
 
 Any ELDOFrontend::visitTemp(ELDOParser::TempContext *ctx)
 {
-    auto ctrl = _factory.control(ctx->TEMP_SET() ? ctx->TEMP_SET()->toString() : "", ctrl_temp, {});
+    auto ctrl = _factory.control("", ctrl_temp, {});
     for (size_t i = 0; i < ctx->NUMBER().size(); ++i) {
         ctrl->parameters.push_back(_factory.parameter(nullptr, to_number<double>(ctx->NUMBER(i))));
     }
@@ -1155,7 +1164,7 @@ Any ELDOFrontend::visitTemp(ELDOParser::TempContext *ctx)
 
 Any ELDOFrontend::visitMeas(ELDOParser::MeasContext *ctx)
 {
-    auto ctrl = _factory.control(ctx->MEAS() ? ctx->MEAS()->toString() : "", ctrl_meas, {});
+    auto ctrl = _factory.control("", ctrl_meas, {});
     return this->advance_visit(ctx, ctrl);
 }
 

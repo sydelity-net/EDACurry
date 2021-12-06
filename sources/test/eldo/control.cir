@@ -1,5 +1,5 @@
 // SAVE
-.save i(vin) input output
+.save DC 
 
 // PRINT
 .print AC VM(2)
@@ -16,6 +16,10 @@
 .plot AC VM(5) VM(31, 24) VDB(5) VP(5)
 .plot DISTO HD2 HD3(R) SIM2
 .plot TRAN V(5, 3) V(4) (0, 5) V(7) (0, 10)
+
+// PROBE
+.probe v
+.probe i
 
 // MEAS
 .MEAS  VoutNoLoadVimin FIND v(VREF) at 10m
