@@ -449,6 +449,38 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitMeas_label_name(ELDOParser::Meas_label_nameContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitMeas_configuration(ELDOParser::Meas_configurationContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitMeas_find(ELDOParser::Meas_findContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitMeas_at(ELDOParser::Meas_atContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitMeas_when(ELDOParser::Meas_whenContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitMeas_derivative(ELDOParser::Meas_derivativeContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitMeas_param(ELDOParser::Meas_paramContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitMeas_trig(ELDOParser::Meas_trigContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitMeas_targ(ELDOParser::Meas_targContext *ctx) override {
     return visitChildren(ctx);
   }

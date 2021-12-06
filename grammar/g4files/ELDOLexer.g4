@@ -170,6 +170,10 @@ FIND         : [fF][iI][nN][dD];
 PP           : [pP][pP];
 TRIG         : [tT][rR][iI][gG];
 TARG         : [tT][aA][rR][gG];
+AT           : [aA][tT];
+DERIVATIVE   : [dD][eE][rR][iI][vV][aA][tT][iI][vV][eE];
+VECT         : [vV][eE][cC][tT];
+CATVECT      : [cC][aA][tT][vV][eE][cC][tT];
 //MACRO   : [mM][aA][cC][rR][oO];
 //EL          : [eE][lL];
 //DCFEED      : [dD][cC][fF][eE][eE][dD];
@@ -339,14 +343,14 @@ fragment DIGIT       : [0-9];
 fragment HEXDIGIT    : '0x' ('0'..'9' | 'a'..'f' | 'A'..'F')+;
 fragment OCTALDIGIT  : '0' '0'..'7'+;
 fragment EXPONENTIAL : ('E' | 'e') ('+' | '-')? INT ;
-fragment INT         : ('+' | '-')? DIGIT+ LETTER? LETTER? LETTER?;
-fragment FLOAT       : ('+' | '-')? DIGIT+ '.' DIGIT* EXPONENTIAL? LETTER? LETTER? LETTER?
-                     | ('+' | '-')? DIGIT+ EXPONENTIAL? LETTER? LETTER? LETTER?
-                     | ('+' | '-')? '.' DIGIT+ EXPONENTIAL? LETTER? LETTER? LETTER?;
-fragment HEX         : '0' ('x'|'X') HEXDIGIT+ LETTER? LETTER?;
+fragment INT         : ('+' | '-')? DIGIT+;
+fragment FLOAT       : ('+' | '-')? DIGIT+ '.' DIGIT* EXPONENTIAL?
+                     | ('+' | '-')? DIGIT+ EXPONENTIAL?
+                     | ('+' | '-')? '.' DIGIT+ EXPONENTIAL?;
+fragment HEX         : '0' ('x'|'X') HEXDIGIT+;
 PERCENTAGE           : FLOAT '%'  ;
 COMPLEX              : INT 'i' | FLOAT 'i' ;
-NUMBER               : INT | FLOAT | HEX;
+NUMBER               : (INT | FLOAT | HEX) LETTER? LETTER? LETTER? LETTER?;
 
 // ----------------------------------------------------------------------------
 // STRINGS

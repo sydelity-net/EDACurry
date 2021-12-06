@@ -16,35 +16,38 @@
 namespace edacurry::structure
 {
 /// @brief Represent a parameter.
-class Parameter : public Object, public features::NamedObject, public features::ObjectReference {
+class Parameter : public Object, public features::ObjectReference {
 public:
     /// @brief Construct a new Parameter object.
-    /// @param value the initial value of the parameter.
+    /// @param left the right value of the parameter.
+    /// @param right the initial right value of the parameter.
     /// @param type the parameter's type.
     /// @param reference The reference to another parameter.
-    /// @param hide_name hide the name during code generation.
-    Parameter(Value *value, ParameterType type = param_assign, structure::Object *reference = nullptr, bool hide_name = false);
-
-    /// @brief Construct a new Parameter object.
-    /// @param name  the name of the parameter.
-    /// @param value the initial value of the parameter.
-    /// @param type the parameter's type.
-    /// @param reference The reference to another parameter.
-    /// @param hide_name hide the name during code generation.
-    Parameter(const std::string &name, Value *value, ParameterType type = param_assign, structure::Object *reference = nullptr, bool hide_name = false);
+    /// @param hide_left hide the left-hand side value during code generation.
+    Parameter(Value *left, Value *right, ParameterType type = param_assign, structure::Object *reference = nullptr, bool hide_left = false);
 
     /// @brief Destroy the Parameter object.
     ~Parameter() override;
 
     /// @brief Returns the initial value of the parameter.
     /// @return The initial value of the parameter.
-    Value *getValue() const;
+    Value *getRight() const;
 
     /// @brief Sets the initial value of the data parameter.
     /// @param value the initial value of the data parameter to be set.
     /// @return The old initial value of the data parameter if it is
     /// different from the new one, nullptr otherwise.
-    Value *setValue(Value *value);
+    Value *setRight(Value *value);
+
+    /// @brief Returns the initial value of the parameter.
+    /// @return The initial value of the parameter.
+    Value *getLeft() const;
+
+    /// @brief Sets the initial value of the data parameter.
+    /// @param value the initial value of the data parameter to be set.
+    /// @return The old initial value of the data parameter if it is
+    /// different from the new one, nullptr otherwise.
+    Value *setLeft(Value *value);
 
     /// @brief Sets the type of parameter.
     /// @param type the parameter's type.
@@ -60,18 +63,18 @@ public:
         return _type;
     }
 
-    /// @brief Sets if the name is hidden during code generation.
-    /// @param hide_name if the name should be hidden.
-    inline void setHideName(bool hide_name)
+    /// @brief Sets if the left-hand side value is hidden during code generation.
+    /// @param hide_left if the left-hand side value should be hidden.
+    inline void setHideLeft(bool hide_left)
     {
-        _hide_name = hide_name;
+        _hide_left = hide_left;
     }
 
-    /// @brief Sets if the name is hidden during code generation.
-    /// @return if the name should be hidden.
-    inline bool getHideName() const
+    /// @brief Sets if the left-hand side value is hidden during code generation.
+    /// @return if the left-hand side value should be hidden.
+    inline bool getHideLeft() const
     {
-        return _hide_name;
+        return _hide_left;
     }
 
     /// @brief Provides a string representation of the object for **debugging** purposes.
@@ -86,12 +89,14 @@ public:
     }
 
 private:
-    /// The initial value of the parameter.
-    Value *_value;
+    /// The value on the left of the parameter.
+    Value *_left;
+    /// The value on the right of the parameter.
+    Value *_right;
     /// The type of parameter.
     ParameterType _type;
-    /// Hide the name during code generation.
-    bool _hide_name;
+    /// Hide the left-hand side value during code generation.
+    bool _hide_left;
 };
 
 } // namespace edacurry::structure

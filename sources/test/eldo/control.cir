@@ -16,3 +16,20 @@
 .plot AC VM(5) VM(31, 24) VDB(5) VP(5)
 .plot DISTO HD2 HD3(R) SIM2
 .plot TRAN V(5, 3) V(4) (0, 5) V(7) (0, 10)
+
+// MEAS
+.MEAS  VoutNoLoadVimin FIND v(VREF) at 10m
+.MEAS  VoutNoLoadVimax FIND v(VREF) at 20m
+.MEAS  Vout__LoadVinom FIND v(VREF) at 40m
+.MEAS  VoutNoLoadVinom FIND v(VREF) at 30m                                                 Lbound=1.184 Ubound=1.214
+.MEAS  PSRR%           PARAM '100*(VoutNoLoadVimax - VoutNoLoadVimin)/VoutNoLoadVimax'     Lbound=0.1   Ubound=0.2
+.MEAS  Rout_kohm       PARAM '1000 * (VoutNoLoadVinom - Vout__LoadVinom)/VoutNoLoadVinom'  Lbound=20    Ubound=60
+.MEAS  IddqNoLoad      FIND i(VDDI) at 10m                                                 Lbound=-40u  Ubound=-10u
+
+.MEAS  risehyst  FIND  v(inp) WHEN v(out) val={vddnom/2} td=1u     
+.MEAS  risedelay TRIG  v(inp) val=1.65 td=21u  TARG  v(out) val=1.65
+.MEAS  falldelay TRIG  v(inp) val=1.65 td=22u  TARG  v(out) val=1.65
+.MEAS  Vhyst     PARAM 'risehyst-fallhyst'                            Lbound=10m   Ubound=30m
+.MEAS  delay     PARAM max(risedelay, falldelay)                      Lbound=0     Ubound=4n
+.MEAS  Idd       FIND  i(VDD)  at 5u                                  Lbound=-700u Ubound=-200u
+.MEAS  Iddq      FIND  i(VDD)  at 0                                   Lbound=-1u   Ubound=0

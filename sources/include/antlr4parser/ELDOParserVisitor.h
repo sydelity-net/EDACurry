@@ -236,6 +236,22 @@ public:
 
     virtual antlrcpp::Any visitMeas_catvect(ELDOParser::Meas_catvectContext *context) = 0;
 
+    virtual antlrcpp::Any visitMeas_label_name(ELDOParser::Meas_label_nameContext *context) = 0;
+
+    virtual antlrcpp::Any visitMeas_configuration(ELDOParser::Meas_configurationContext *context) = 0;
+
+    virtual antlrcpp::Any visitMeas_find(ELDOParser::Meas_findContext *context) = 0;
+
+    virtual antlrcpp::Any visitMeas_at(ELDOParser::Meas_atContext *context) = 0;
+
+    virtual antlrcpp::Any visitMeas_when(ELDOParser::Meas_whenContext *context) = 0;
+
+    virtual antlrcpp::Any visitMeas_derivative(ELDOParser::Meas_derivativeContext *context) = 0;
+
+    virtual antlrcpp::Any visitMeas_param(ELDOParser::Meas_paramContext *context) = 0;
+
+    virtual antlrcpp::Any visitMeas_trig(ELDOParser::Meas_trigContext *context) = 0;
+
     virtual antlrcpp::Any visitMeas_targ(ELDOParser::Meas_targContext *context) = 0;
 
     virtual antlrcpp::Any visitConnect(ELDOParser::ConnectContext *context) = 0;

@@ -542,6 +542,8 @@ std::string parameter_type_to_plain_string(ParameterType e)
         return "param_list";
     if (e == param_arithmetic)
         return "param_arithmetic";
+    if (e == param_no_equal)
+        return "param_no_equal";
     return "param_none";
 }
 
@@ -555,6 +557,8 @@ ParameterType plain_string_to_parameter_type(const std::string &s)
         return param_list;
     if (s == "param_arithmetic")
         return param_arithmetic;
+    if (s == "param_no_equal")
+        return param_no_equal;
     return param_none;
 }
 
@@ -578,6 +582,10 @@ std::string control_type_to_plain_string(ControlType e)
         return "ctrl_chrent";
     if (e == ctrl_defmac)
         return "ctrl_defmac";
+    if (e == ctrl_temp)
+        return "ctrl_temp";
+    if (e == ctrl_meas)
+        return "ctrl_meas";
     return "ctrl_none";
 }
 
@@ -601,6 +609,10 @@ ControlType plain_string_to_control_type(const std::string &s)
         return ctrl_chrent;
     if (s == "ctrl_defmac")
         return ctrl_defmac;
+    if (s == "ctrl_temp")
+        return ctrl_temp;
+    if (s == "ctrl_meas")
+        return ctrl_meas;
     return ctrl_none;
 }
 } // namespace edacurry

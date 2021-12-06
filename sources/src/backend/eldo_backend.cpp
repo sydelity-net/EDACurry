@@ -191,21 +191,20 @@ void EldoBackend::visit(const structure::Number<double> *e)
 void EldoBackend::visit(const structure::Parameter *e)
 {
     if ((e->getType() == param_assign) || (e->getType() == param_arithmetic)) {
-        if (!e->getName().empty() && !e->getHideName())
-            ss << e->getName();
-        if (e->getValue()) {
-            if (!e->getName().empty() && !e->getHideName()) {
+        if (e->getLeft() && !e->getHideLeft())
+            e->getLeft()->accept(this);
+        if (e->getRight()) {
+            if (e->getLeft() && !e->getHideLeft())
                 ss << '=';
-            }
             if (e->getType() == param_arithmetic)
                 ss << '{';
-            e->getValue()->accept(this);
+            e->getRight()->accept(this);
             if (e->getType() == param_arithmetic)
                 ss << '}';
         }
     } else if (e->getType() == param_tabular) {
         ss << "table ";
-        auto table = dynamic_cast<const structure::ValueList *>(e->getValue());
+        auto table = dynamic_cast<const structure::ValueList *>(e->getRight());
         if (table && (table->values.size() >= 2)) {
             for (size_t i = 0; i < table->values.size(); ++i) {
                 table->values[i]->accept(this);
@@ -216,14 +215,22 @@ void EldoBackend::visit(const structure::Parameter *e)
             }
         }
     } else if (e->getType() == param_list) {
-        ss << e->getName() << "(";
-        auto table = dynamic_cast<const structure::ValueList *>(e->getValue());
+        if (e->getLeft())
+            e->getLeft()->accept(this);
+        ss << "(";
+        auto table = dynamic_cast<const structure::ValueList *>(e->getRight());
         for (size_t i = 0; table && (i < table->values.size()); ++i) {
             table->values[i]->accept(this);
             if (i < (table->values.size() - 1))
                 ss << ' ';
         }
         ss << ')';
+    } else if (e->getType() == param_no_equal) {
+        if (e->getLeft())
+            e->getLeft()->accept(this);
+        ss << " ";
+        if (e->getRight())
+            e->getRight()->accept(this);
     }
 }
 

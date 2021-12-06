@@ -772,15 +772,36 @@ temp
 //      .MEAS [ANALYSIS_INFO] [VECT] [CATVECT] label_name PARAM='value'
 //
 meas
-    : MEAS meas_info? meas_vect? meas_catvect? ID (PARAM | FIND | PP | TRIG | ID) expression WHEN? expression? parameter_list? meas_targ? end_of_line;
+    : MEAS meas_info? meas_vect? meas_catvect? meas_label_name meas_configuration+ parameter_list? end_of_line;
 meas_info
     : ID;
 meas_vect
-    : ID;
+    : VECT;
 meas_catvect
+    : CATVECT;
+meas_label_name
     : ID;
+meas_configuration
+    : meas_find
+    | meas_at
+    | meas_when
+    | meas_derivative
+    | meas_param
+    | meas_trig meas_targ;
+meas_find
+    : FIND expression;
+meas_at
+    : AT EQUAL? expression;
+meas_when
+    : WHEN expression;
+meas_derivative
+    : DERIVATIVE expression;
+meas_param
+    : PARAM EQUAL? expression;
+meas_trig
+    : TRIG parameter_list;
 meas_targ
-    : TARG expression parameter_list;
+    : TARG parameter_list;
 
 // ------------------------------------
 // Connect - Connect Two Nodes
@@ -877,7 +898,7 @@ component_coupling_list
 component_table
     : TABLE expression EQUAL expression_list+;
 component_value_list
-	: ( PWL | SIN | SFFM | PULSE | EXP ) OPEN_ROUND expression+ CLOSE_ROUND;
+	: ( PWL | SIN | SFFM | PULSE | EXP ) OPEN_ROUND (expression COMMA?)+ CLOSE_ROUND;
 interp_type
     : INTERP EQUAL ID;
 

@@ -240,6 +240,22 @@ public:
 
     antlrcpp::Any visitMeas_catvect(ELDOParser::Meas_catvectContext *ctx) override;
 
+    antlrcpp::Any visitMeas_label_name(ELDOParser::Meas_label_nameContext *ctx) override;
+
+    antlrcpp::Any visitMeas_configuration(ELDOParser::Meas_configurationContext *ctx) override;
+
+    antlrcpp::Any visitMeas_find(ELDOParser::Meas_findContext *ctx) override;
+
+    antlrcpp::Any visitMeas_at(ELDOParser::Meas_atContext *ctx) override;
+
+    antlrcpp::Any visitMeas_when(ELDOParser::Meas_whenContext *ctx) override;
+
+    antlrcpp::Any visitMeas_derivative(ELDOParser::Meas_derivativeContext *ctx) override;
+
+    antlrcpp::Any visitMeas_param(ELDOParser::Meas_paramContext *ctx) override;
+
+    antlrcpp::Any visitMeas_trig(ELDOParser::Meas_trigContext *ctx) override;
+
     antlrcpp::Any visitMeas_targ(ELDOParser::Meas_targContext *ctx) override;
 
     antlrcpp::Any visitConnect(ELDOParser::ConnectContext *ctx) override;
@@ -337,7 +353,7 @@ public:
     antlrcpp::Any visitExpression_atom(ELDOParser::Expression_atomContext *ctx) override;
 
     antlrcpp::Any visitNode_mapping(ELDOParser::Node_mappingContext *ctx) override;
-    
+
     antlrcpp::Any visitNode(ELDOParser::NodeContext *ctx) override;
 
     antlrcpp::Any visitParameter(ELDOParser::ParameterContext *ctx) override;

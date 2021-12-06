@@ -1,5 +1,13 @@
 # == SET-UP LOGGER ============================================================
 # Import the logging library.
+from enum import Enum
+import re
+import os
+import sys
+import difflib
+from colorama import Fore, Back, Style
+from io import TextIOWrapper
+import edacurry
 import logging
 # Get the C++ declared logger.
 logger = logging.getLogger("edacurry_logger")
@@ -16,14 +24,7 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 # =============================================================================
 # Import the EDACurry library.
-import edacurry
-from io import TextIOWrapper
-from colorama import Fore, Back, Style
-import difflib
-import sys
-import os
-import re
-from enum import Enum
+
 
 class Changes(Enum):
     NONE = 0
@@ -32,7 +33,7 @@ class Changes(Enum):
     ANNOTATION = 3
 
 
-def must_skip_line(line:str) -> bool:
+def must_skip_line(line: str) -> bool:
     return line.startswith('#') or line.startswith('//') or line.startswith('*')
 
 
@@ -41,13 +42,14 @@ def parse_lines(file: TextIOWrapper) -> str:
     for line in file:
         if not must_skip_line(line):
             if re.match(r'^ +\+', line):
-                previous_line :str= lines.pop()
+                previous_line: str = lines.pop()
                 previous_line = previous_line.replace('\n', ' ').replace('  ', ' ')
                 line = previous_line + re.sub(r'^ +\+', '', line)
-            lines.append(line.rstrip().lower())
+            lines.append(re.sub(r' +', ' ', line.rstrip().lower()))
     return lines
 
-def handle_print(line : str, line_number : int, line_type : Changes, previous_type : Changes) -> Changes:
+
+def handle_print(line: str, line_number: int, line_type: Changes, previous_type: Changes) -> Changes:
     # If this line is only in b, print the line number and the text on the line
     if line_type == Changes.EXTRA:
         print(Fore.YELLOW, "%3d" % line_number, line, Fore.RESET)
@@ -66,7 +68,8 @@ def handle_print(line : str, line_number : int, line_type : Changes, previous_ty
         previous_type = Changes.NONE
     return previous_type
 
-def compare(filepath1:str, filepath2:str):
+
+def compare(filepath1: str, filepath2: str):
     # Compare the two files.
     print("Comparing `{}` and `{}`...".format(filepath1, filepath2))
     with open(filepath1) as f1, open(filepath2) as f2:
@@ -78,7 +81,7 @@ def compare(filepath1:str, filepath2:str):
         # Store the line number.
         line_number = 0
         # Store the type of the previous entry.
-        previous_type : Changes = 0
+        previous_type: Changes = 0
         # Print the differences.
         for line in differences:
             # Strip the end of the line.
@@ -103,9 +106,9 @@ def compare(filepath1:str, filepath2:str):
                 line_number += 1
             # Print the line.
             previous_type = handle_print(line, line_number, line_type, previous_type)
-            
 
-def test_xml(inp:str, outp:str):
+
+def test_xml(inp: str, outp: str):
     # Get the content.
     print("Parsing `{}`".format(inp))
     content = edacurry.parse_to_xml(inp)
@@ -114,7 +117,8 @@ def test_xml(inp:str, outp:str):
     with open(outp, 'w') as outf:
         outf.write(content)
 
-def test_eldo(inp:str, outp:str):
+
+def test_eldo(inp: str, outp: str):
     # Get the content.
     print("Parsing `{}`".format(inp))
     content = edacurry.parse_to_eldo(inp)
@@ -124,6 +128,7 @@ def test_eldo(inp:str, outp:str):
         outf.write(content)
     # Compare the two files.
     compare(inp, outp)
+
 
 if not os.path.exists("eldo_result"):
     os.mkdir("eldo_result")

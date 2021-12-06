@@ -114,22 +114,13 @@ structure::Node *Factory::node(const std::string &name, structure::Object *refer
 }
 
 structure::Parameter *Factory::parameter(
-    structure::Value *value,
+    structure::Value *left,
+    structure::Value *right,
     ParameterType type,
     structure::Object *reference,
     bool hide_name)
 {
-    return new structure::Parameter(value, type, reference, hide_name);
-}
-
-structure::Parameter *Factory::parameter(
-    const std::string &name,
-    structure::Value *value,
-    ParameterType type,
-    structure::Object *reference,
-    bool hide_name)
-{
-    return new structure::Parameter(name, value, type, reference, hide_name);
+    return new structure::Parameter(left, right, type, reference, hide_name);
 }
 
 structure::Subckt *Factory::subckt(

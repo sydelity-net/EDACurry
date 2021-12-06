@@ -340,6 +340,30 @@ public:
   virtual void enterMeas_catvect(ELDOParser::Meas_catvectContext *ctx) = 0;
   virtual void exitMeas_catvect(ELDOParser::Meas_catvectContext *ctx) = 0;
 
+  virtual void enterMeas_label_name(ELDOParser::Meas_label_nameContext *ctx) = 0;
+  virtual void exitMeas_label_name(ELDOParser::Meas_label_nameContext *ctx) = 0;
+
+  virtual void enterMeas_configuration(ELDOParser::Meas_configurationContext *ctx) = 0;
+  virtual void exitMeas_configuration(ELDOParser::Meas_configurationContext *ctx) = 0;
+
+  virtual void enterMeas_find(ELDOParser::Meas_findContext *ctx) = 0;
+  virtual void exitMeas_find(ELDOParser::Meas_findContext *ctx) = 0;
+
+  virtual void enterMeas_at(ELDOParser::Meas_atContext *ctx) = 0;
+  virtual void exitMeas_at(ELDOParser::Meas_atContext *ctx) = 0;
+
+  virtual void enterMeas_when(ELDOParser::Meas_whenContext *ctx) = 0;
+  virtual void exitMeas_when(ELDOParser::Meas_whenContext *ctx) = 0;
+
+  virtual void enterMeas_derivative(ELDOParser::Meas_derivativeContext *ctx) = 0;
+  virtual void exitMeas_derivative(ELDOParser::Meas_derivativeContext *ctx) = 0;
+
+  virtual void enterMeas_param(ELDOParser::Meas_paramContext *ctx) = 0;
+  virtual void exitMeas_param(ELDOParser::Meas_paramContext *ctx) = 0;
+
+  virtual void enterMeas_trig(ELDOParser::Meas_trigContext *ctx) = 0;
+  virtual void exitMeas_trig(ELDOParser::Meas_trigContext *ctx) = 0;
+
   virtual void enterMeas_targ(ELDOParser::Meas_targContext *ctx) = 0;
   virtual void exitMeas_targ(ELDOParser::Meas_targContext *ctx) = 0;
 

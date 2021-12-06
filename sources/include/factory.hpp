@@ -166,24 +166,14 @@ public:
         return new structure::Number<T>(value);
     }
 
-    /// @brief Creates a new parameter with just the value.
-    /// @param value the initial value of the parameter.
-    /// @param reference The reference to another parameter.
-    /// @return the newly generated object, **remember to delete it**.
-    structure::Parameter *parameter(
-        structure::Value *value,
-        ParameterType type           = param_assign,
-        structure::Object *reference = nullptr,
-        bool hide_name               = false);
-
     /// @brief Creates a new parameter.
-    /// @param name  the name of the parameter.
-    /// @param value the initial value of the parameter.
+    /// @param left the left-hand-side value of the parameter.
+    /// @param right the right-hand-side value of the parameter.
     /// @param reference The reference to another parameter.
     /// @return the newly generated object, **remember to delete it**.
     structure::Parameter *parameter(
-        const std::string &name,
-        structure::Value *value,
+        structure::Value *left,
+        structure::Value *right,
         ParameterType type           = param_assign,
         structure::Object *reference = nullptr,
         bool hide_name               = false);

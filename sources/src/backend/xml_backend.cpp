@@ -215,8 +215,7 @@ void XmlBackend::visit(const structure::Model *e)
 
 void XmlBackend::visit(const structure::Node *e)
 {
-    ss << "<node name='" << e->getName() << "' reference='"
-       << ((e->getReference()) ? e->getReference()->toString() : "") << "'/>\n";
+    ss << "<node name='" << e->getName() << "'/>\n";
 }
 
 void XmlBackend::visit(const structure::Number<unsigned> *e)
@@ -246,17 +245,23 @@ void XmlBackend::visit(const structure::Number<double> *e)
 void XmlBackend::visit(const structure::Parameter *e)
 {
     ss << "<parameter"
-       << " name='" << e->getName() << "'"
        << " type='" << parameter_type_to_plain_string(e->getType()) << "'"
-       << " reference='" << ((e->getReference()) ? e->getReference()->toString() : "") << "'"
-       << " hide_name='" << (e->getHideName() ? "true" : "false") << "'>\n"
+       << " hide_left='" << (e->getHideLeft() ? "true" : "false") << "'>\n"
        << ind_increase;
-
-    if (e->getValue())
-        e->getValue()->accept(this);
+    ss << "<left>\n"
+       << ind_increase;
+    if (e->getLeft())
+        e->getLeft()->accept(this);
     else
         ss << "NULL\n";
-
+    ss << ind_decrease << "</left>\n";
+    ss << "<right>\n"
+       << ind_increase;
+    if (e->getRight())
+        e->getRight()->accept(this);
+    else
+        ss << "NULL\n";
+    ss << ind_decrease << "</right>\n";
     ss << ind_decrease << "</parameter>\n";
 }
 

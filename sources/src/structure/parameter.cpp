@@ -10,50 +10,51 @@
 
 namespace edacurry::structure
 {
-Parameter::Parameter(Value *value, ParameterType type, structure::Object *reference, bool hide_name)
-    : Object(),
-      features::NamedObject(),
-      features::ObjectReference(reference),
-      _value(value),
-      _type(type),
-      _hide_name(hide_name)
-{
-    // Nothing to do.
-}
 
-Parameter::Parameter(const std::string &name, Value *value, ParameterType type, structure::Object *reference, bool hide_name)
+Parameter::Parameter(Value *left, Value *right, ParameterType type, structure::Object *reference, bool hide_left)
     : Object(),
-      features::NamedObject(name),
       features::ObjectReference(reference),
-      _value(value),
+      _left(left),
+      _right(right),
       _type(type),
-      _hide_name(hide_name)
+      _hide_left(hide_left)
 {
     // Nothing to do.
 }
 
 Parameter::~Parameter()
 {
-    delete _value;
+    delete _left;
+    delete _right;
 }
 
-Value *Parameter::getValue() const
+Value *Parameter::getLeft() const
 {
-    return _value;
+    return _left;
 }
 
-Value *Parameter::setValue(Value *value)
+Value *Parameter::setLeft(Value *value)
 {
-    return this->setChild(_value, value);
+    return this->setChild(_left, value);
+}
+
+Value *Parameter::getRight() const
+{
+    return _right;
+}
+
+Value *Parameter::setRight(Value *value)
+{
+    return this->setChild(_right, value);
 }
 
 std::string Parameter::toString() const
 {
     return "Parameter(" +
-           this->getName() + ", " +
-           (_value ? _value->toString() : "NULL") + ", " +
+           (_left ? _left->toString() : "NULL") + ", " +
+           (_right ? _right->toString() : "NULL") + ", " +
            parameter_type_to_plain_string(_type) + ", " +
-           "hide_name=" + (_hide_name ? "true" : "false") +
+           "hide_left=" + (_hide_left ? "true" : "false") +
            ")";
 }
 

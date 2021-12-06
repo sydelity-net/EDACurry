@@ -181,6 +181,7 @@ enum ParameterType {
     param_tabular,    ///< A tabular parameter.
     param_list,       ///< A list of values.
     param_arithmetic, ///< An arithmetic expression.
+    param_no_equal,   ///< A label followed by its value, without the equal sign.
 };
 
 /// @brief Return the string representation of the given type of parameter (e.g. param_assign returns "param_assign").
@@ -211,8 +212,8 @@ enum ControlType {
     // ctrl_ffile, ///<
     ctrl_probe, ///<
     // ctrl_defwave, ///<
-    // ctrl_temp, ///<
-    // ctrl_meas, ///<
+    ctrl_temp, ///<
+    ctrl_meas, ///<
     // ctrl_connect, ///<
     // ctrl_value_access, ///<
 };
