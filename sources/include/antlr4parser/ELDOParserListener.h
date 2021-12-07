@@ -241,6 +241,9 @@ public:
   virtual void enterAlter(ELDOParser::AlterContext *ctx) = 0;
   virtual void exitAlter(ELDOParser::AlterContext *ctx) = 0;
 
+  virtual void enterAlter_definition(ELDOParser::Alter_definitionContext *ctx) = 0;
+  virtual void exitAlter_definition(ELDOParser::Alter_definitionContext *ctx) = 0;
+
   virtual void enterAlter_header(ELDOParser::Alter_headerContext *ctx) = 0;
   virtual void exitAlter_header(ELDOParser::Alter_headerContext *ctx) = 0;
 

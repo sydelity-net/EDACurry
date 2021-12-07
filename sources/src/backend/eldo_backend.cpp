@@ -18,6 +18,9 @@ EldoBackend::EldoBackend()
 
 void EldoBackend::visit(const structure::Circuit *e)
 {
+    if (!e->getTitle().empty()) {
+        ss << e->getTitle() << "\n";
+    }
     if (e->nodes) {
         ss << ".global";
         for (auto node : e->nodes) {
@@ -34,7 +37,9 @@ void EldoBackend::visit(const structure::Circuit *e)
         }
         ss << '\n';
     }
-    for (auto it : e->content) it->accept(this);
+    for (auto it : e->content) {
+        it->accept(this);
+    }
 }
 
 void EldoBackend::visit(const structure::Analysis *e)
@@ -76,6 +81,20 @@ void EldoBackend::visit(const structure::Component *e)
 
 void EldoBackend::visit(const structure::ControlScope *e)
 {
+    if (e->getControlType() == ctrl_altergroup) {
+        ss << ".alter " << e->getName() << "\n";
+        ss << ind_increase;
+        for (const auto &parameter : e->parameters) {
+            ss << ".param ";
+            parameter->accept(this);
+            ss << '\n';
+        }
+        for (auto it : e->content) {
+            it->accept(this);
+        }
+        ss << ind_decrease;
+        ss << ".end\n";
+    }
 }
 
 void EldoBackend::visit(const structure::Control *e)

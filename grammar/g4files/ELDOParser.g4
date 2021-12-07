@@ -10,7 +10,7 @@ options {
 
 // ============================================================================
 netlist
-    : netlist_title? end_of_line netlist_entity* end_of_line;
+    : netlist_title? end_of_line netlist_entity* end? end_of_line;
 
 // ============================================================================
 netlist_title
@@ -28,8 +28,6 @@ netlist_entity
     | global_declarations
     | control
     | component
-
-    | end
     ;
 
 // ============================================================================
@@ -594,13 +592,15 @@ control
 //      .ALTER | .END
 //
 alter
-    : alter_header alter_content+ alter_footer end_of_line;
+    : alter_definition+ alter_footer end_of_line;
+alter_definition
+    : alter_header alter_content+;
 alter_header
     : ALTER ID* end_of_line;
 alter_content
     : netlist_entity;
 alter_footer
-    : ALTER | END;
+    : NETLIST_END;
 
 // ------------------------------------
 // Save - Save Simulation Run

@@ -174,6 +174,8 @@ public:
 
     antlrcpp::Any visitAlter(ELDOParser::AlterContext *ctx) override;
 
+    antlrcpp::Any visitAlter_definition(ELDOParser::Alter_definitionContext *ctx) override;
+
     antlrcpp::Any visitAlter_header(ELDOParser::Alter_headerContext *ctx) override;
 
     antlrcpp::Any visitAlter_content(ELDOParser::Alter_contentContext *ctx) override;

@@ -243,6 +243,9 @@ public:
   virtual void enterAlter(ELDOParser::AlterContext * /*ctx*/) override { }
   virtual void exitAlter(ELDOParser::AlterContext * /*ctx*/) override { }
 
+  virtual void enterAlter_definition(ELDOParser::Alter_definitionContext * /*ctx*/) override { }
+  virtual void exitAlter_definition(ELDOParser::Alter_definitionContext * /*ctx*/) override { }
+
   virtual void enterAlter_header(ELDOParser::Alter_headerContext * /*ctx*/) override { }
   virtual void exitAlter_header(ELDOParser::Alter_headerContext * /*ctx*/) override { }
 

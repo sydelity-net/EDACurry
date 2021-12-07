@@ -1,0 +1,7 @@
+// Capacitor
+simulator lang=spectre
+
+C1 (vcc out) capacitor c=1pf
+C2 (out b1 ) capacitor c=272.7pF
+C3 (b1 0) capacitor c=3nF
+C4 (b2 in ) capacitor c=3nF

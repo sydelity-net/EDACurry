@@ -170,6 +170,8 @@ public:
 
     virtual antlrcpp::Any visitAlter(ELDOParser::AlterContext *context) = 0;
 
+    virtual antlrcpp::Any visitAlter_definition(ELDOParser::Alter_definitionContext *context) = 0;
+
     virtual antlrcpp::Any visitAlter_header(ELDOParser::Alter_headerContext *context) = 0;
 
     virtual antlrcpp::Any visitAlter_content(ELDOParser::Alter_contentContext *context) = 0;

@@ -1,0 +1,8 @@
+// Resistor
+simulator lang=spectre
+
+R1 (1 2) resistor r=1
+R7 (x y) rmod (r=1k w=2u)
+Load (out o) resistor r=50
+R1 (b1 0) resistor r=10k
+R2 (b2 0) resistor r=10k

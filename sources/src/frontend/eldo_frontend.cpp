@@ -63,7 +63,7 @@ Any ELDOFrontend::visitNetlist(ELDOParser::NetlistContext *ctx)
 Any ELDOFrontend::visitNetlist_title(ELDOParser::Netlist_titleContext *ctx)
 {
     auto circuit = utility::to_check<structure::Circuit>(this->back());
-    circuit->setTitle(ctx->toString());
+    circuit->setTitle(to_string(ctx->ID()));
     return visitChildren(ctx);
 }
 
@@ -963,18 +963,18 @@ Any ELDOFrontend::visitControl(ELDOParser::ControlContext *ctx)
 
 Any ELDOFrontend::visitAlter(ELDOParser::AlterContext *ctx)
 {
-    if (ctx->alter_content().empty()) {
-        return this->advance_visit(ctx, _factory.control("", ctrl_alter, {}));
-    }
-    return this->advance_visit(ctx, _factory.controlScope("ALTERGROUP", ctrl_altergroup, {}, {}, {}));
+    return visitChildren(ctx);
+}
+
+Any ELDOFrontend::visitAlter_definition(ELDOParser::Alter_definitionContext *ctx)
+{
+    return this->advance_visit(ctx, _factory.controlScope("", ctrl_altergroup, {}, {}, {}));
 }
 
 Any ELDOFrontend::visitAlter_header(ELDOParser::Alter_headerContext *ctx)
 {
-    auto control_scope =
-        utility::to_check<structure::ControlScope>(this->back());
-    control_scope->parameters.push_back(
-        _factory.parameter(_factory.identifier("label"), _factory.string(to_string(ctx->ID()))));
+    auto control_scope = utility::to_check<structure::ControlScope>(this->back());
+    control_scope->setName(to_string(ctx->ID()));
     return visitChildren(ctx);
 }
 
@@ -1849,7 +1849,12 @@ void ELDOFrontend::add_to_parent(structure::Object *node)
         if (control_scope_node) {
             control_scope->nodes.push_back(control_scope_node);
         } else {
-            control_scope->content.push_back(node);
+            auto control_parameter = utility::to<structure::Parameter>(node);
+            if (control_parameter) {
+                control_scope->parameters.push_back(control_parameter);
+            } else {
+                control_scope->content.push_back(node);
+            }
         }
         return;
     }

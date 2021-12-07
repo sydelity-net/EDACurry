@@ -70,37 +70,37 @@ public:
     RuleTf = 60, RuleTran = 61, RuleTran_point_driven = 62, RuleTran_parameterized = 63, 
     RuleTran_data_driven = 64, RuleWcase = 65, RuleExtract = 66, RuleGlobal = 67, 
     RuleModel = 68, RuleModel_lib = 69, RuleModel_name = 70, RuleModel_master = 71, 
-    RuleModel_lib_type = 72, RuleControl = 73, RuleAlter = 74, RuleAlter_header = 75, 
-    RuleAlter_content = 76, RuleAlter_footer = 77, RuleSave = 78, RuleSave_file = 79, 
-    RuleSave_when = 80, RuleOption = 81, RuleNodeset = 82, RuleCall_tcl = 83, 
-    RuleCall_tcl_when = 84, RuleUse_tcl = 85, RuleDefmac = 86, RuleChrent = 87, 
-    RuleChrent_behaviour = 88, RuleChrent_point = 89, RuleChrent_pair = 90, 
-    RuleIc = 91, RuleIc_content = 92, RuleIc_subckt = 93, RulePrint = 94, 
-    RulePlot = 95, RuleFfile = 96, RuleFfile_tabulation = 97, RuleFfile_singleline = 98, 
-    RuleFfile_unit = 99, RuleFfile_storage_format = 100, RuleProbe = 101, 
-    RuleDefwave = 102, RuleTemp = 103, RuleMeas = 104, RuleMeas_info = 105, 
-    RuleMeas_vect = 106, RuleMeas_catvect = 107, RuleMeas_label_name = 108, 
-    RuleMeas_configuration = 109, RuleMeas_find = 110, RuleMeas_at = 111, 
-    RuleMeas_when = 112, RuleMeas_derivative = 113, RuleMeas_param = 114, 
-    RuleMeas_trig = 115, RuleMeas_targ = 116, RuleConnect = 117, RuleGlobal_declarations = 118, 
-    RuleComponent = 119, RuleComponent_type = 120, RuleComponent_attribute = 121, 
-    RuleComponent_value = 122, RuleComponent_parameter_list = 123, RuleComponent_analysis = 124, 
-    RuleComponent_positional_keywork = 125, RuleComponent_pin_list = 126, 
-    RuleComponent_port_list = 127, RuleComponent_net_list = 128, RuleComponent_coupling_list = 129, 
-    RuleComponent_table = 130, RuleComponent_value_list = 131, RuleInterp_type = 132, 
-    RuleResistor = 133, RuleCapacitor = 134, RuleInductor = 135, RuleCoupled_inductor = 136, 
-    RuleDiffusion_resistor = 137, RuleTransmission_line = 138, RuleLossy_transmission_line = 139, 
-    RuleLtl_w_model = 140, RuleLtl_u_model = 141, RuleJunction_diode = 142, 
-    RuleBjt = 143, RuleJfet = 144, RuleMosfet = 145, RuleSubckt_instance = 146, 
-    RuleIvsource = 147, RuleIcsource = 148, RuleVcvs = 149, RuleCccs = 150, 
-    RuleVccs = 151, RuleCcvs = 152, RuleNoise_function = 153, RuleSw = 154, 
-    RuleOperational_amplifier = 155, RuleTwo_input_gate = 156, RuleEnd = 157, 
-    RuleExpression = 158, RuleExpression_unary = 159, RuleExpression_function_call = 160, 
-    RuleExpression_list = 161, RuleExpression_operator = 162, RuleExpression_atom = 163, 
-    RuleNode_list = 164, RuleNode_list_item = 165, RuleNode_mapping = 166, 
-    RuleNode = 167, RuleParameter_list = 168, RuleParameter_list_item = 169, 
-    RuleParameter = 170, RuleParameter_lhs = 171, RuleParameter_rhs = 172, 
-    RuleFilepath = 173, RuleFilepath_element = 174, RuleEnd_of_line = 175
+    RuleModel_lib_type = 72, RuleControl = 73, RuleAlter = 74, RuleAlter_definition = 75, 
+    RuleAlter_header = 76, RuleAlter_content = 77, RuleAlter_footer = 78, 
+    RuleSave = 79, RuleSave_file = 80, RuleSave_when = 81, RuleOption = 82, 
+    RuleNodeset = 83, RuleCall_tcl = 84, RuleCall_tcl_when = 85, RuleUse_tcl = 86, 
+    RuleDefmac = 87, RuleChrent = 88, RuleChrent_behaviour = 89, RuleChrent_point = 90, 
+    RuleChrent_pair = 91, RuleIc = 92, RuleIc_content = 93, RuleIc_subckt = 94, 
+    RulePrint = 95, RulePlot = 96, RuleFfile = 97, RuleFfile_tabulation = 98, 
+    RuleFfile_singleline = 99, RuleFfile_unit = 100, RuleFfile_storage_format = 101, 
+    RuleProbe = 102, RuleDefwave = 103, RuleTemp = 104, RuleMeas = 105, 
+    RuleMeas_info = 106, RuleMeas_vect = 107, RuleMeas_catvect = 108, RuleMeas_label_name = 109, 
+    RuleMeas_configuration = 110, RuleMeas_find = 111, RuleMeas_at = 112, 
+    RuleMeas_when = 113, RuleMeas_derivative = 114, RuleMeas_param = 115, 
+    RuleMeas_trig = 116, RuleMeas_targ = 117, RuleConnect = 118, RuleGlobal_declarations = 119, 
+    RuleComponent = 120, RuleComponent_type = 121, RuleComponent_attribute = 122, 
+    RuleComponent_value = 123, RuleComponent_parameter_list = 124, RuleComponent_analysis = 125, 
+    RuleComponent_positional_keywork = 126, RuleComponent_pin_list = 127, 
+    RuleComponent_port_list = 128, RuleComponent_net_list = 129, RuleComponent_coupling_list = 130, 
+    RuleComponent_table = 131, RuleComponent_value_list = 132, RuleInterp_type = 133, 
+    RuleResistor = 134, RuleCapacitor = 135, RuleInductor = 136, RuleCoupled_inductor = 137, 
+    RuleDiffusion_resistor = 138, RuleTransmission_line = 139, RuleLossy_transmission_line = 140, 
+    RuleLtl_w_model = 141, RuleLtl_u_model = 142, RuleJunction_diode = 143, 
+    RuleBjt = 144, RuleJfet = 145, RuleMosfet = 146, RuleSubckt_instance = 147, 
+    RuleIvsource = 148, RuleIcsource = 149, RuleVcvs = 150, RuleCccs = 151, 
+    RuleVccs = 152, RuleCcvs = 153, RuleNoise_function = 154, RuleSw = 155, 
+    RuleOperational_amplifier = 156, RuleTwo_input_gate = 157, RuleEnd = 158, 
+    RuleExpression = 159, RuleExpression_unary = 160, RuleExpression_function_call = 161, 
+    RuleExpression_list = 162, RuleExpression_operator = 163, RuleExpression_atom = 164, 
+    RuleNode_list = 165, RuleNode_list_item = 166, RuleNode_mapping = 167, 
+    RuleNode = 168, RuleParameter_list = 169, RuleParameter_list_item = 170, 
+    RuleParameter = 171, RuleParameter_lhs = 172, RuleParameter_rhs = 173, 
+    RuleFilepath = 174, RuleFilepath_element = 175, RuleEnd_of_line = 176
   };
 
   ELDOParser(antlr4::TokenStream *input);
@@ -188,6 +188,7 @@ public:
   class Model_lib_typeContext;
   class ControlContext;
   class AlterContext;
+  class Alter_definitionContext;
   class Alter_headerContext;
   class Alter_contentContext;
   class Alter_footerContext;
@@ -299,6 +300,7 @@ public:
     Netlist_titleContext *netlist_title();
     std::vector<Netlist_entityContext *> netlist_entity();
     Netlist_entityContext* netlist_entity(size_t i);
+    EndContext *end();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -339,7 +341,6 @@ public:
     Global_declarationsContext *global_declarations();
     ControlContext *control();
     ComponentContext *component();
-    EndContext *end();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -1651,9 +1652,25 @@ public:
   public:
     AlterContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    Alter_headerContext *alter_header();
     Alter_footerContext *alter_footer();
     End_of_lineContext *end_of_line();
+    std::vector<Alter_definitionContext *> alter_definition();
+    Alter_definitionContext* alter_definition(size_t i);
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  AlterContext* alter();
+
+  class  Alter_definitionContext : public antlr4::ParserRuleContext {
+  public:
+    Alter_definitionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    Alter_headerContext *alter_header();
     std::vector<Alter_contentContext *> alter_content();
     Alter_contentContext* alter_content(size_t i);
 
@@ -1664,7 +1681,7 @@ public:
    
   };
 
-  AlterContext* alter();
+  Alter_definitionContext* alter_definition();
 
   class  Alter_headerContext : public antlr4::ParserRuleContext {
   public:
@@ -1703,8 +1720,7 @@ public:
   public:
     Alter_footerContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *ALTER();
-    antlr4::tree::TerminalNode *END();
+    antlr4::tree::TerminalNode *NETLIST_END();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;

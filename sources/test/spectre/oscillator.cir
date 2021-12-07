@@ -1,0 +1,17 @@
+// BJT ECP Oscillator
+simulator lang=spectre
+Vcc (cc 0) vsource dc=5
+Iee (e 0) isource dc=1mA
+Q1 (cc b1 e) npn
+Q2 (out b2 e) npn
+L1 (cc out) inductor l=1uH
+C1 (cc out) capacitor c=1pf
+C2 (out b1) capacitor c=272.7pF
+C3 (b1 0) capacitor c=3nF
+C4 (b2 0) capacitor c=3nF
+R1 (b1 0) resistor r=10k
+R2 (b2 0) resistor r=10k
+ic b1=1
+model npn bjt type=npn bf=80 rb=100 vaf=50 \
+ cjs=2pf tf=0.3ns tr=6ns cje=3pf cjc=2pf
+OscResp tran stop=80us maxstep=10ns

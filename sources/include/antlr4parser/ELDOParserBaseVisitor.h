@@ -317,6 +317,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitAlter_definition(ELDOParser::Alter_definitionContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitAlter_header(ELDOParser::Alter_headerContext *ctx) override {
     return visitChildren(ctx);
   }
