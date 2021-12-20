@@ -94,6 +94,7 @@ pybind11_add_module(
     ./src/edacurry.cpp
     ./src/enums.cpp
     ./src/factory.cpp
+    ./src/json_parser.cpp
     
     ./src/structure/analysis.cpp
     ./src/structure/circuit.cpp
@@ -121,6 +122,7 @@ pybind11_add_module(
     
     ./src/utility/logging.cpp
     ./src/utility/utility.cpp
+    ./src/utility/json.cpp
 
     ./src/frontend/eldo_frontend.cpp
 

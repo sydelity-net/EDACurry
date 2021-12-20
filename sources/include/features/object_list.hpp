@@ -46,6 +46,17 @@ public:
         for (auto &object : _objects) object->setParent(_owner);
     }
 
+    inline structure::Object *getOwner()
+    {
+        return _owner;
+    }
+
+    inline void setOwner(structure::Object *owner)
+    {
+        _owner = owner;
+        for (auto &object : _objects) object->setParent(_owner);
+    }
+
     ObjectList &operator=(const ObjectList &) = delete;
 
     operator bool() const
@@ -59,6 +70,12 @@ public:
         return _objects[pos];
     }
 
+    inline value_type &operator[](size_t pos)
+    {
+        assert(pos < _objects.size());
+        return _objects[pos];
+    }
+
     ObjectList(const ObjectList &) = delete;
 
     ~ObjectList()
@@ -66,9 +83,19 @@ public:
         for (auto object : _objects) delete object;
     }
 
+    inline void clear()
+    {
+        for (auto object : _objects) delete object;
+    }
+
     inline size_t size() const
     {
         return _objects.size();
+    }
+
+    inline void resize(size_t __new_size)
+    {
+        _objects.resize(__new_size);
     }
 
     /// @brief Add a new object.

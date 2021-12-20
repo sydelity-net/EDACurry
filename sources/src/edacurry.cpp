@@ -10,6 +10,7 @@
 #include "pybind11/stl.h"
 
 #include "utility/logging.hpp"
+#include "utility/json.hpp"
 
 #include "antlr4parser/ELDOParser.h"
 #include "antlr4parser/ELDOLexer.h"

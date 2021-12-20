@@ -161,9 +161,9 @@ public:
     /// @param value the value of the number.
     /// @return the newly generated object, **remember to delete it**.
     template <typename T>
-    structure::Number<T> *number(T value)
+    structure::Number<T> *number(T value, std::string unit = std::string())
     {
-        return new structure::Number<T>(value);
+        return new structure::Number<T>(value, unit);
     }
 
     /// @brief Creates a new parameter.
