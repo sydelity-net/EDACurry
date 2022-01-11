@@ -116,7 +116,7 @@ template <>
 struct TypeName<edacurry::structure::ExpressionUnary> {
     static std::string get()
     {
-        return "ExpressionUnary";
+        return "UnaryExpression";
     }
 };
 
@@ -212,7 +212,7 @@ template <>
 struct TypeName<edacurry::structure::ValueList> {
     static std::string get()
     {
-        return "ValueList";
+        return "List";
     }
 };
 
@@ -220,7 +220,7 @@ template <>
 struct TypeName<edacurry::structure::ValuePair> {
     static std::string get()
     {
-        return "ValuePair";
+        return "Pair";
     }
 };
 
@@ -228,7 +228,7 @@ template <typename T>
 struct TypeName<edacurry::features::ObjectList<T>> {
     static std::string get()
     {
-        return "ObjectList<" + TypeName<T>::get() + ">";
+        return "List<" + TypeName<T>::get() + ">";
     }
 };
 
@@ -239,7 +239,6 @@ struct TypeName<edacurry::structure::Value> {
         return "Value";
     }
 };
-
 
 template <>
 struct TypeName<edacurry::structure::Object> {
@@ -278,7 +277,7 @@ jnode_t &operator<<<edacurry::structure::Object *>(jnode_t &lhs, edacurry::struc
         return lhs;
     if (try_to_write<edacurry::structure::Object, edacurry::structure::Parameter>(lhs, rhs))
         return lhs;
-    if (try_to_write<edacurry::structure::Object, edacurry::structure::String>(lhs, rhs))
+    if (try_to_write<edacurry::structure::Object, edacurry::structure::Subckt>(lhs, rhs))
         return lhs;
     // Derived of Value.
     if (try_to_write<edacurry::structure::Object, edacurry::structure::ExpressionUnary>(lhs, rhs))
@@ -329,7 +328,7 @@ const jnode_t &operator>><edacurry::structure::Object *>(const jnode_t &lhs, eda
         return lhs;
     if (try_to_read<edacurry::structure::Object, edacurry::structure::Parameter>(lhs, rhs))
         return lhs;
-    if (try_to_read<edacurry::structure::Object, edacurry::structure::String>(lhs, rhs))
+    if (try_to_read<edacurry::structure::Object, edacurry::structure::Subckt>(lhs, rhs))
         return lhs;
     // Derived of Value.
     if (try_to_read<edacurry::structure::Object, edacurry::structure::ExpressionUnary>(lhs, rhs))
@@ -653,7 +652,7 @@ const jnode_t &operator>><edacurry::structure::ExpressionUnary *>(const jnode_t 
         if (rhs == nullptr)
             rhs = new edacurry::structure::ExpressionUnary();
         // Support variables.
-        edacurry::structure::Value *value;
+        edacurry::structure::Value *value = nullptr;
         edacurry::Operator op;
         // Read the values.
         lhs["operator"] >> op;
@@ -685,7 +684,7 @@ const jnode_t &operator>><edacurry::structure::Expression *>(const jnode_t &lhs,
         if (rhs == nullptr)
             rhs = new edacurry::structure::Expression();
         // Support variables.
-        edacurry::structure::Value *value1, *value2;
+        edacurry::structure::Value *value1 = nullptr, *value2 = nullptr;
         edacurry::Operator op;
         // Read the values.
         lhs["operator"] >> op;
@@ -920,7 +919,11 @@ jnode_t &operator<<<edacurry::structure::Parameter *>(jnode_t &lhs, edacurry::st
     // Write the type.
     lhs["type"] << TypeName<edacurry::structure::Parameter>::get();
     // Write the fields.
-    lhs["left"] << rhs->getLeft();
+    if (rhs->getLeft()) {
+        lhs["left"] << rhs->getLeft();
+    } else {
+        lhs["left"].set_type(json::JOBJECT);
+    }
     lhs["right"] << rhs->getRight();
     lhs["parameter_type"] << rhs->getType();
     lhs["hide_left"] << rhs->getHideLeft();
@@ -932,8 +935,8 @@ const jnode_t &operator>><edacurry::structure::Parameter *>(const jnode_t &lhs, 
 {
     if (lhs["type"].get_value() == TypeName<edacurry::structure::Parameter>::get()) {
         // Support variables.
-        edacurry::structure::Value *left;
-        edacurry::structure::Value *right;
+        edacurry::structure::Value *left  = nullptr;
+        edacurry::structure::Value *right = nullptr;
         edacurry::ParameterType parameter_type;
         bool hide_left;
         // Read the values.
@@ -1061,7 +1064,7 @@ const jnode_t &operator>><edacurry::structure::ValuePair *>(const jnode_t &lhs, 
 {
     if (lhs["type"].get_value() == TypeName<edacurry::structure::ValuePair>::get()) {
         // Support variables.
-        edacurry::structure::Value *first, *second;
+        edacurry::structure::Value *first = nullptr, *second = nullptr;
         // Read the values.
         lhs["first"] >> first;
         lhs["second"] >> second;

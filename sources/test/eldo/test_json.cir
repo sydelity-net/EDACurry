@@ -1,0 +1,28 @@
+// Resistor example
+.param rvalue=3.3k
+.param length=0.053u width=0.047u
+
+c5 2 0 100p
+r5 n3 n4 value=rvalue
+
+.subckt nw n1 n2 l=length w=width
+    .param rsh=1100
+
+    .subckt rngps n3 n4 l2=l*2 w2=w*2
+        .param rsh2=5.0
+        r2 n3 n4 'rsh2*(l2/w2)'
+    .ends rngps
+    
+    r1 n1 1 'rsh*(l/w)'
+    
+    x1 1 n2 FOO A=1 B=1 M=2
+
+.ends nw
+
+.alter a1
+    r5 1 2 10k
+    c5 2 0 100p
+    .ac dec 15 200 1500meg
+.end
+
+.tran 2e-6 2e-3

@@ -94,9 +94,47 @@ std::string parse_to_eldo(const std::string &path)
     return backend.str();
 }
 
+void test_json(const std::string &path)
+{
+    std::ifstream fileStream(path);
+    antlr4::ANTLRInputStream input(fileStream);
+    edacurry::ELDOLexer lexer(&input);
+    antlr4::CommonTokenStream tokens(&lexer);
+    tokens.fill();
+
+    edacurry::ELDOParser parser(&tokens);
+
+    edacurry::frontend::ELDOFrontend frontend(tokens);
+
+    // Parse the circuit.
+    parser.netlist()->accept(&frontend);
+
+    edacurry::structure::Object *output_root = frontend.getRoot(), *input_root = nullptr;
+
+    json::jnode_t json_0;
+
+    json_0 << output_root;
+
+    json::parser::write_file("output.json", json_0, false);
+
+    json::jnode_t json_1 = json::parser::parse_file("output.json");
+
+    json_1 << input_root;
+
+    std::cout << std::string(80, '=') << "\n";
+    std::cout << json_0.to_string() << "\n";
+    std::cout << std::string(80, '=') << "\n";
+    std::cout << json_1.to_string() << "\n";
+    std::cout << std::string(80, '=') << "\n";
+
+    delete input_root;
+    delete output_root;
+}
+
 PYBIND11_MODULE(edacurry, m)
 {
     logging::initialize();
     m.def("parse_to_xml", &parse_to_xml);
     m.def("parse_to_eldo", &parse_to_eldo);
+    m.def("test_json", &test_json);
 }
