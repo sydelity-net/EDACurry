@@ -438,7 +438,7 @@ const json::jnode_t &operator>>(const json::jnode_t &lhs, edacurry::features::Ob
 }
 
 template <typename T>
-json::jnode_t &json::operator<<(json::jnode_t &lhs, edacurry::structure::Number<T> *const &rhs)
+json::jnode_t &operator<<(json::jnode_t &lhs, edacurry::structure::Number<T> *const &rhs)
 {
     lhs.set_type(json::JOBJECT);
     lhs["type"] << json::TypeName<edacurry::structure::Number<T>>::get();
@@ -448,7 +448,7 @@ json::jnode_t &json::operator<<(json::jnode_t &lhs, edacurry::structure::Number<
 }
 
 template <typename T>
-const json::jnode_t &json::operator>>(const json::jnode_t &lhs, edacurry::structure::Number<T> *&rhs)
+const json::jnode_t &operator>>(const json::jnode_t &lhs, edacurry::structure::Number<T> *&rhs)
 {
     if (lhs["type"].get_value() == json::TypeName<edacurry::structure::Number<T>>::get()) {
         T value;
