@@ -282,35 +282,112 @@ namespace structure
 PYBIND11_MODULE(edacurry, m)
 {
     logging::initialize();
-    m.def("parse_to_xml", &parse_to_xml);
-    m.def("parse_to_eldo", &parse_to_eldo);
-    m.def("test_json", &test_json);
-
-    namespace py = pybind11;
 
     // ========================================================================
+    namespace py = pybind11;
     using namespace edacurry;
     using namespace edacurry::features;
     using namespace edacurry::structure;
 
     // ========================================================================
-    py::enum_<edacurry::ParameterType>(m, "ParameterType")
-        .value("none", ParameterType::param_none)
-        .value("assign", ParameterType::param_assign)
-        .value("tabular", ParameterType::param_tabular)
-        .value("list", ParameterType::param_list)
-        .value("arithmetic", ParameterType::param_arithmetic)
-        .value("no_equal", ParameterType::param_no_equal)
+    py::enum_<NetlistType>(m, "NetlistType", "All the supported languages.")
+        .value("net_none", NetlistType::net_none, "No netlist type.")
+        .value("net_spice", NetlistType::net_spice, "A SPICE netlist.")
+        .value("net_spectre", NetlistType::net_spectre, "A Spectre netlist.")
+        .value("net_eldo", NetlistType::net_eldo, "An ELDO netlist.")
         .export_values();
 
     // ========================================================================
-    py::enum_<edacurry::DelimiterType>(m, "DelimiterType")
-        .value("none", DelimiterType::dlm_none)
-        .value("round", DelimiterType::dlm_round)
-        .value("square", DelimiterType::dlm_square)
-        .value("curly", DelimiterType::dlm_curly)
-        .value("apex", DelimiterType::dlm_apex)
-        .value("quotes", DelimiterType::dlm_quotes)
+    py::enum_<IncludeType>(m, "IncludeType", "All the supported types of include.")
+        .value("inc_none", IncludeType::inc_none, "No include type.")
+        .value("inc_standard", IncludeType::inc_standard, "Standard include.")
+        .value("inc_hdl", IncludeType::inc_hdl, "Include a Hardware Description Language (HDL).")
+        .value("inc_ahdl", IncludeType::inc_ahdl, "Include an Analog Hardware Description Language (AHDL).")
+        .value("inc_cpp", IncludeType::inc_cpp, "Include a C or C++ code.")
+        .export_values();
+
+    // ========================================================================
+    py::enum_<Operator>(m, "Operator", "All supported operators.")
+        .value("op_none", Operator::op_none, "No operator type.")
+        .value("op_assign", Operator::op_assign, "Assign operator.")
+        .value("op_plus", Operator::op_plus, "Operator `+`.")
+        .value("op_minus", Operator::op_minus, "Operator `-`.")
+        .value("op_mult", Operator::op_mult, "Operator `*`.")
+        .value("op_div", Operator::op_div, "Operator `/`.")
+        .value("op_or", Operator::op_or, "Operator `||`.")
+        .value("op_and", Operator::op_and, "Operator `&&`.")
+        .value("op_xor", Operator::op_xor, "Operator `^`.")
+        .value("op_not", Operator::op_not, "Operator `!`.")
+        .value("op_bor", Operator::op_bor, "Operator `|`.")
+        .value("op_band", Operator::op_band, "Operator `&`.")
+        .value("op_bsl", Operator::op_bsl, "Operator `<<`.")
+        .value("op_bsr", Operator::op_bsr, "Operator `>>`.")
+        .value("op_eq", Operator::op_eq, "Operator `==`.")
+        .value("op_neq", Operator::op_neq, "Operator `!=`.")
+        .value("op_lt", Operator::op_lt, "Operator `<`.")
+        .value("op_gt", Operator::op_gt, "Operator `>`.")
+        .value("op_le", Operator::op_le, "Operator `<=`.")
+        .value("op_ge", Operator::op_ge, "Operator `>=`.")
+        .value("op_mod", Operator::op_mod, "Operator `%`.")
+        .value("op_pow", Operator::op_pow, "Operator `^`.")
+        .export_values();
+
+    // ========================================================================
+    py::enum_<DelimiterType>(m, "DelimiterType", "Content delimiters.")
+        .value("dlm_none", DelimiterType::dlm_none, "No delimiter type.")
+        .value("dlm_round", DelimiterType::dlm_round, "Round brackets ( )")
+        .value("dlm_square", DelimiterType::dlm_square, "Square brackets [ ]")
+        .value("dlm_curly", DelimiterType::dlm_curly, "Curly brackets { }")
+        .value("dlm_apex", DelimiterType::dlm_apex, "Apex ' '")
+        .value("dlm_quotes", DelimiterType::dlm_quotes, "Quotes " "")
+        .export_values();
+
+    // ========================================================================
+    py::enum_<SiPrefix>(m, "SiPrefix", "International System of Units (SI)")
+        .value("si_yotta", SiPrefix::si_yotta, "Y  10e24")
+        .value("si_zetta", SiPrefix::si_zetta, "Z  10e21")
+        .value("si_exa", SiPrefix::si_exa, "E  10e18")
+        .value("si_peta", SiPrefix::si_peta, "P  10e15")
+        .value("si_tera", SiPrefix::si_tera, "T  10e12")
+        .value("si_giga", SiPrefix::si_giga, "G  10e9")
+        .value("si_mega", SiPrefix::si_mega, "M  10e6")
+        .value("si_chilo", SiPrefix::si_chilo, "k  10e3")
+        .value("si_none", SiPrefix::si_none, "-  1")
+        .value("si_milli", SiPrefix::si_milli, "m  10e-3")
+        .value("si_micro", SiPrefix::si_micro, "u  10e-6")
+        .value("si_nano", SiPrefix::si_nano, "n  10e-9")
+        .value("si_pico", SiPrefix::si_pico, "p  10e-12")
+        .value("si_femto", SiPrefix::si_femto, "f  10e-15")
+        .value("si_atto", SiPrefix::si_atto, "a  10e-18")
+        .value("si_zepto", SiPrefix::si_zepto, "z  10e-21")
+        .value("si_yocto", SiPrefix::si_yocto, "y  10e-24")
+        .export_values();
+
+    // ========================================================================
+    py::enum_<ParameterType>(m, "ParameterType", "The type of paramters.")
+        .value("param_none", ParameterType::param_none, "No type of parameter.")
+        .value("param_assign", ParameterType::param_assign, "Normal parameter assign.")
+        .value("param_tabular", ParameterType::param_tabular, "A tabular parameter.")
+        .value("param_list", ParameterType::param_list, "A list of values.")
+        .value("param_arithmetic", ParameterType::param_arithmetic, "An arithmetic expression.")
+        .value("param_no_equal", ParameterType::param_no_equal, "A label followed by its value, without the equal sign.")
+        .export_values();
+
+    // ========================================================================
+    py::enum_<ControlType>(m, "ControlType", "The type of control statement.")
+        .value("ctrl_none", ControlType::ctrl_none, " No control statement.")
+        .value("ctrl_alter", ControlType::ctrl_alter, " A single alter statement.")
+        .value("ctrl_altergroup", ControlType::ctrl_altergroup, " A group of alter statements.")
+        .value("ctrl_save", ControlType::ctrl_save, " Save statement.")
+        .value("ctrl_option", ControlType::ctrl_option, " Set compilers option.")
+        .value("ctrl_nodeset", ControlType::ctrl_nodeset, " DC Analysis Conditions.")
+        .value("ctrl_defmac", ControlType::ctrl_defmac, " Macro Definition")
+        .value("ctrl_chrent", ControlType::ctrl_chrent, " Piece Wise Linear Source")
+        .value("ctrl_print", ControlType::ctrl_print, " Print contents of a tabular listing.")
+        .value("ctrl_plot", ControlType::ctrl_plot, " Plotting of Simulation Results")
+        .value("ctrl_probe", ControlType::ctrl_probe, "")
+        .value("ctrl_temp", ControlType::ctrl_temp, "")
+        .value("ctrl_meas", ControlType::ctrl_meas, "")
         .export_values();
 
     // ========================================================================
@@ -320,7 +397,7 @@ PYBIND11_MODULE(edacurry, m)
     // ========================================================================
     py::class_<BaseVisitor, Visitor>(m, "Visitor")
         .def(py::init<>());
-
+        
     // ========================================================================
     py::class_<NamedObject>(m, "NamedObject")
         .def(py::init<>())
@@ -429,6 +506,10 @@ PYBIND11_MODULE(edacurry, m)
         .def_readonly("parameters", &FunctionCall::parameters);
 
     // ========================================================================
+    py::class_<Node, Object, NamedObject>(m, "Node")
+        .def(py::init<const std::string &>(), py::arg("name"), "Construct a new node.", py::return_value_policy::reference);
+
+    // ========================================================================
     py::class_<Component, Object, NamedObject>(m, "Component")
         .def(py::init<>(), "Construct a new component.")
         .def(py::init<const std::string &, const std::string &, const ObjectList<Node>::base_type &, const ObjectList<Parameter>::base_type &>(),
@@ -475,10 +556,6 @@ PYBIND11_MODULE(edacurry, m)
         .def("setIncludeType", &Include::setIncludeType, py::arg("include_type"), "Sets the include type.")
         .def("getPath", &Include::getPath, "Returns the path.")
         .def("setPath", &Include::setPath, py::arg("path"), "Sets the path.");
-
-    // ========================================================================
-    py::class_<Node, Object, NamedObject>(m, "Node")
-        .def(py::init<const std::string &>(), py::arg("name"), "Construct a new node.");
 
     // ========================================================================
     py::class_<Library, Object>(m, "Library")
@@ -566,6 +643,22 @@ PYBIND11_MODULE(edacurry, m)
             "__iter__", [](ObjectList<Object> &self) { return py::make_iterator(self.begin(), self.end()); }, py::keep_alive<0, 1>(), "Allows iterating the content of the dataset.");
 
     // ========================================================================
+    py::class_<ObjectList<Node>>(m, "NodeList")
+        .def(py::init<Node *>())
+        .def(py::init<Node *, std::vector<Node *>>())
+        .def("getOwner", &ObjectList<Node>::getOwner, "Returns the owner of the list.")
+        .def("setOwner", &ObjectList<Node>::setOwner, py::arg("owner"), "Sets the owner of the list.")
+        .def("clear", &ObjectList<Node>::clear, "Clears the list and deletes the objects.")
+        .def(
+            "__len__", [](const ObjectList<Node> &self) { return self.size(); }, "Returns the size of the list.")
+        .def("add", &ObjectList<Node>::push_back, py::arg("node"), "Adds a new node to the list.")
+        .def("remove", static_cast<Node *(ObjectList<Node>::*)(Node *)>(&ObjectList<Node>::remove), py::arg("node"), "Removes the node from the list.")
+        .def(
+            "__getitem__", [](ObjectList<Node> &self, unsigned index) { return self[index]; }, "Returns the item at the given index.")
+        .def(
+            "__iter__", [](ObjectList<Node> &self) { return py::make_iterator(self.begin(), self.end()); }, py::keep_alive<0, 1>(), "Allows iterating the content of the dataset.");
+
+    // ========================================================================
     py::class_<ObjectList<Parameter>>(m, "ParameterList")
         .def(py::init<Parameter *>())
         .def(py::init<Parameter *, std::vector<Parameter *>>())
@@ -574,8 +667,8 @@ PYBIND11_MODULE(edacurry, m)
         .def("clear", &ObjectList<Parameter>::clear, "Clears the list and deletes the objects.")
         .def(
             "__len__", [](const ObjectList<Parameter> &self) { return self.size(); }, "Returns the size of the list.")
-        .def("add", &ObjectList<Parameter>::push_back, py::arg("object"), "Adds a new object to the list.")
-        .def("remove", static_cast<Parameter *(ObjectList<Parameter>::*)(Parameter *)>(&ObjectList<Parameter>::remove), py::arg("object"), "Removes the object from the list.")
+        .def("add", &ObjectList<Parameter>::push_back, py::arg("parameter"), "Adds a new parameter to the list.")
+        .def("remove", static_cast<Parameter *(ObjectList<Parameter>::*)(Parameter *)>(&ObjectList<Parameter>::remove), py::arg("parameter"), "Removes the parameter from the list.")
         .def(
             "__getitem__", [](ObjectList<Parameter> &self, unsigned index) { return self[index]; }, "Returns the item at the given index.")
         .def(

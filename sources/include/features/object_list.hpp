@@ -80,12 +80,12 @@ public:
 
     ~ObjectList()
     {
-        for (auto object : _objects) delete object;
+        for (auto object : _objects) if (object) delete object;
     }
 
     inline void clear()
     {
-        for (auto object : _objects) delete object;
+        for (auto object : _objects) if (object) delete object;
     }
 
     inline size_t size() const

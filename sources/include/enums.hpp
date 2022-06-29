@@ -49,28 +49,28 @@ IncludeType plain_string_to_include_type(const std::string &s);
 
 /// @brief All possible operators.
 enum Operator {
-    op_none,
-    op_assign,
-    op_plus,
-    op_minus,
-    op_mult,
-    op_div,
-    op_or,
-    op_and,
-    op_xor,
-    op_not,
-    op_bor,
-    op_band,
-    op_bsl,
-    op_bsr,
-    op_eq,
-    op_neq,
-    op_lt,
-    op_gt,
-    op_le,
-    op_ge,
-    op_mod,
-    op_pow
+    op_none,   ///< No operator type.
+    op_assign, ///< Assign operator.
+    op_plus,   ///< Operator `+`.
+    op_minus,  ///< Operator `-`.
+    op_mult,   ///< Operator `*`.
+    op_div,    ///< Operator `/`.
+    op_or,     ///< Operator `||`.
+    op_and,    ///< Operator `&&`.
+    op_xor,    ///< Operator `^`.
+    op_not,    ///< Operator `!`.
+    op_bor,    ///< Operator `|`.
+    op_band,   ///< Operator `&`.
+    op_bsl,    ///< Operator `<<`.
+    op_bsr,    ///< Operator `>>`.
+    op_eq,     ///< Operator `==`.
+    op_neq,    ///< Operator `!=`.
+    op_lt,     ///< Operator `<`.
+    op_gt,     ///< Operator `>`.
+    op_le,     ///< Operator `<=`.
+    op_ge,     ///< Operator `>=`.
+    op_mod,    ///< Operator `%`.
+    op_pow     ///< Operator `^`.
 };
 
 /// @brief Return string representation of given operator.
@@ -174,7 +174,7 @@ double siprefix_to_scaling_factor(SiPrefix e);
 /// @return The scaling factor of given type of SI unit letter.
 double letter_to_scaling_factor(char l);
 
-/// @brief The type of control statement.
+/// @brief The type of paramters.
 enum ParameterType {
     param_none,       ///< No type of parameter.
     param_assign,     ///< Normal parameter assign.
