@@ -6,7 +6,6 @@
 
 #pragma once
 
-#include "features/object_reference.hpp"
 #include "features/named_object.hpp"
 #include "parameter.hpp"
 #include "object.hpp"
@@ -15,7 +14,7 @@
 namespace edacurry::structure
 {
 /// @brief Represent a component.
-class Component : public Object, public features::NamedObject, public features::ObjectReference {
+class Component : public Object, public features::NamedObject {
 public:
     /// The nodes.
     features::ObjectList<Node> nodes;
@@ -30,12 +29,10 @@ public:
     /// @param master the master of the component.
     /// @param nodes the node connected to the component.
     /// @param parameters the parameter assignments of the component.
-    /// @param reference The reference to the instantiated subckt.
     Component(const std::string &name,
               const std::string &master,
               const features::ObjectList<Node>::base_type &nodes,
-              const features::ObjectList<Parameter>::base_type &parameters,
-              structure::Object *reference = nullptr);
+              const features::ObjectList<Parameter>::base_type &parameters);
 
     ~Component() override;
 
@@ -58,9 +55,9 @@ public:
 
     /// @brief Accepts a visitor.
     /// @param visitor the visitor.
-    inline void accept(features::Visitor *visitor) const override
+    inline int accept(features::Visitor *visitor) const override
     {
-        visitor->visit(this);
+        return visitor->visitComponent(this);
     }
 
 private:

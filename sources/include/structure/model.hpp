@@ -7,14 +7,13 @@
 #pragma once
 
 #include "object.hpp"
-#include "features/object_reference.hpp"
 #include "features/named_object.hpp"
 #include "parameter.hpp"
 
 namespace edacurry::structure
 {
 /// @brief Represent a model.
-class Model : public Object, public features::NamedObject, public features::ObjectReference {
+class Model : public Object, public features::NamedObject {
 public:
     /// The assignments to parameters.
     features::ObjectList<Parameter> parameters;
@@ -91,9 +90,9 @@ public:
 
     /// @brief Accepts a visitor.
     /// @param visitor the visitor.
-    inline void accept(features::Visitor *visitor) const override
+    inline int accept(features::Visitor *visitor) const override
     {
-        visitor->visit(this);
+        return visitor->visitModel(this);
     }
 
 private:

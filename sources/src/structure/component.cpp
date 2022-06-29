@@ -11,7 +11,7 @@
 namespace edacurry::structure
 {
 Component::Component()
-    : Object(), features::NamedObject(), features::ObjectReference(), nodes(this), parameters(this), _master()
+    : Object(), features::NamedObject(), nodes(this), parameters(this), _master()
 {
     // Nothing to do.
 }
@@ -19,10 +19,8 @@ Component::Component()
 Component::Component(const std::string &name,
                      const std::string &master,
                      const features::ObjectList<Node>::base_type &nodes,
-                     const features::ObjectList<Parameter>::base_type &parameters,
-                     structure::Object *reference)
-    : Object(), features::NamedObject(name), features::ObjectReference(reference), nodes(this, nodes),
-      parameters(this, parameters), _master(utility::trim(master))
+                     const features::ObjectList<Parameter>::base_type &parameters)
+    : Object(), features::NamedObject(name),  nodes(this, nodes), parameters(this, parameters), _master(utility::trim(master))
 {
     // Nothing to do.
 }

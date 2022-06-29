@@ -15,28 +15,28 @@ class XmlBackend : public features::Visitor {
 public:
     XmlBackend();
 
-    void visit(const structure::Circuit *e) override;
-    void visit(const structure::Analysis *e) override;
-    void visit(const structure::Component *e) override;
-    void visit(const structure::ControlScope *e) override;
-    void visit(const structure::Control *e) override;
-    void visit(const structure::ExpressionUnary *e) override;
-    void visit(const structure::Expression *e) override;
-    void visit(const structure::FunctionCall *e) override;
-    void visit(const structure::Identifier *e) override;
-    void visit(const structure::Include *e) override;
-    void visit(const structure::LibraryDef *e) override;
-    void visit(const structure::Library *e) override;
-    void visit(const structure::Model *e) override;
-    void visit(const structure::Node *e) override;
-    void visit(const structure::Number<unsigned> *e) override;
-    void visit(const structure::Number<int> *e) override;
-    void visit(const structure::Number<double> *e) override;
-    void visit(const structure::Parameter *e) override;
-    void visit(const structure::Subckt *e) override;
-    void visit(const structure::String *e) override;
-    void visit(const structure::ValuePair *e) override;
-    void visit(const structure::ValueList *e) override;
+    int visitCircuit(const structure::Circuit *e) override;
+    int visitAnalysis(const structure::Analysis *e) override;
+    int visitComponent(const structure::Component *e) override;
+    int visitControlScope(const structure::ControlScope *e) override;
+    int visitControl(const structure::Control *e) override;
+    int visitExpressionUnary(const structure::ExpressionUnary *e) override;
+    int visitExpression(const structure::Expression *e) override;
+    int visitFunctionCall(const structure::FunctionCall *e) override;
+    int visitIdentifier(const structure::Identifier *e) override;
+    int visitInclude(const structure::Include *e) override;
+    int visitLibraryDef(const structure::LibraryDef *e) override;
+    int visitLibrary(const structure::Library *e) override;
+    int visitModel(const structure::Model *e) override;
+    int visitNode(const structure::Node *e) override;
+    int visitUnsigned(const structure::Number<unsigned> *e) override;
+    int visitInt(const structure::Number<int> *e) override;
+    int visitDouble(const structure::Number<double> *e) override;
+    int visitParameter(const structure::Parameter *e) override;
+    int visitSubckt(const structure::Subckt *e) override;
+    int visitString(const structure::String *e) override;
+    int visitValuePair(const structure::ValuePair *e) override;
+    int visitValueList(const structure::ValueList *e) override;
 
     inline auto str() const
     {

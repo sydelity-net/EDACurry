@@ -13,7 +13,6 @@ namespace edacurry::structure
 Model::Model()
     : Object(),
       features::NamedObject(),
-      features::ObjectReference(),
       parameters(this),
       _master(),
       _library(),
@@ -29,7 +28,6 @@ Model::Model(const std::string &name,
              const features::ObjectList<Parameter>::base_type &parameters)
     : Object(),
       features::NamedObject(name),
-      features::ObjectReference(),
       parameters(this, parameters),
       _master(master),
       _library(library),

@@ -187,22 +187,22 @@ Any ELDOFrontend::visitAc_parameter_driven(ELDOParser::Ac_parameter_drivenContex
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("type"),
-            _factory.string(ctx->ID()->toString()), param_assign, nullptr, true));
+            _factory.string(ctx->ID()->toString()), param_assign, true));
     // nb
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("nb"),
-            to_number<int>(ctx->NUMBER(0)), param_assign, nullptr, true));
+            to_number<int>(ctx->NUMBER(0)), param_assign, true));
     // fstart
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("fstart"),
-            to_number<int>(ctx->NUMBER(1)), param_assign, nullptr, true));
+            to_number<int>(ctx->NUMBER(1)), param_assign, true));
     // fstop
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("fstop"),
-            to_number<int>(ctx->NUMBER(2)), param_assign, nullptr, true));
+            to_number<int>(ctx->NUMBER(2)), param_assign, true));
     return visitChildren(ctx);
 }
 
@@ -223,7 +223,7 @@ Any ELDOFrontend::visitAc_list_driven(ELDOParser::Ac_list_drivenContext *ctx)
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("LIST"),
-            _factory.string(ctx->ID()->toString()), param_assign, nullptr, true));
+            _factory.string(ctx->ID()->toString()), param_assign, true));
     return visitChildren(ctx);
 }
 
@@ -236,22 +236,22 @@ Any ELDOFrontend::visitAc_adaptive(ELDOParser::Ac_adaptiveContext *ctx)
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("ADAPTIVE"),
-            _factory.string(ctx->ID()->toString()), param_assign, nullptr, true));
+            _factory.string(ctx->ID()->toString()), param_assign, true));
     // tolerance_value
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("tolerance_value"),
-            to_number<int>(ctx->NUMBER(0)), param_assign, nullptr, true));
+            to_number<int>(ctx->NUMBER(0)), param_assign, true));
     // fstart
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("fstart"),
-            to_number<int>(ctx->NUMBER(1)), param_assign, nullptr, true));
+            to_number<int>(ctx->NUMBER(1)), param_assign, true));
     // fstop
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("fstop"),
-            to_number<int>(ctx->NUMBER(2)), param_assign, nullptr, true));
+            to_number<int>(ctx->NUMBER(2)), param_assign, true));
     return visitChildren(ctx);
 }
 
@@ -285,13 +285,13 @@ Any ELDOFrontend::visitDc_component_analysis(ELDOParser::Dc_component_analysisCo
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("CNAM"),
-            _factory.string(ctx->ID(0)->toString()), param_assign, nullptr, true));
+            _factory.string(ctx->ID(0)->toString()), param_assign, true));
     // [L|W]
     if (ctx->ID().size() > 1) {
         analysis->parameters.push_back(
             _factory.parameter(
                 _factory.identifier("L|W"),
-                _factory.string(ctx->ID(1)->toString()), param_assign, nullptr, true));
+                _factory.string(ctx->ID(1)->toString()), param_assign, true));
     }
     // [TYPE nb]
     // Type name of the first level of variation for DC component analysis and voltage/current source analysis.
@@ -305,23 +305,23 @@ Any ELDOFrontend::visitDc_component_analysis(ELDOParser::Dc_component_analysisCo
         analysis->parameters.push_back(
             _factory.parameter(
                 _factory.identifier("TYPE"),
-                _factory.string(ctx->ID(2)->toString()), param_assign, nullptr, true));
+                _factory.string(ctx->ID(2)->toString()), param_assign, true));
     }
     // START
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("START"),
-            to_number<int>(ctx->NUMBER(0)), param_assign, nullptr, true));
+            to_number<int>(ctx->NUMBER(0)), param_assign, true));
     // STOP
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("STOP"),
-            to_number<int>(ctx->NUMBER(1)), param_assign, nullptr, true));
+            to_number<int>(ctx->NUMBER(1)), param_assign, true));
     // INCR
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("INCR"),
-            to_number<int>(ctx->NUMBER(2)), param_assign, nullptr, true));
+            to_number<int>(ctx->NUMBER(2)), param_assign, true));
     return visitChildren(ctx);
 }
 
@@ -336,7 +336,7 @@ Any ELDOFrontend::visitDc_source_analysis(ELDOParser::Dc_source_analysisContext 
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("SNAM"),
-            _factory.string(ctx->ID(0)->toString()), param_assign, nullptr, true));
+            _factory.string(ctx->ID(0)->toString()), param_assign, true));
     // [TYPE nb]
     // Type name of the first level of variation for DC component analysis and voltage/current source analysis.
     // Can be one of the following:
@@ -352,45 +352,45 @@ Any ELDOFrontend::visitDc_source_analysis(ELDOParser::Dc_source_analysisContext 
         analysis->parameters.push_back(
             _factory.parameter(
                 _factory.identifier("TYPE"),
-                _factory.string(ctx->ID(1)->toString()), param_assign, nullptr, true));
+                _factory.string(ctx->ID(1)->toString()), param_assign, true));
     }
     // START
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("START"),
-            to_number<int>(ctx->NUMBER(0)), param_assign, nullptr, true));
+            to_number<int>(ctx->NUMBER(0)), param_assign, true));
     // STOP
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("STOP"),
-            to_number<int>(ctx->NUMBER(1)), param_assign, nullptr, true));
+            to_number<int>(ctx->NUMBER(1)), param_assign, true));
     // INCR
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("INCR"),
-            to_number<int>(ctx->NUMBER(2)), param_assign, nullptr, true));
+            to_number<int>(ctx->NUMBER(2)), param_assign, true));
     if (ctx->NUMBER().size() == 6) {
         // SNAM2
         size_t snam2_index = (ctx->ID().size() == 3) ? 2U : 1U;
         analysis->parameters.push_back(
             _factory.parameter(
                 _factory.identifier("SNAM2"),
-                _factory.string(ctx->ID(snam2_index)->toString()), param_assign, nullptr, true));
+                _factory.string(ctx->ID(snam2_index)->toString()), param_assign, true));
         // START2
         analysis->parameters.push_back(
             _factory.parameter(
                 _factory.identifier("START2"),
-                to_number<int>(ctx->NUMBER(3)), param_assign, nullptr, true));
+                to_number<int>(ctx->NUMBER(3)), param_assign, true));
         // STOP2
         analysis->parameters.push_back(
             _factory.parameter(
                 _factory.identifier("STOP2"),
-                to_number<int>(ctx->NUMBER(4)), param_assign, nullptr, true));
+                to_number<int>(ctx->NUMBER(4)), param_assign, true));
         // INCR2
         analysis->parameters.push_back(
             _factory.parameter(
                 _factory.identifier("INCR2"),
-                to_number<int>(ctx->NUMBER(5)), param_assign, nullptr, true));
+                to_number<int>(ctx->NUMBER(5)), param_assign, true));
     }
     return visitChildren(ctx);
 }
@@ -404,22 +404,22 @@ Any ELDOFrontend::visitDc_temperature_analysis(ELDOParser::Dc_temperature_analys
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("TEMP"),
-            _factory.string(ctx->TEMP()->toString()), param_assign, nullptr, true));
+            _factory.string(ctx->TEMP()->toString()), param_assign, true));
     // START
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("START"),
-            to_number<int>(ctx->NUMBER(0)), param_assign, nullptr, true));
+            to_number<int>(ctx->NUMBER(0)), param_assign, true));
     // STOP
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("STOP"),
-            to_number<int>(ctx->NUMBER(1)), param_assign, nullptr, true));
+            to_number<int>(ctx->NUMBER(1)), param_assign, true));
     // INCR
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("INCR"),
-            to_number<int>(ctx->NUMBER(2)), param_assign, nullptr, true));
+            to_number<int>(ctx->NUMBER(2)), param_assign, true));
     return visitChildren(ctx);
 }
 
@@ -432,34 +432,34 @@ Any ELDOFrontend::visitDc_parameter_analysis(ELDOParser::Dc_parameter_analysisCo
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("PARAM"),
-            _factory.string(ctx->PARAM()->toString()), param_assign, nullptr, true));
+            _factory.string(ctx->PARAM()->toString()), param_assign, true));
     // PARAM_NAME
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("PARAM_NAME"),
-            _factory.string(ctx->ID(0)->toString()), param_assign, nullptr, true));
+            _factory.string(ctx->ID(0)->toString()), param_assign, true));
     // [TYPE nb]
     if (ctx->ID().size() > 1) {
         analysis->parameters.push_back(
             _factory.parameter(
                 _factory.identifier("TYPE"),
-                _factory.string(ctx->ID(1)->toString()), param_assign, nullptr, true));
+                _factory.string(ctx->ID(1)->toString()), param_assign, true));
     }
     // START
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("START"),
-            to_number<int>(ctx->NUMBER(0)), param_assign, nullptr, true));
+            to_number<int>(ctx->NUMBER(0)), param_assign, true));
     // STOP
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("STOP"),
-            to_number<int>(ctx->NUMBER(1)), param_assign, nullptr, true));
+            to_number<int>(ctx->NUMBER(1)), param_assign, true));
     // INCR
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("INCR"),
-            to_number<int>(ctx->NUMBER(2)), param_assign, nullptr, true));
+            to_number<int>(ctx->NUMBER(2)), param_assign, true));
     return visitChildren(ctx);
 }
 
@@ -504,7 +504,7 @@ Any ELDOFrontend::visitDsp(ELDOParser::DspContext *ctx)
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("waveform_name"),
-            _factory.string(ctx->ID()->toString()), param_assign, nullptr, true));
+            _factory.string(ctx->ID()->toString()), param_assign, true));
     return visitChildren(ctx);
 }
 
@@ -525,7 +525,7 @@ Any ELDOFrontend::visitFour(ELDOParser::FourContext *ctx)
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("waveform_name"),
-            _factory.string(ctx->ID()->toString()), param_assign, nullptr, true));
+            _factory.string(ctx->ID()->toString()), param_assign, true));
     return visitChildren(ctx);
 }
 
@@ -538,7 +538,7 @@ Any ELDOFrontend::visitLstb(ELDOParser::LstbContext *ctx)
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("SOURCE_NAME"),
-            _factory.string(to_string(ctx->filepath())), param_assign, nullptr, true));
+            _factory.string(to_string(ctx->filepath())), param_assign, true));
     return visitChildren(ctx);
 }
 
@@ -551,7 +551,7 @@ Any ELDOFrontend::visitMc(ELDOParser::McContext *ctx)
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("RUNNO"),
-            to_number<int>(ctx->NUMBER()), param_assign, nullptr, true));
+            to_number<int>(ctx->NUMBER()), param_assign, true));
     return visitChildren(ctx);
 }
 
@@ -565,7 +565,7 @@ Any ELDOFrontend::visitNoise(ELDOParser::NoiseContext *ctx)
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("NUMS"),
-            to_number<int>(ctx->NUMBER()), param_assign, nullptr, true));
+            to_number<int>(ctx->NUMBER()), param_assign, true));
     return result;
 }
 
@@ -594,10 +594,9 @@ Any ELDOFrontend::visitOp_selective(ELDOParser::Op_selectiveContext *ctx)
             analysis->parameters.push_back(
                 _factory.parameter(
                     _factory.identifier("KEYWORD"),
-                    _factory.string(ctx->ID(id_index)->toString()), param_assign, nullptr, false));
+                    _factory.string(ctx->ID(id_index)->toString()), param_assign, false));
         }
-        auto TIME = _factory.parameter(_factory.identifier("TIME"),
-                                       nullptr, param_assign, nullptr, false);
+        auto TIME = _factory.parameter(_factory.identifier("TIME"), nullptr, param_assign, false);
         this->advance_visit(expression, TIME);
     }
     return visitChildren(ctx);
@@ -652,7 +651,7 @@ Any ELDOFrontend::visitPz(ELDOParser::PzContext *ctx)
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("OV"),
-            _factory.string(to_string(ctx->filepath())), param_assign, nullptr, true));
+            _factory.string(to_string(ctx->filepath())), param_assign, true));
     return visitChildren(ctx);
 }
 
@@ -667,25 +666,25 @@ Any ELDOFrontend::visitRamp(ELDOParser::RampContext *ctx)
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("TYPE"),
-            _factory.string(type), param_assign, nullptr, true));
+            _factory.string(type), param_assign, true));
     // VAL | T1
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier((type == "DC" ? "VAL" : "T1")),
-            to_number<double>(ctx->NUMBER(0)), param_assign, nullptr, true));
+            to_number<double>(ctx->NUMBER(0)), param_assign, true));
     if (ctx->NUMBER().size() == 2) {
         // T2
         analysis->parameters.push_back(
             _factory.parameter(
                 _factory.identifier("T2"),
-                to_number<double>(ctx->NUMBER(1)), param_assign, nullptr, true));
+                to_number<double>(ctx->NUMBER(1)), param_assign, true));
     }
     // [SIMPLIFY]
     if (ctx->ID().size() == 2) {
         analysis->parameters.push_back(
             _factory.parameter(
                 _factory.identifier("SIMPLIFY"),
-                _factory.string(ctx->ID(1)->toString()), param_assign, nullptr, true));
+                _factory.string(ctx->ID(1)->toString()), param_assign, true));
     }
     return visitChildren(ctx);
 }
@@ -735,19 +734,19 @@ Any ELDOFrontend::visitSolve_parameter(ELDOParser::Solve_parameterContext *ctx)
     // PARAM
     analysis->parameters.push_back(
         _factory.parameter(
-            _factory.identifier("PARAM"), _factory.string(ctx->PARAM()->toString()), param_assign, nullptr, true));
+            _factory.identifier("PARAM"), _factory.string(ctx->PARAM()->toString()), param_assign, true));
     // param_name
     analysis->parameters.push_back(
         _factory.parameter(
-            _factory.identifier("param_name"), _factory.string(ctx->ID()->toString()), param_assign, nullptr, true));
+            _factory.identifier("param_name"), _factory.string(ctx->ID()->toString()), param_assign, true));
     // MIN
     analysis->parameters.push_back(
         _factory.parameter(
-            _factory.identifier("MIN"), to_number<double>(ctx->NUMBER(0)), param_assign, nullptr, true));
+            _factory.identifier("MIN"), to_number<double>(ctx->NUMBER(0)), param_assign, true));
     // MAX
     analysis->parameters.push_back(
         _factory.parameter(
-            _factory.identifier("MAX"), to_number<double>(ctx->NUMBER(1)), param_assign, nullptr, true));
+            _factory.identifier("MAX"), to_number<double>(ctx->NUMBER(1)), param_assign, true));
     return visitChildren(ctx);
 }
 
@@ -760,24 +759,24 @@ Any ELDOFrontend::visitSolve_object(ELDOParser::Solve_objectContext *ctx)
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("obj_name"),
-            _factory.string(ctx->ID(0)->toString()), param_assign, nullptr, true));
+            _factory.string(ctx->ID(0)->toString()), param_assign, true));
     // [W|L]
     if (ctx->ID().size() > 1) {
         analysis->parameters.push_back(
             _factory.parameter(
                 _factory.identifier("[W|L]"),
-                _factory.string(ctx->ID(1)->toString()), param_assign, nullptr, true));
+                _factory.string(ctx->ID(1)->toString()), param_assign, true));
     }
     // MIN
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("MIN"),
-            to_number<double>(ctx->NUMBER(0)), param_assign, nullptr, true));
+            to_number<double>(ctx->NUMBER(0)), param_assign, true));
     // MAX
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("MAX"),
-            to_number<double>(ctx->NUMBER(1)), param_assign, nullptr, true));
+            to_number<double>(ctx->NUMBER(1)), param_assign, true));
     return visitChildren(ctx);
 }
 
@@ -790,24 +789,24 @@ Any ELDOFrontend::visitSolve_component(ELDOParser::Solve_componentContext *ctx)
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("CNAME"),
-            _factory.string(ctx->ID(0)->toString()), param_assign, nullptr, true));
+            _factory.string(ctx->ID(0)->toString()), param_assign, true));
     // [W|L]
     if (ctx->ID().size() > 1) {
         analysis->parameters.push_back(
             _factory.parameter(
                 _factory.identifier("[W|L]"),
-                _factory.string(ctx->ID(1)->toString()), param_assign, nullptr, true));
+                _factory.string(ctx->ID(1)->toString()), param_assign, true));
     }
     // MIN
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("MIN"),
-            to_number<double>(ctx->NUMBER(0)), param_assign, nullptr, true));
+            to_number<double>(ctx->NUMBER(0)), param_assign, true));
     // MAX
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("MAX"),
-            to_number<double>(ctx->NUMBER(1)), param_assign, nullptr, true));
+            to_number<double>(ctx->NUMBER(1)), param_assign, true));
     return visitChildren(ctx);
 }
 
@@ -838,22 +837,22 @@ Any ELDOFrontend::visitTran_point_driven(ELDOParser::Tran_point_drivenContext *c
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("TPRINT"),
-            to_number<double>(ctx->NUMBER(0)), param_assign, nullptr, true));
+            to_number<double>(ctx->NUMBER(0)), param_assign, true));
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("TSTOP"),
-            to_number<double>(ctx->NUMBER(1)), param_assign, nullptr, true));
+            to_number<double>(ctx->NUMBER(1)), param_assign, true));
     for (size_t i = 2; i < n_numbers; ++i) {
         analysis->parameters.push_back(
             _factory.parameter(
                 _factory.identifier("TSTART"),
-                to_number<double>(ctx->NUMBER(i)), param_assign, nullptr, true));
+                to_number<double>(ctx->NUMBER(i)), param_assign, true));
         if ((i + 1) < n_numbers) {
             ++i;
             analysis->parameters.push_back(
                 _factory.parameter(
                     _factory.identifier("HMAX"),
-                    to_number<double>(ctx->NUMBER(i)), param_assign, nullptr, true));
+                    to_number<double>(ctx->NUMBER(i)), param_assign, true));
         }
     }
     return visitChildren(ctx);
@@ -874,11 +873,11 @@ Any ELDOFrontend::visitTran_parameterized(ELDOParser::Tran_parameterizedContext 
         this->advance_visit(
             ctx->expression(i),
             _factory.parameter(_factory.identifier("INCRn"),
-                               nullptr, param_assign, nullptr, true));
+                               nullptr, param_assign, true));
         this->advance_visit(
             ctx->expression(i + 1),
             _factory.parameter(_factory.identifier("Tn"),
-                               nullptr, param_assign, nullptr, true));
+                               nullptr, param_assign, true));
     }
     if (ctx->parameter_list())
         return this->visitChildren(ctx->parameter_list());
@@ -902,7 +901,7 @@ Any ELDOFrontend::visitWcase(ELDOParser::WcaseContext *ctx)
     analysis->parameters.push_back(
         _factory.parameter(
             _factory.identifier("TYPE"),
-            _factory.string(ctx->ID()->toString()), param_assign, nullptr, true));
+            _factory.string(ctx->ID()->toString()), param_assign, true));
     return visitChildren(ctx);
 }
 
@@ -1009,13 +1008,13 @@ Any ELDOFrontend::visitSave_when(ELDOParser::Save_whenContext *ctx)
             _factory.parameter(
                 _factory.identifier("when"),
                 _factory.identifier(ctx->ID()->toString()),
-                param_assign, nullptr, true));
+                param_assign, true));
     } else if (ctx->END()) {
         this->add_to_parent(
             _factory.parameter(
                 _factory.identifier("when"),
                 _factory.identifier(ctx->END()->toString()),
-                param_assign, nullptr, true));
+                param_assign, true));
     }
     return visitChildren(ctx);
 }
@@ -1175,7 +1174,6 @@ Any ELDOFrontend::visitMeas_info(ELDOParser::Meas_infoContext *ctx)
             _factory.identifier("ANALYSIS_INFO"),
             _factory.identifier(ctx->ID()->toString()),
             param_assign,
-            nullptr,
             true));
     return visitChildren(ctx);
 }
@@ -1205,7 +1203,6 @@ Any ELDOFrontend::visitMeas_label_name(ELDOParser::Meas_label_nameContext *ctx)
             _factory.identifier("label_name"),
             _factory.identifier(ctx->ID()->toString()),
             param_assign,
-            nullptr,
             true));
     return visitChildren(ctx);
 }
@@ -1445,12 +1442,12 @@ Any ELDOFrontend::visitCoupled_inductor(ELDOParser::Coupled_inductorContext *ctx
         _factory.parameter(
             _factory.identifier("Lyy"),
             _factory.string(ctx->ID(0)->toString()),
-            param_assign, nullptr, true));
+            param_assign, true));
     component->parameters.push_back(
         _factory.parameter(
             _factory.identifier("Lzz"),
             _factory.string(ctx->ID(1)->toString()),
-            param_assign, nullptr, true));
+            param_assign, true));
     return visitChildren(ctx);
 }
 
@@ -1616,11 +1613,11 @@ Any ELDOFrontend::visitTwo_input_gate(ELDOParser::Two_input_gateContext *ctx)
         component->parameters.push_back(
             _factory.parameter(
                 _factory.identifier("REF1"),
-                _factory.string(ctx->ID(0)->toString()), param_assign, nullptr, true));
+                _factory.string(ctx->ID(0)->toString()), param_assign, true));
         component->parameters.push_back(
             _factory.parameter(
                 _factory.identifier("REF2"),
-                _factory.string(ctx->ID(1)->toString()), param_assign, nullptr, true));
+                _factory.string(ctx->ID(1)->toString()), param_assign, true));
         if (n_ids == 3)
             component->setMaster(ctx->ID(2)->toString());
     }
@@ -1696,7 +1693,6 @@ Any ELDOFrontend::visitNode_mapping(ELDOParser::Node_mappingContext *ctx)
             _factory.identifier(to_string(ctx->node(0))),
             _factory.identifier(to_string(ctx->node(1))),
             param_assign,
-            nullptr,
             false));
     return Any();
 }
@@ -1904,10 +1900,10 @@ void ELDOFrontend::add_to_parent(structure::Object *node)
 
     auto expression = utility::to<structure::Expression>(parent);
     if (expression) {
-        if (!expression->getValue1())
-            expression->setValue1(utility::to<structure::Value>(node));
-        else if (!expression->getValue2())
-            expression->setValue2(utility::to<structure::Value>(node));
+        if (!expression->getFirst())
+            expression->setFirst(utility::to<structure::Value>(node));
+        else if (!expression->getSecond())
+            expression->setSecond(utility::to<structure::Value>(node));
         else
             _error("The parent has no space for the node..\n"
                    "(node:%s, parent:%s)",

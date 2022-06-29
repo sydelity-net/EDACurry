@@ -48,14 +48,12 @@ public:
     /// @param master the master of the component.
     /// @param nodes the node assignments of the component.
     /// @param parameters the parameter assignments of the component.
-    /// @param reference The reference to the instantiated subckt.
     /// @return the newly generated object, **remember to delete it**.
     structure::Component *component(
         const std::string &name,
         const std::string &master,
         const features::ObjectList<structure::Node>::base_type &nodes,
-        const features::ObjectList<structure::Parameter>::base_type &parameters,
-        structure::Object *reference = nullptr);
+        const features::ObjectList<structure::Parameter>::base_type &parameters);
 
     /// @brief Creates a new controlled scope.
     /// @param name the name of the control scope.
@@ -150,11 +148,8 @@ public:
 
     /// @brief Creates a new node.
     /// @param name The name of the identifier.
-    /// @param reference The reference to another node.
     /// @return the newly generated object, **remember to delete it**.
-    structure::Node *node(
-        const std::string &name,
-        structure::Object *reference = nullptr);
+    structure::Node *node(const std::string &name);
 
     /// @brief Creates a new number.
     /// @tparam T The type of the number.
@@ -169,13 +164,11 @@ public:
     /// @brief Creates a new parameter.
     /// @param left the left-hand-side value of the parameter.
     /// @param right the right-hand-side value of the parameter.
-    /// @param reference The reference to another parameter.
     /// @return the newly generated object, **remember to delete it**.
     structure::Parameter *parameter(
         structure::Value *left,
         structure::Value *right,
         ParameterType type           = param_assign,
-        structure::Object *reference = nullptr,
         bool hide_name               = false);
 
     /// @brief Creates a new subckt.

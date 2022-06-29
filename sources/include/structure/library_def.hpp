@@ -36,9 +36,9 @@ public:
 
     /// @brief Accepts a visitor.
     /// @param visitor the visitor.
-    inline void accept(features::Visitor *visitor) const override
+    inline int accept(features::Visitor *visitor) const override
     {
-        visitor->visit(this);
+        return visitor->visitLibraryDef(this);
     }
 };
 

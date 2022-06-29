@@ -15,9 +15,6 @@ namespace edacurry::structure
 class ValuePair : public Value {
 public:
     /// @brief Constructor.
-    explicit ValuePair();
-
-    /// @brief Constructor.
     /// @param first The first value. Default value is <tt>nullptr</tt>.
     /// @param second The second value. Default value is <tt>nullptr</tt>.
     ValuePair(Value *first = nullptr, Value *second = nullptr);
@@ -57,9 +54,9 @@ public:
 
     /// @brief Accepts a visitor.
     /// @param visitor the visitor.
-    inline void accept(features::Visitor *visitor) const override
+    inline int accept(features::Visitor *visitor) const override
     {
-        visitor->visit(this);
+        return visitor->visitValuePair(this);
     }
 
 private:

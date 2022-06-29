@@ -672,8 +672,8 @@ jnode_t &operator<<<edacurry::structure::Expression *>(jnode_t &lhs, edacurry::s
     lhs["type"] << TypeName<edacurry::structure::Expression>::get();
     // Write the fields.
     lhs["operator"] << rhs->getOperator();
-    lhs["value1"] << rhs->getValue1();
-    lhs["value2"] << rhs->getValue2();
+    lhs["first"] << rhs->getFirst();
+    lhs["second"] << rhs->getSecond();
     return lhs;
 }
 
@@ -684,15 +684,15 @@ const jnode_t &operator>><edacurry::structure::Expression *>(const jnode_t &lhs,
         if (rhs == nullptr)
             rhs = new edacurry::structure::Expression();
         // Support variables.
-        edacurry::structure::Value *value1 = nullptr, *value2 = nullptr;
+        edacurry::structure::Value *first = nullptr, *second = nullptr;
         edacurry::Operator op;
         // Read the values.
         lhs["operator"] >> op;
         rhs->setOperator(op);
-        lhs["value1"] >> value1;
-        rhs->setValue1(value1);
-        lhs["value2"] >> value2;
-        rhs->setValue1(value2);
+        lhs["first"] >> first;
+        rhs->setFirst(first);
+        lhs["second"] >> second;
+        rhs->setSecond(second);
     }
     return lhs;
 }
@@ -945,7 +945,7 @@ const jnode_t &operator>><edacurry::structure::Parameter *>(const jnode_t &lhs, 
         lhs["parameter_type"] >> parameter_type;
         lhs["hide_left"] >> hide_left;
         if (rhs == nullptr) {
-            rhs = new edacurry::structure::Parameter(left, right, parameter_type, nullptr, hide_left);
+            rhs = new edacurry::structure::Parameter(left, right, parameter_type, hide_left);
         } else {
             rhs->setLeft(left);
             rhs->setRight(right);

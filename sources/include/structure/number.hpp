@@ -67,10 +67,7 @@ public:
 
     /// @brief Accepts a visitor.
     /// @param visitor the visitor.
-    inline void accept(features::Visitor *visitor) const override
-    {
-        visitor->visit(this);
-    }
+    inline int accept(features::Visitor *visitor) const override;
 
 private:
     /// @brief The value of the number.
@@ -78,5 +75,23 @@ private:
     /// @brief The unit of the number.
     std::string _unit;
 };
+
+template <>
+inline int structure::Number<unsigned>::accept(features::Visitor *visitor) const
+{
+    return visitor->visitUnsigned(this);
+}
+
+template <>
+inline int structure::Number<int>::accept(features::Visitor *visitor) const
+{
+    return visitor->visitInt(this);
+}
+
+template <>
+inline int structure::Number<double>::accept(features::Visitor *visitor) const
+{
+    return visitor->visitDouble(this);
+}
 
 } // namespace edacurry::structure

@@ -19,9 +19,9 @@ public:
 
     /// @brief Constructor.
     /// @param op The operator. Default value is <tt>op_none</tt>.
-    /// @param value1 The first operand. Default value is <tt>nullptr</tt>.
-    /// @param value2 The second operand. Default value is <tt>nullptr</tt>.
-    Expression(Operator op, Value *value1 = nullptr, Value *value2 = nullptr);
+    /// @param first The first operand. Default value is <tt>nullptr</tt>.
+    /// @param second The second operand. Default value is <tt>nullptr</tt>.
+    Expression(Operator op, Value *first = nullptr, Value *second = nullptr);
 
     /// @brief Destructor.
     ~Expression() override;
@@ -42,23 +42,23 @@ public:
 
     /// @brief Returns the first operand of the expression.
     /// @return The first operand of the expression.
-    Value *getValue1() const;
+    Value *getFirst() const;
 
     /// @brief Sets the first operand of the expression.
     /// @param value The first operand of the expression to be set.
     /// @return The old first operand of the expression if it is different
     /// from the new one, nullptr otherwise.
-    Value *setValue1(Value *value);
+    Value *setFirst(Value *value);
 
     /// @brief Returns the second operand of the expression.
     /// @return The second operand of the expression.
-    Value *getValue2() const;
+    Value *getSecond() const;
 
     /// @brief Sets the second operand of the expression.
     /// @param value The second operand of the expression to be set.
     /// @return The old second operand of the expression if it is different
     /// from the new one, nullptr otherwise.
-    Value *setValue2(Value *value);
+    Value *setSecond(Value *value);
 
     /// @brief Provides a string representation of the object for **debugging** purposes.
     /// @return the string representation.
@@ -66,18 +66,18 @@ public:
 
     /// @brief Accepts a visitor.
     /// @param visitor the visitor.
-    inline void accept(features::Visitor *visitor) const override
+    inline int accept(features::Visitor *visitor) const override
     {
-        visitor->visit(this);
+        return visitor->visitExpression(this);
     }
 
 private:
     /// @brief The operator of the expression.
     Operator _operator;
     /// @brief The first operand of the expression.
-    Value *_value1;
+    Value *_first;
     /// @brief The second operand of the expression.
-    Value *_value2;
+    Value *_second;
 };
 
 } // namespace edacurry::structure

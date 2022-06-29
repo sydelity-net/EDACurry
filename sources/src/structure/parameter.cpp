@@ -11,9 +11,8 @@
 namespace edacurry::structure
 {
 
-Parameter::Parameter(Value *left, Value *right, ParameterType type, structure::Object *reference, bool hide_left)
+Parameter::Parameter(Value *left, Value *right, ParameterType type, bool hide_left)
     : Object(),
-      features::ObjectReference(reference),
       _left(left),
       _right(right),
       _type(type),

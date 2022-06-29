@@ -8,11 +8,6 @@
 
 namespace edacurry::structure
 {
-ValuePair::ValuePair() : Value(), _first(), _second()
-{
-    // Nothing to do.
-}
-
 ValuePair::ValuePair(Value *first, Value *second)
     : Value(), _first(first), _second(second)
 {

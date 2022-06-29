@@ -13,25 +13,25 @@ namespace edacurry::structure
 Expression::Expression()
     : Value(),
       _operator(op_none),
-      _value1(nullptr),
-      _value2(nullptr)
+      _first(nullptr),
+      _second(nullptr)
 {
     // Nothing to do.
 }
 
-Expression::Expression(Operator op, Value *value1, Value *value2)
+Expression::Expression(Operator op, Value *first, Value *second)
     : Value(),
       _operator(op),
-      _value1(value1),
-      _value2(value2)
+      _first(first),
+      _second(second)
 {
     // Nothing to do.
 }
 
 Expression::~Expression()
 {
-    delete (_value1);
-    delete (_value2);
+    delete (_first);
+    delete (_second);
 }
 
 Operator Expression::getOperator() const
@@ -44,24 +44,24 @@ void Expression::setOperator(Operator op)
     _operator = op;
 }
 
-Value *Expression::getValue1() const
+Value *Expression::getFirst() const
 {
-    return _value1;
+    return _first;
 }
 
-Value *Expression::setValue1(Value *value)
+Value *Expression::setFirst(Value *value)
 {
-    return this->setChild(_value1, value);
+    return this->setChild(_first, value);
 }
 
-Value *Expression::getValue2() const
+Value *Expression::getSecond() const
 {
-    return _value2;
+    return _second;
 }
 
-Value *Expression::setValue2(Value *value)
+Value *Expression::setSecond(Value *value)
 {
-    return this->setChild(_value2, value);
+    return this->setChild(_second, value);
 }
 
 std::string Expression::toString() const
@@ -69,8 +69,8 @@ std::string Expression::toString() const
     std::stringstream ss;
     ss << "Expression("
        << operator_to_plain_string(_operator) << ", "
-       << ((_value1) ? _value1->toString() : " NULL") << ", "
-       << ((_value2) ? _value2->toString() : " NULL") << ")";
+       << ((_first) ? _first->toString() : " NULL") << ", "
+       << ((_second) ? _second->toString() : " NULL") << ")";
     return ss.str();
 }
 

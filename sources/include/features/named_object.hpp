@@ -4,8 +4,6 @@
 /// Distributed under the MIT License (MIT) (See accompanying LICENSE file or
 ///  copy at http://opensource.org/licenses/MIT)
 
-
-
 #pragma once
 
 #include <string>
@@ -16,6 +14,14 @@ namespace edacurry::features
 /// @brief Represent a named object.
 class NamedObject {
 public:
+    NamedObject();
+
+    /// @brief Construct a new Named Object object.
+    /// @param name the name of the object.
+    NamedObject(const std::string &name);
+
+    ~NamedObject() = default;
+
     /// @brief Sets the name.
     /// @param name the name to be set.
     void setName(const std::string &name);
@@ -38,8 +44,7 @@ public:
     static Derived *removeFromListByName(std::vector<Derived *> &list,
                                          const std::string &name)
     {
-        static_assert(std::is_convertible<Derived *, NamedObject *>::value,
-                      "Derived must inherit NamedObject as public");
+        static_assert(std::is_convertible_v<Derived *, NamedObject *>, "Derived must inherit NamedObject as public");
         for (auto it = list.begin(); it != list.end(); ++it) {
             if ((*it)->getName() == name) {
                 (*it)->setParent(nullptr);
@@ -51,14 +56,6 @@ public:
     }
 
 protected:
-    NamedObject();
-
-    /// @brief Construct a new Named Object object.
-    /// @param name the name of the object.
-    NamedObject(const std::string &name);
-
-    ~NamedObject() = default;
-
     NamedObject(const NamedObject &other) = delete;
 
     NamedObject &operator=(const NamedObject &other) = delete;

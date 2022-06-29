@@ -29,10 +29,9 @@ structure::Component *Factory::component(
     const std::string &name,
     const std::string &master,
     const features::ObjectList<structure::Node>::base_type &nodes,
-    const features::ObjectList<structure::Parameter>::base_type &parameters,
-    structure::Object *reference)
+    const features::ObjectList<structure::Parameter>::base_type &parameters)
 {
-    return new structure::Component(name, master, nodes, parameters, reference);
+    return new structure::Component(name, master, nodes, parameters);
 }
 
 structure::ControlScope *Factory::controlScope(
@@ -108,19 +107,18 @@ structure::Model *Factory::model(
                                 parameters);
 }
 
-structure::Node *Factory::node(const std::string &name, structure::Object *reference)
+structure::Node *Factory::node(const std::string &name)
 {
-    return new structure::Node(name, reference);
+    return new structure::Node(name);
 }
 
 structure::Parameter *Factory::parameter(
     structure::Value *left,
     structure::Value *right,
     ParameterType type,
-    structure::Object *reference,
     bool hide_name)
 {
-    return new structure::Parameter(left, right, type, reference, hide_name);
+    return new structure::Parameter(left, right, type, hide_name);
 }
 
 structure::Subckt *Factory::subckt(

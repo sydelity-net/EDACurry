@@ -24,11 +24,6 @@ endif()
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 # -----------------------------------------------------------------------------
-# Documentation target.
-# -----------------------------------------------------------------------------
-add_subdirectory(doc)
-
-# -----------------------------------------------------------------------------
 # Find ANTLR4
 # -----------------------------------------------------------------------------
 find_package(ANTLR4 REQUIRED)
@@ -125,11 +120,13 @@ pybind11_add_module(
     ./src/utility/json.cpp
 
     ./src/frontend/eldo_frontend.cpp
+    ./src/frontend/spectre_frontend.cpp
 
     ./src/backend/xml_backend.cpp
     ./src/backend/eldo_backend.cpp
     
     ./src/features/named_object.cpp
+    ./src/features/visitable_object.cpp
 
     ./src/antlr4parser/ELDOLexer.cpp
     ./src/antlr4parser/ELDOParser.cpp
@@ -157,6 +154,7 @@ target_include_directories(
     ./include
     SYSTEM ${ANTLR4_INCLUDE_DIRS}
     SYSTEM ./include/antlr4parser
+    SYSTEM ${pybind11_SOURCE_DIR}/include
 )
 
 # Add the libraries for linking (python wrapped).
@@ -168,6 +166,75 @@ target_link_libraries(
     ${PROJECT_NAME} PRIVATE
     ${ANTLR4_LIBRARIES}
 )
+
+# -----------------------------------------------------------------------------
+# DOCUMENTATION
+# -----------------------------------------------------------------------------
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+    # Doxygen theme
+    include(FetchContent)
+    FetchContent_Declare(DoxygenAwesome
+        GIT_REPOSITORY https://github.com/jothepro/doxygen-awesome-css
+        GIT_TAG 4cd62308d825fe0396d2f66ffbab45d0e247724c # 2.0.3
+    )
+    FetchContent_MakeAvailable(DoxygenAwesome)
+    FetchContent_GetProperties(DoxygenAwesome SOURCE_DIR DoxygenAwesome_SOURCE_DIR)
+
+    set(DOXYGEN_USE_MDFILE_AS_MAINPAGE README.md)
+    set(DOXYGEN_GENERATE_TREEVIEW YES)
+    set(DOXYGEN_HTML_HEADER ${DoxygenAwesome_SOURCE_DIR}/doxygen-custom/header.html)
+    set(DOXYGEN_HTML_EXTRA_STYLESHEET ${DoxygenAwesome_SOURCE_DIR}/doxygen-awesome.css)
+    set(DOXYGEN_HTML_EXTRA_FILES
+        ${DoxygenAwesome_SOURCE_DIR}/doxygen-awesome-fragment-copy-button.js
+        ${DoxygenAwesome_SOURCE_DIR}/doxygen-awesome-paragraph-link.js
+        ${DoxygenAwesome_SOURCE_DIR}/doxygen-awesome-darkmode-toggle.js
+    )
+
+    doxygen_add_docs(${PROJECT_NAME}_documentation
+        ./include/backend/eldo_backend.hpp
+        ./include/backend/indented_stream.hpp
+        ./include/backend/json_backend.hpp
+        ./include/backend/xml_backend.hpp
+        ./include/classes.hpp
+        ./include/enums.hpp
+        ./include/factory.hpp
+        ./include/features/named_object.hpp
+        ./include/features/object_list.hpp
+        ./include/features/object_reference.hpp
+        ./include/features/visitable_object.hpp
+        ./include/frontend/eldo_frontend.hpp
+        ./include/frontend/json_frontend.hpp
+        ./include/frontend/spectre_frontend.hpp
+        ./include/structure/analysis.hpp
+        ./include/structure/circuit.hpp
+        ./include/structure/component.hpp
+        ./include/structure/control.hpp
+        ./include/structure/control_scope.hpp
+        ./include/structure/expression.hpp
+        ./include/structure/expression_unary.hpp
+        ./include/structure/function_call.hpp
+        ./include/structure/identifier.hpp
+        ./include/structure/include.hpp
+        ./include/structure/library.hpp
+        ./include/structure/library_def.hpp
+        ./include/structure/model.hpp
+        ./include/structure/node.hpp
+        ./include/structure/number.hpp
+        ./include/structure/object.hpp
+        ./include/structure/parameter.hpp
+        ./include/structure/string.hpp
+        ./include/structure/subckt.hpp
+        ./include/structure/value.hpp
+        ./include/structure/value_list.hpp
+        ./include/structure/value_pair.hpp
+        ./include/utility/json.hpp
+        ./include/utility/logging.hpp
+        ./include/utility/typename.hpp
+        ./include/utility/utility.hpp
+        README.md
+    )
+endif()
 
 # -----------------------------------------------------------------------------
 # Add the target for generating the python interface.
@@ -183,7 +250,6 @@ add_custom_command(
         COMMAND echo "Generating python stubs..."
         COMMAND cp ${STUBGEN} ${PROJECT_BINARY_DIR}
         COMMAND ${PYTHON_EXECUTABLE} pybind11-stubgen.py ${PROJECT_NAME} --output-dir="." --root-module-suffix="" --no-setup-py --log-level=DEBUG
-        COMMAND cp -rv ${PROJECT_BINARY_DIR}/${PROJECT_NAME}* ${PROJECT_SOURCE_DIR}/notebooks
         COMMAND echo "Generating python stubs... done!"
         DEPENDS ${STUBGEN}
         DEPENDS ${PROJECT_NAME}

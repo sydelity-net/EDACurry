@@ -14,7 +14,7 @@
 namespace edacurry::structure
 {
 /// @brief Basic circuit element.
-class Object : public features::Visitable {
+class Object : public features::VisitableObject {
 public:
     /// @brief Construct a new object.
     /// @param parent The parent of the object.

@@ -7,19 +7,17 @@
 #pragma once
 
 #include "object.hpp"
-#include "features/object_reference.hpp"
 #include "features/named_object.hpp"
 #include "features/object_list.hpp"
 
 namespace edacurry::structure
 {
 /// @brief Represent a node.
-class Node : public Object, public features::NamedObject, public features::ObjectReference {
+class Node : public Object, public features::NamedObject {
 public:
     /// @brief Construct a new Node object.
     /// @param name The name of the identifier.
-    /// @param reference The reference to another node.
-    explicit Node(const std::string &name, structure::Object *reference = nullptr);
+    explicit Node(const std::string &name);
 
     ~Node() override;
 
@@ -29,9 +27,9 @@ public:
 
     /// @brief Accepts a visitor.
     /// @param visitor the visitor.
-    inline void accept(features::Visitor *visitor) const override
+    inline int accept(features::Visitor *visitor) const override
     {
-        visitor->visit(this);
+        return visitor->visitNode(this);
     }
 };
 

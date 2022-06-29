@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include "named_object.hpp"
 #include "structure/object.hpp"
+#include "named_object.hpp"
 
 #include <type_traits>
 #include <cassert>
@@ -115,9 +115,6 @@ public:
 
     /// @brief Removes the given object by name.
     /// @param object the name of the object to remove.
-    template <
-        typename std::enable_if<std::is_base_of<features::NamedObject, T>::value,
-                                int> * = nullptr>
     value_type remove(const std::string &name)
     {
         return features::NamedObject::removeFromListByName(_objects, name);

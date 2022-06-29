@@ -6,7 +6,6 @@
 
 #pragma once
 
-#include "features/object_reference.hpp"
 #include "features/named_object.hpp"
 #include "features/object_list.hpp"
 #include "object.hpp"
@@ -16,15 +15,14 @@
 namespace edacurry::structure
 {
 /// @brief Represent a parameter.
-class Parameter : public Object, public features::ObjectReference {
+class Parameter : public Object {
 public:
     /// @brief Construct a new Parameter object.
     /// @param left the right value of the parameter.
     /// @param right the initial right value of the parameter.
     /// @param type the parameter's type.
-    /// @param reference The reference to another parameter.
     /// @param hide_left hide the left-hand side value during code generation.
-    Parameter(Value *left, Value *right, ParameterType type = param_assign, structure::Object *reference = nullptr, bool hide_left = false);
+    Parameter(Value *left, Value *right, ParameterType type = param_assign, bool hide_left = false);
 
     /// @brief Destroy the Parameter object.
     ~Parameter() override;
@@ -83,9 +81,9 @@ public:
 
     /// @brief Accepts a visitor.
     /// @param visitor the visitor.
-    inline void accept(features::Visitor *visitor) const override
+    inline int accept(features::Visitor *visitor) const override
     {
-        visitor->visit(this);
+        return visitor->visitParameter(this);
     }
 
 private:

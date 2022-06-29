@@ -9,8 +9,8 @@
 
 namespace edacurry::structure
 {
-Node::Node(const std::string &name, structure::Object *reference)
-    : Object(), features::NamedObject(name), features::ObjectReference(reference)
+Node::Node(const std::string &name)
+    : Object(), features::NamedObject(name)
 {
     // Nothing to do.
 }
