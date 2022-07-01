@@ -12,27 +12,19 @@ namespace edacurry::structure
 Subckt::Subckt()
     : Object(),
       features::NamedObject(),
-      nodes(this),
-      parameters(this),
-      content(this)
+      nodes(this->weak_from_this()),
+      parameters(this->weak_from_this()),
+      content(this->weak_from_this())
 {
     // Nothing to do.
 }
 
-Subckt::Subckt(const std::string &name,
-               const features::ObjectList<Node>::base_type &nodes,
-               const features::ObjectList<Parameter>::base_type &params,
-               const features::ObjectList<Object>::base_type &content)
+Subckt::Subckt(const std::string &name)
     : Object(),
       features::NamedObject(name),
-      nodes(this, nodes),
-      parameters(this, params),
-      content(this, content)
-{
-    // Nothing to do.
-}
-
-Subckt::~Subckt()
+      nodes(this->weak_from_this()),
+      parameters(this->weak_from_this()),
+      content(this->weak_from_this())
 {
     // Nothing to do.
 }
@@ -40,11 +32,7 @@ Subckt::~Subckt()
 std::string Subckt::toString() const
 {
     std::stringstream ss;
-    ss << "Subckt("
-       << this->getName() << ", "
-       << parameters.toString() << ", "
-       << nodes.toString() << ", "
-       << content.toString() << ")";
+    ss << "(subckt `" << this->getName() << "` " << parameters.toString() << " " << nodes.toString() << " " << content.toString() << ")";
     return ss.str();
 }
 } // namespace edacurry::structure

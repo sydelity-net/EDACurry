@@ -263,7 +263,7 @@ int XmlBackend::visitParameter(const structure::Parameter *e)
 {
     ss << "<parameter"
        << " type='" << parameter_type_to_plain_string(e->getType()) << "'"
-       << " hide_left='" << (e->getHideLeft() ? "true" : "false") << "'>\n"
+       << " hide_name='" << (e->getHideName() ? "true" : "false") << "'>\n"
        << ind_increase;
     ss << "<left>\n"
        << ind_increase;

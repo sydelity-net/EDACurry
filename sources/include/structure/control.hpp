@@ -17,18 +17,12 @@ namespace edacurry::structure
 class Control : public Object, public features::NamedObject {
 public:
     /// The parameters of the control statement.
-    features::ObjectList<Parameter> parameters;
-
-    /// @brief Construct a new control object.
-    explicit Control();
+    features::OwnedList<Parameter> parameters;
 
     /// @brief Construct a new control object.
     /// @param name   the name of the control object.
     /// @param type   the type of control object.
-    /// @param params the parameters of the control object.
-    Control(const std::string &name,
-            ControlType type,
-            const features::ObjectList<Parameter>::base_type &params);
+    Control(const std::string &name = std::string(), ControlType type = ControlType::ctrl_none);
 
     /// @brief Destroy the control object.
     ~Control() override = default;

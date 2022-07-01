@@ -5,31 +5,3 @@
 ///  copy at http://opensource.org/licenses/MIT)
 
 #include "structure/object.hpp"
-
-namespace edacurry::structure
-{
-Object::Object(Object *parent)
-    : _parent(parent)
-{
-    // Nothing to do.
-}
-
-Object *Object::getParent() const
-{
-    return _parent;
-}
-
-Object *Object::setParent(Object *parent)
-{
-    Object *old_parent = _parent;
-
-    _parent = parent;
-    return old_parent;
-}
-
-std::string Object::toString() const
-{
-    return "Object";
-}
-
-} // namespace edacurry::structure

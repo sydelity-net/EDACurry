@@ -8,7 +8,7 @@
 
 #include "object.hpp"
 #include "features/named_object.hpp"
-#include "features/object_list.hpp"
+#include "features/owned_list.hpp"
 
 namespace edacurry::structure
 {
@@ -16,16 +16,11 @@ namespace edacurry::structure
 class LibraryDef : public Object, public features::NamedObject {
 public:
     /// The content of the library definition.
-    features::ObjectList<Object> content;
-
-    /// @brief Construct a new Library Def object.
-    explicit LibraryDef();
+    features::OwnedList<Object> content;
 
     /// @brief Construct a new Library Def object.
     /// @param name the name.
-    /// @param content the content.
-    LibraryDef(const std::string &name,
-               const features::ObjectList<Object>::base_type &content);
+    LibraryDef(const std::string &name = std::string());
 
     /// @brief Destroy the Library Def object.
     ~LibraryDef() override = default;

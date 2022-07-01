@@ -14,11 +14,9 @@ namespace edacurry::features
 /// @brief Represent a named object.
 class NamedObject {
 public:
-    NamedObject();
-
     /// @brief Construct a new Named Object object.
     /// @param name the name of the object.
-    NamedObject(const std::string &name);
+    NamedObject(const std::string &name = std::string());
 
     ~NamedObject() = default;
 
@@ -41,8 +39,7 @@ public:
     /// @param name
     /// @return Derived*
     template <typename Derived>
-    static Derived *removeFromListByName(std::vector<Derived *> &list,
-                                         const std::string &name)
+    static Derived *removeFromListByName(std::vector<Derived *> &list, const std::string &name)
     {
         static_assert(std::is_convertible_v<Derived *, NamedObject *>, "Derived must inherit NamedObject as public");
         for (auto it = list.begin(); it != list.end(); ++it) {

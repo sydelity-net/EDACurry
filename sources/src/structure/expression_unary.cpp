@@ -10,25 +10,13 @@
 
 namespace edacurry::structure
 {
-ExpressionUnary::ExpressionUnary()
-    : Value(),
-      _operator(op_none),
-      _value(nullptr)
-{
-    // Nothing to do.
-}
 
-ExpressionUnary::ExpressionUnary(Operator op, Value *value)
+ExpressionUnary::ExpressionUnary(Operator op, const std::shared_ptr<structure::Value> &value)
     : Value(),
       _operator(op),
       _value(value)
 {
     // Nothing to do.
-}
-
-ExpressionUnary::~ExpressionUnary()
-{
-    delete (_value);
 }
 
 Operator ExpressionUnary::getOperator() const
@@ -41,12 +29,12 @@ void ExpressionUnary::setOperator(Operator op)
     _operator = op;
 }
 
-Value *ExpressionUnary::getValue() const
+std::shared_ptr<structure::Value> ExpressionUnary::getValue() const
 {
     return _value;
 }
 
-Value *ExpressionUnary::setValue(Value *value)
+std::shared_ptr<structure::Value> ExpressionUnary::setValue(const std::shared_ptr<structure::Value> &value)
 {
     return this->setChild(_value, value);
 }
@@ -54,9 +42,7 @@ Value *ExpressionUnary::setValue(Value *value)
 std::string ExpressionUnary::toString() const
 {
     std::stringstream ss;
-    ss << "ExpressionUnary("
-       << operator_to_plain_string(_operator) << ", "
-       << ((_value) ? _value->toString() : " NULL") << ")";
+    ss << "(unary " << operator_to_plain_string(_operator) << " " << ((_value) ? _value->toString() : " NULL") << ")";
     return ss.str();
 }
 

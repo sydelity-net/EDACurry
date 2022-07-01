@@ -15,19 +15,17 @@ namespace edacurry::structure
 class Analysis : public Object, public features::NamedObject {
 public:
     /// The parameters of the analysis statement.
-    features::ObjectList<Parameter> parameters;
+    features::OwnedList<Parameter> parameters;
 
     /// @brief Construct a new analysis object.
     explicit Analysis();
 
     /// @brief Construct a new analysis object.
     /// @param name   the name.
-    /// @param params the parameters.
-    Analysis(const std::string &name,
-             const features::ObjectList<Parameter>::base_type &params);
+    Analysis(const std::string &name);
 
     /// @brief Destroy the analysis object.
-    ~Analysis() override;
+    ~Analysis() override = default;
 
     /// @brief Provides a string representation of the object for **debugging** purposes.
     /// @return the string representation.

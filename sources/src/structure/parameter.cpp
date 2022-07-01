@@ -11,50 +11,43 @@
 namespace edacurry::structure
 {
 
-Parameter::Parameter(Value *left, Value *right, ParameterType type, bool hide_left)
+Parameter::Parameter(const std::shared_ptr<structure::Value> &left, const std::shared_ptr<structure::Value> &right, ParameterType type, bool hide_name)
     : Object(),
       _left(left),
       _right(right),
       _type(type),
-      _hide_left(hide_left)
+      _hide_name(hide_name)
 {
     // Nothing to do.
 }
 
-Parameter::~Parameter()
-{
-    delete _left;
-    delete _right;
-}
-
-Value *Parameter::getLeft() const
+std::shared_ptr<structure::Value> Parameter::getLeft() const
 {
     return _left;
 }
 
-Value *Parameter::setLeft(Value *value)
+std::shared_ptr<structure::Value> Parameter::setLeft(const std::shared_ptr<structure::Value> &value)
 {
     return this->setChild(_left, value);
 }
 
-Value *Parameter::getRight() const
+std::shared_ptr<structure::Value> Parameter::getRight() const
 {
     return _right;
 }
 
-Value *Parameter::setRight(Value *value)
+std::shared_ptr<structure::Value> Parameter::setRight(const std::shared_ptr<structure::Value> &value)
 {
     return this->setChild(_right, value);
 }
 
 std::string Parameter::toString() const
 {
-    return "Parameter(" +
-           (_left ? _left->toString() : "NULL") + ", " +
-           (_right ? _right->toString() : "NULL") + ", " +
-           parameter_type_to_plain_string(_type) + ", " +
-           "hide_left=" + (_hide_left ? "true" : "false") +
-           ")";
+    return "(parameter " +
+           (_left ? _left->toString() : "NULL") + " " +
+           (_right ? _right->toString() : "NULL") + " `" +
+           parameter_type_to_plain_string(_type) + "` " +
+           (_hide_name ? "true" : "false") + ")";
 }
 
 } // namespace edacurry::structure

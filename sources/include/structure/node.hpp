@@ -8,7 +8,7 @@
 
 #include "object.hpp"
 #include "features/named_object.hpp"
-#include "features/object_list.hpp"
+#include "features/owned_list.hpp"
 
 namespace edacurry::structure
 {
@@ -17,9 +17,9 @@ class Node : public Object, public features::NamedObject {
 public:
     /// @brief Construct a new Node object.
     /// @param name The name of the identifier.
-    explicit Node(const std::string &name);
+    explicit Node(const std::string &name = std::string());
 
-    ~Node() override;
+    ~Node() override = default;
 
     /// @brief Provides a string representation of the object for **debugging** purposes.
     /// @return the string representation.

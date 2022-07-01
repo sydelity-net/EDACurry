@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "features/object_list.hpp"
+#include "features/owned_list.hpp"
 #include "object.hpp"
 
 namespace edacurry::structure

@@ -8,14 +8,8 @@
 
 namespace edacurry::structure
 {
-Library::Library()
-    : Object()
-{
-    // Nothing to do.
-}
 
-Library::Library(const std::string &name,
-                 const std::string &path)
+Library::Library(const std::string &name, const std::string &path)
     : Object(),
       features::NamedObject(name),
       _path(path)
@@ -26,10 +20,7 @@ Library::Library(const std::string &name,
 std::string Library::toString() const
 {
     std::stringstream ss;
-    ss << "Library("
-       << this->getName() << ", "
-       << _path << ", "
-       << ")";
+    ss << "(library `" << this->getName() << "` `" << _path << "`)";
     return ss.str();
 }
 } // namespace edacurry::structure

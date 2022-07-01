@@ -13,29 +13,20 @@ namespace edacurry::structure
 Circuit::Circuit()
     : Object(),
       features::NamedObject(),
-      nodes(this),
-      parameters(this),
-      content(this)
+      nodes(this->weak_from_this()),
+      parameters(this->weak_from_this()),
+      content(this->weak_from_this())
 {
     // Nothing to do.
 }
 
-Circuit::Circuit(const std::string &name,
-                 const std::string &title,
-                 const features::ObjectList<Node>::base_type &nodes,
-                 const features::ObjectList<Parameter>::base_type &params,
-                 const features::ObjectList<Object>::base_type &content)
+Circuit::Circuit(const std::string &name, const std::string &title)
     : Object(),
       features::NamedObject(name),
-      nodes(this, nodes),
-      parameters(this, params),
-      content(this, content),
+      nodes(this->weak_from_this()),
+      parameters(this->weak_from_this()),
+      content(this->weak_from_this()),
       _title(title)
-{
-    // Nothing to do.
-}
-
-Circuit::~Circuit()
 {
     // Nothing to do.
 }
@@ -43,12 +34,7 @@ Circuit::~Circuit()
 std::string Circuit::toString() const
 {
     std::stringstream ss;
-    ss << "Circuit("
-       << this->getName() << ", "
-       << parameters.toString() << ", "
-       << nodes.toString() << ", "
-       << content.toString() << ", "
-       << _title << ")";
+    ss << "(circuit `" << this->getName() << "` " << parameters.toString() << " " << nodes.toString() << " " << content.toString() << " `" << _title << "`)";
     return ss.str();
 }
 } // namespace edacurry::structure

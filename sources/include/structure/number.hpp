@@ -19,7 +19,7 @@ class Number : public Value {
 public:
     /// @brief Construct a new Number object.
     /// @param value the value of the Number.
-    Number(T value, std::string unit = std::string())
+    Number(T value = T(0), std::string unit = std::string())
         : Value(), _value(value), _unit(unit)
     {
         // Nothing to do.

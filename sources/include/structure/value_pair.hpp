@@ -17,10 +17,10 @@ public:
     /// @brief Constructor.
     /// @param first The first value. Default value is <tt>nullptr</tt>.
     /// @param second The second value. Default value is <tt>nullptr</tt>.
-    ValuePair(Value *first = nullptr, Value *second = nullptr);
+    ValuePair(const std::shared_ptr<structure::Value> &first = nullptr, const std::shared_ptr<structure::Value> &second = nullptr);
 
     /// @brief Destructor.
-    ~ValuePair() override;
+    ~ValuePair() override = default;
 
     /// @brief Disable copy constructor.
     ValuePair(const ValuePair &) = delete;
@@ -30,23 +30,23 @@ public:
 
     /// @brief Returns the first value.
     /// @return The first value.
-    Value *getFirst() const;
+    std::shared_ptr<structure::Value> getFirst() const;
 
     /// @brief Sets the first value.
     /// @param value The first value to be set.
     /// @return The old first value if it is different
     /// from the new one, nullptr otherwise.
-    Value *setFirst(Value *value);
+    std::shared_ptr<structure::Value> setFirst(const std::shared_ptr<structure::Value> &value);
 
     /// @brief Returns the second value.
     /// @return The second value.
-    Value *getSecond() const;
+    std::shared_ptr<structure::Value> getSecond() const;
 
     /// @brief Sets the second value.
     /// @param value The second value to be set.
     /// @return The old second value if it is different
     /// from the new one, nullptr otherwise.
-    Value *setSecond(Value *value);
+    std::shared_ptr<structure::Value> setSecond(const std::shared_ptr<structure::Value> &value);
 
     /// @brief Provides a string representation of the object for **debugging** purposes.
     /// @return the string representation.
@@ -61,9 +61,9 @@ public:
 
 private:
     /// @brief The first value.
-    Value *_first;
+    std::shared_ptr<structure::Value> _first;
     /// @brief The second value.
-    Value *_second;
+    std::shared_ptr<structure::Value> _second;
 };
 
 } // namespace edacurry::structure

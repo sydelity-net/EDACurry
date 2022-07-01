@@ -21,28 +21,21 @@ class Circuit : public Object,
                 public features::NamedObject {
 public:
     /// The circuit global nodes.
-    features::ObjectList<Node> nodes;
+    features::OwnedList<Node> nodes;
     /// The circuit global parameters.
-    features::ObjectList<Parameter> parameters;
+    features::OwnedList<Parameter> parameters;
     /// The circuit content.
-    features::ObjectList<Object> content;
+    features::OwnedList<Object> content;
 
     explicit Circuit();
 
     /// @brief Construct a new circuit object.
     /// @param name the name of the file where the circuit resides.
     /// @param title the title of the circuit.
-    /// @param nodes the nodes to be set.
-    /// @param params the parameters to be set.
-    /// @param content the content to be set.
-    Circuit(const std::string &name,
-            const std::string &title,
-            const features::ObjectList<Node>::base_type &nodes,
-            const features::ObjectList<Parameter>::base_type &params,
-            const features::ObjectList<Object>::base_type &content);
+    Circuit(const std::string &name, const std::string &title);
 
     /// @brief Destroy the Circuit object.
-    ~Circuit() override;
+    ~Circuit() override = default;
 
     /// @brief Sets the title.
     /// @param title the title to be set.

@@ -10,18 +10,8 @@
 
 namespace edacurry::structure
 {
-FunctionCall::FunctionCall() : Value(), features::NamedObject(), parameters(this)
-{
-    // Nothing to do.
-}
-
-FunctionCall::FunctionCall(const std::string &name, const features::ObjectList<Parameter>::base_type &parameters)
-    : Value(), features::NamedObject(name), parameters(this, parameters)
-{
-    // Nothing to do.
-}
-
-FunctionCall::~FunctionCall()
+FunctionCall::FunctionCall(const std::string &name)
+    : Value(), features::NamedObject(name), parameters(this->weak_from_this())
 {
     // Nothing to do.
 }
@@ -29,7 +19,7 @@ FunctionCall::~FunctionCall()
 std::string FunctionCall::toString() const
 {
     std::stringstream ss;
-    ss << "FunctionCall(" << this->getName() << ", " << parameters.toString() << ")";
+    ss << "(function_call `" << this->getName() << "` " << parameters.toString() << ")";
     return ss.str();
 }
 } // namespace edacurry::structure

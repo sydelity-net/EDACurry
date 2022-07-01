@@ -15,19 +15,15 @@ namespace edacurry::structure
 class ValueList : public Value {
 public:
     /// @brief The list of values.
-    features::ObjectList<Value> values;
-
-    /// @brief Constructor.
-    explicit ValueList();
+    features::OwnedList<Value> values;
 
     /// @brief Constructor.
     /// @param delimiter The delimiter. Default value is <tt>dlm_none</tt>.
     /// @param values The values inside the delimiter.
-    ValueList(DelimiterType delimiter,
-              const features::ObjectList<Value>::base_type &values);
+    ValueList(DelimiterType delimiter = DelimiterType::dlm_none);
 
     /// @brief Destructor.
-    ~ValueList() override;
+    ~ValueList() override = default;
 
     /// @brief Returns the type of delimiter.
     /// @return The type of delimiter.

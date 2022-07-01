@@ -10,28 +10,14 @@
 
 namespace edacurry::structure
 {
-Expression::Expression()
-    : Value(),
-      _operator(op_none),
-      _first(nullptr),
-      _second(nullptr)
-{
-    // Nothing to do.
-}
 
-Expression::Expression(Operator op, Value *first, Value *second)
+Expression::Expression(Operator op, const std::shared_ptr<structure::Value> &first, const std::shared_ptr<structure::Value> &second)
     : Value(),
       _operator(op),
       _first(first),
       _second(second)
 {
     // Nothing to do.
-}
-
-Expression::~Expression()
-{
-    delete (_first);
-    delete (_second);
 }
 
 Operator Expression::getOperator() const
@@ -44,22 +30,22 @@ void Expression::setOperator(Operator op)
     _operator = op;
 }
 
-Value *Expression::getFirst() const
+std::shared_ptr<structure::Value> Expression::getFirst() const
 {
     return _first;
 }
 
-Value *Expression::setFirst(Value *value)
+std::shared_ptr<structure::Value> Expression::setFirst(const std::shared_ptr<structure::Value> &value)
 {
     return this->setChild(_first, value);
 }
 
-Value *Expression::getSecond() const
+std::shared_ptr<structure::Value> Expression::getSecond() const
 {
     return _second;
 }
 
-Value *Expression::setSecond(Value *value)
+std::shared_ptr<structure::Value> Expression::setSecond(const std::shared_ptr<structure::Value> &value)
 {
     return this->setChild(_second, value);
 }
@@ -67,10 +53,7 @@ Value *Expression::setSecond(Value *value)
 std::string Expression::toString() const
 {
     std::stringstream ss;
-    ss << "Expression("
-       << operator_to_plain_string(_operator) << ", "
-       << ((_first) ? _first->toString() : " NULL") << ", "
-       << ((_second) ? _second->toString() : " NULL") << ")";
+    ss << "(expression " << operator_to_plain_string(_operator) << " " << ((_first) ? _first->toString() : " NULL") << ", " << ((_second) ? _second->toString() : " NULL") << ")";
     return ss.str();
 }
 

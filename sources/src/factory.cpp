@@ -8,143 +8,128 @@
 
 namespace edacurry
 {
-structure::Analysis *Factory::analysis(
-    const std::string &name,
-    const features::ObjectList<structure::Parameter>::base_type &parameters)
+std::shared_ptr<structure::Analysis> Factory::analysis(const std::string &name)
 {
-    return new structure::Analysis(name, parameters);
+    auto _ptr = std::make_shared<structure::Analysis>(name);
+    _ptr->parameters.setOwner(_ptr->weak_from_this());
+    return _ptr;
 }
 
-structure::Circuit *Factory::circuit(
-    const std::string &name,
-    const std::string &title,
-    const features::ObjectList<structure::Node>::base_type &nodes,
-    const features::ObjectList<structure::Parameter>::base_type &parameters,
-    const features::ObjectList<structure::Object>::base_type &content)
+std::shared_ptr<structure::Circuit> Factory::circuit(const std::string &name, const std::string &title)
 {
-    return new structure::Circuit(name, title, nodes, parameters, content);
+    auto _ptr = std::make_shared<structure::Circuit>(name, title);
+    _ptr->nodes.setOwner(_ptr);
+    _ptr->parameters.setOwner(_ptr);
+    _ptr->content.setOwner(_ptr);
+    return _ptr;
 }
 
-structure::Component *Factory::component(
-    const std::string &name,
-    const std::string &master,
-    const features::ObjectList<structure::Node>::base_type &nodes,
-    const features::ObjectList<structure::Parameter>::base_type &parameters)
+std::shared_ptr<structure::Component> Factory::component(const std::string &name, const std::string &master)
 {
-    return new structure::Component(name, master, nodes, parameters);
+    auto _ptr = std::make_shared<structure::Component>(name, master);
+    _ptr->nodes.setOwner(_ptr);
+    _ptr->parameters.setOwner(_ptr);
+    return _ptr;
 }
 
-structure::ControlScope *Factory::controlScope(
-    const std::string &name,
-    ControlType type,
-    const features::ObjectList<structure::Parameter>::base_type &parameters,
-    const features::ObjectList<structure::Node>::base_type &nodes,
-    const features::ObjectList<structure::Object>::base_type &content)
+std::shared_ptr<structure::ControlScope> Factory::controlScope(const std::string &name, ControlType type)
 {
-    return new structure::ControlScope(name, type, parameters, nodes, content);
+    auto _ptr = std::make_shared<structure::ControlScope>(name, type);
+    _ptr->nodes.setOwner(_ptr);
+    _ptr->parameters.setOwner(_ptr);
+    _ptr->content.setOwner(_ptr);
+    return _ptr;
 }
 
-structure::Control *Factory::control(
-    const std::string &name,
-    ControlType type,
-    const features::ObjectList<structure::Parameter>::base_type &parameters)
+std::shared_ptr<structure::Control> Factory::control(const std::string &name, ControlType type)
 {
-    return new structure::Control(name, type, parameters);
+    auto _ptr = std::make_shared<structure::Control>(name, type);
+    _ptr->parameters.setOwner(_ptr);
+    return _ptr;
 }
 
-structure::ExpressionUnary *Factory::expressionUnary(Operator op, structure::Value *value)
+std::shared_ptr<structure::ExpressionUnary> Factory::expressionUnary(Operator op, const std::shared_ptr<structure::Value> &value)
 {
-    return new structure::ExpressionUnary(op, value);
+    return std::make_shared<structure::ExpressionUnary>(op, value);
 }
 
-structure::Expression *Factory::expression(Operator op,
-                                           structure::Value *value1,
-                                           structure::Value *value2)
+std::shared_ptr<structure::Expression> Factory::expression(Operator op, const std::shared_ptr<structure::Value> &value1, const std::shared_ptr<structure::Value> &value2)
 {
-    return new structure::Expression(op, value1, value2);
+    return std::make_shared<structure::Expression>(op, value1, value2);
 }
 
-structure::FunctionCall *Factory::functionCall(
-    const std::string &name,
-    const features::ObjectList<structure::Parameter>::base_type &parameters)
+std::shared_ptr<structure::FunctionCall> Factory::functionCall(const std::string &name)
 {
-    return new structure::FunctionCall(name, parameters);
+    auto _ptr = std::make_shared<structure::FunctionCall>(name);
+    _ptr->parameters.setOwner(_ptr);
+    return _ptr;
 }
 
-structure::Identifier *Factory::identifier(const std::string &id)
+std::shared_ptr<structure::Identifier> Factory::identifier(const std::string &id)
 {
-    return new structure::Identifier(id);
+    return std::make_shared<structure::Identifier>(id);
 }
 
-structure::Include *Factory::include(
-    IncludeType include_type,
-    const std::string &path,
-    const features::ObjectList<structure::Parameter>::base_type &parameters)
+std::shared_ptr<structure::Include> Factory::include(IncludeType include_type, const std::string &path)
 {
-    return new structure::Include(include_type, path, parameters);
+    auto _ptr = std::make_shared<structure::Include>(include_type, path);
+    _ptr->parameters.setOwner(_ptr);
+    return _ptr;
 }
 
-structure::LibraryDef *Factory::libraryDef(
-    const std::string &name,
-    const features::ObjectList<structure::Object>::base_type &content)
+std::shared_ptr<structure::LibraryDef> Factory::libraryDef(const std::string &name)
 {
-    return new structure::LibraryDef(name, content);
+    auto _ptr = std::make_shared<structure::LibraryDef>(name);
+    _ptr->content.setOwner(_ptr);
+    return _ptr;
 }
 
-structure::Library *Factory::library(const std::string &name, const std::string &path)
+std::shared_ptr<structure::Library> Factory::library(const std::string &name, const std::string &path)
 {
-    return new structure::Library(name, path);
+    return std::make_shared<structure::Library>(name, path);
 }
 
-structure::Model *Factory::model(
-    const std::string &name,
-    const std::string &master,
-    const std::string &library,
-    const std::string &library_type,
-    const features::ObjectList<structure::Parameter>::base_type &parameters)
+std::shared_ptr<structure::Model> Factory::model(const std::string &name, const std::string &master, const std::string &library, const std::string &library_type)
 {
-    return new structure::Model(name, master, library, library_type,
-                                parameters);
+    auto _ptr = std::make_shared<structure::Model>(name, master, library, library_type);
+    _ptr->parameters.setOwner(_ptr);
+    return _ptr;
 }
 
-structure::Node *Factory::node(const std::string &name)
+std::shared_ptr<structure::Node> Factory::node(const std::string &name)
 {
-    return new structure::Node(name);
+    return std::make_shared<structure::Node>(name);
 }
 
-structure::Parameter *Factory::parameter(
-    structure::Value *left,
-    structure::Value *right,
-    ParameterType type,
-    bool hide_name)
+std::shared_ptr<structure::Parameter> Factory::parameter(const std::shared_ptr<structure::Value> &left, const std::shared_ptr<structure::Value> &right, ParameterType type, bool hide_name)
 {
-    return new structure::Parameter(left, right, type, hide_name);
+    return std::make_shared<structure::Parameter>(left, right, type, hide_name);
 }
 
-structure::Subckt *Factory::subckt(
-    const std::string &name,
-    const features::ObjectList<structure::Node>::base_type &nodes,
-    const features::ObjectList<structure::Parameter>::base_type &parameters,
-    const features::ObjectList<structure::Object>::base_type &content)
+std::shared_ptr<structure::Subckt> Factory::subckt(const std::string &name)
 {
-    return new structure::Subckt(name, nodes, parameters, content);
+    auto _ptr = std::make_shared<structure::Subckt>(name);
+    _ptr->nodes.setOwner(_ptr);
+    _ptr->parameters.setOwner(_ptr);
+    _ptr->content.setOwner(_ptr);
+    return _ptr;
 }
 
-structure::String *Factory::string(const std::string &string)
+std::shared_ptr<structure::String> Factory::string(const std::string &string)
 {
-    return new structure::String(string);
+    return std::make_shared<structure::String>(string);
 }
 
-structure::ValueList *Factory::valueList(
-    DelimiterType delimiter,
-    const features::ObjectList<structure::Value>::base_type &values)
+std::shared_ptr<structure::ValueList> Factory::valueList(DelimiterType delimiter)
 {
-    return new structure::ValueList(delimiter, values);
+    auto _ptr = std::make_shared<structure::ValueList>(delimiter);
+    _ptr->values.setOwner(_ptr);
+    return _ptr;
 }
 
-structure::ValuePair *Factory::valuePair(structure::Value *first, structure::Value *second)
+std::shared_ptr<structure::ValuePair> Factory::valuePair(const std::shared_ptr<structure::Value> &first, const std::shared_ptr<structure::Value> &second)
 {
-    return new structure::ValuePair(first, second);
+    return std::make_shared<structure::ValuePair>(first, second);
 }
 
 } // namespace edacurry

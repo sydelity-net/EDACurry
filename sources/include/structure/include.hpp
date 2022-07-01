@@ -16,21 +16,15 @@ namespace edacurry::structure
 class Include : public Object {
 public:
     /// Parameters of the include statement.
-    features::ObjectList<Parameter> parameters;
-
-    /// @brief Construct a new Include object.
-    explicit Include();
+    features::OwnedList<Parameter> parameters;
 
     /// @brief Construct a new Include object.
     /// @param include_type the type of include.
     /// @param path the path of the include statement.
-    /// @param params the parameters of the include statement.
-    Include(IncludeType include_type,
-            const std::string &path,
-            const features::ObjectList<Parameter>::base_type &params);
+    Include(IncludeType include_type = IncludeType::inc_none, const std::string &path = std::string());
 
     /// @brief Destroy the Include object.
-    ~Include() override;
+    ~Include() override = default;
 
     /// @brief Returns the type of include.
     /// @return The type of include.

@@ -15,13 +15,8 @@ Node::Node(const std::string &name)
     // Nothing to do.
 }
 
-Node::~Node()
-{
-    // Nothing to do.
-}
-
 std::string Node::toString() const
 {
-    return "Node(" + this->getName() + ")";
+    return "(node `" + this->getName() + "`)";
 }
 } // namespace edacurry::structure

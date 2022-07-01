@@ -92,6 +92,7 @@ std::string parse_to_eldo(const std::string &path)
     return backend.str();
 }
 
+#if 0
 void test_json(const std::string &path)
 {
     std::ifstream fileStream(path);
@@ -107,7 +108,7 @@ void test_json(const std::string &path)
     // Parse the circuit.
     parser.netlist()->accept(&frontend);
 
-    edacurry::structure::Object *output_root = frontend.getRoot(), *input_root = nullptr;
+    auto output_root = frontend.getRoot();
 
     json::jnode_t json_0;
 
@@ -128,6 +129,7 @@ void test_json(const std::string &path)
     delete input_root;
     delete output_root;
 }
+#endif
 
 namespace edacurry
 {
@@ -275,6 +277,54 @@ namespace structure
             PYBIND11_OVERRIDE_PURE(int, edacurry::structure::Value, accept, visitor);
         }
     };
+
+    template <typename T>
+    void register_list(pybind11::module_ &m, const std::string &name)
+    {
+        // ========================================================================
+        namespace py = pybind11;
+        using namespace edacurry;
+        using namespace edacurry::features;
+        using namespace edacurry::structure;
+
+        // ========================================================================
+        std::string list_name = "List[";
+        list_name += name + "]";
+        py::class_<OwnedList<T>>(m, list_name.c_str())
+            .def(py::init<std::shared_ptr<Object>>())
+            .def("clear", &OwnedList<T>::clear, "Clears the list and deletes the objects.")
+            .def("empty", &OwnedList<T>::empty, "Checks if the list is empty.")
+            .def("__len__", &OwnedList<T>::size, "Returns the size of the list.")
+            .def("append",
+                 &OwnedList<T>::push_back,
+                 py::arg("item"),
+                 "Adds a new item to the list.")
+            .def("pop", &OwnedList<T>::pop_back, "Removes the last inserted object.", py::return_value_policy::move)
+            .def("remove",
+                 static_cast<typename OwnedList<T>::value_type (OwnedList<T>::*)(typename OwnedList<T>::value_type)>(&OwnedList<T>::remove),
+                 py::arg("item"),
+                 "Removes the item from the list.",
+                 py::return_value_policy::move)
+            .def("remove",
+                 static_cast<typename OwnedList<T>::value_type (OwnedList<T>::*)(const std::string &)>(&OwnedList<T>::remove),
+                 py::arg("name"),
+                 "Removes the item from the list based on the name.",
+                 py::return_value_policy::move)
+            .def("transfer_to",
+                 static_cast<void (OwnedList<T>::*)(typename OwnedList<T>::value_type, OwnedList<T> &)>(&OwnedList<T>::transfer_to),
+                 py::arg("item"),
+                 py::arg("other"),
+                 "Transfer the item from this list to the other.")
+            .def(
+                "__getitem__",
+                [](OwnedList<T> &self, unsigned index) { return self[index]; },
+                "Returns the item at the given index.")
+            .def(
+                "__iter__",
+                [](OwnedList<T> &self) { return py::make_iterator(self.begin(), self.end()); },
+                py::keep_alive<0, 1>(),
+                "Allows iterating the content of the dataset.");
+    }
 } // namespace structure
 
 } // namespace edacurry
@@ -339,7 +389,8 @@ PYBIND11_MODULE(edacurry, m)
         .value("dlm_square", DelimiterType::dlm_square, "Square brackets [ ]")
         .value("dlm_curly", DelimiterType::dlm_curly, "Curly brackets { }")
         .value("dlm_apex", DelimiterType::dlm_apex, "Apex ' '")
-        .value("dlm_quotes", DelimiterType::dlm_quotes, "Quotes " "")
+        .value("dlm_quotes", DelimiterType::dlm_quotes, "Quotes "
+                                                        "")
         .export_values();
 
     // ========================================================================
@@ -397,280 +448,364 @@ PYBIND11_MODULE(edacurry, m)
     // ========================================================================
     py::class_<BaseVisitor, Visitor>(m, "Visitor")
         .def(py::init<>());
-        
+
     // ========================================================================
-    py::class_<NamedObject>(m, "NamedObject")
-        .def(py::init<>())
-        .def(py::init<const std::string &>(), py::arg("name"), "Construct a new Named Object object.")
-        .def("getName", &NamedObject::getName, "Returns the name of the object.")
-        .def("setName", &NamedObject::setName, py::arg("name"), "Sets the name of the object.")
+    py::class_<NamedObject, std::shared_ptr<NamedObject>>(m, "NamedObject")
+        .def(
+            py::init<const std::string &>(),
+            py::arg("name") = std::string(),
+            "Construct a new Named Object object.")
+        .def_property("name", &NamedObject::getName, &NamedObject::setName, "The name of the object.")
         .def("matchName", &NamedObject::matchName, py::arg("name"), "Checks whether given name is equals to this object name.");
 
     // ========================================================================
-    py::class_<Object, structure::PyObject>(m, "Object")
-        .def(py::init<Object *>(), py::arg("parent"), "Construct a new object.")
+    py::class_<Object, structure::PyObject, std::shared_ptr<Object>>(m, "Object")
+        .def(
+            py::init<std::shared_ptr<Object>>(),
+            py::arg("parent") = nullptr,
+            "Construct a new object.")
         .def("accept", &Object::accept, py::arg("visitor"), "Accepts a visitor and runs the visit starting from this object.")
-        .def("getParent", &Object::getParent, "Returns the parent of the object.")
-        .def("setParent", &Object::setParent, py::arg("parent"), "Sets the parent of the object.");
+        .def_property(
+            "parent",
+            [](const std::shared_ptr<Object> &self) { return self->getParent().lock(); },
+            [](const std::shared_ptr<Object> &self, const std::shared_ptr<Object> &parent) { return self->setParent(parent); },
+            "The parent of the object.");
 
     // ========================================================================
-    py::class_<Value, PyValue, Object>(m, "Value")
+    edacurry::structure::register_list<Object>(m, "Object");
+
+    // ========================================================================
+    py::class_<Value, PyValue, Object, std::shared_ptr<Value>>(m, "Value")
         .def(py::init<>(), "Construct a new value object.");
 
     // ========================================================================
-    py::class_<String, Value>(m, "String")
-        .def(py::init<>(), "Construct a new string object.")
-        .def(py::init<const std::string &>(), py::arg("string"), "Construct a new string object.");
+    edacurry::structure::register_list<Value>(m, "Value");
 
     // ========================================================================
-    py::class_<Parameter, Object>(m, "Parameter")
-        .def(py::init<Value *, Value *, ParameterType, bool>(), "Construct a new parameter object.")
-        .def("getRight", &Parameter::getRight, "Returns the right-hand side value.")
-        .def("setRight", &Parameter::setRight, py::arg("value"), "Sets the right-hand side value.")
-        .def("getLeft", &Parameter::getLeft, "Returns the left-hand side value.")
-        .def("setLeft", &Parameter::setLeft, py::arg("value"), "Sets the left-hand side value.")
-        .def("getType", &Parameter::getType, "Returns the type of parameter.")
-        .def("setType", &Parameter::setType, py::arg("type"), "Sets the type of parameter.")
-        .def("getHideLeft", &Parameter::getHideLeft, "Checks if the left-hand side value is hidden during code generation.")
-        .def("setHideLeft", &Parameter::setHideLeft, py::arg("hide_left"), "Sets if the left-hand side value is hidden during code generation.");
+    py::class_<String, Value, std::shared_ptr<String>>(m, "String")
+        .def(
+            py::init<const std::string &>(),
+            py::arg("string") = std::string(),
+            "Construct a new string object.")
+        .def_property("string", &String::getString, &String::setString, "The stored string.")
+        .def("__str__", &String::toString)
+        .def("__repr__", &String::toString);
 
     // ========================================================================
-    py::class_<ValuePair, Value>(m, "ValuePair")
-        .def(py::init<Value *, Value *>(), py::arg("first"), py::arg("second"), "Construct a new value pair.")
-        .def("getFirst", &ValuePair::getFirst, "Returns the First value.")
-        .def("setFirst", &ValuePair::setFirst, py::arg("value"), "Sets the First value.")
-        .def("getSecond", &ValuePair::getSecond, "Returns the Second value.")
-        .def("setSecond", &ValuePair ::setSecond, py::arg("value"), "Sets the Second value.");
+    py::class_<Parameter, Object, std::shared_ptr<Parameter>>(m, "Parameter")
+        .def(
+            py::init<const std::shared_ptr<Value> &, const std::shared_ptr<Value> &, ParameterType, bool>(),
+            py::arg("left")      = nullptr,
+            py::arg("right")     = nullptr,
+            py::arg("type")      = ParameterType::param_assign,
+            py::arg("hide_name") = false,
+            "Construct a new Parameter object.")
+        .def_property("left", &Parameter::getLeft, &Parameter::setLeft, "The left-hand side value.")
+        .def_property("right", &Parameter::getRight, &Parameter::setRight, "The right-hand side value.")
+        .def_property("type", &Parameter::getType, &Parameter::setType, "The type of parameter.")
+        .def_property("hide_name", &Parameter::getHideName, &Parameter::setHideName, "If true the name will be hidden when generating outputs.")
+        .def("__str__", &Parameter::toString)
+        .def("__repr__", &Parameter::toString);
 
     // ========================================================================
-    py::class_<Expression, Value>(m, "Expression")
-        .def(py::init<>(), "Construct a new expression.")
-        .def(py::init<Operator, Value *, Value *>(), py::arg("op"), py::arg("first"), py::arg("second"), "Construct a new expression.")
-        .def("getOperator", &Expression::getOperator, "Returns the operator of the expression.")
-        .def("setOperator", &Expression::setOperator, py::arg("value"), "Sets the operator of the expression.")
-        .def("getFirst", &Expression::getFirst, "Returns the first value.")
-        .def("setFirst", &Expression::setFirst, py::arg("value"), "Sets the first value.")
-        .def("getSecond", &Expression::getSecond, "Returns the Second value.")
-        .def("setSecond", &Expression ::setSecond, py::arg("value"), "Sets the Second value.");
+    edacurry::structure::register_list<Parameter>(m, "Parameter");
 
     // ========================================================================
-    py::class_<ExpressionUnary, Value>(m, "ExpressionUnary")
-        .def(py::init<>(), "Construct a new unary expression.")
-        .def(py::init<Operator, Value *>(), py::arg("op"), py::arg("value"), "Construct a new unary expression.")
-        .def("getOperator", &ExpressionUnary::getOperator, "Returns the operator of the expression.")
-        .def("setOperator", &ExpressionUnary::setOperator, py::arg("value"), "Sets the operator of the expression.")
-        .def("getValue", &ExpressionUnary::getValue, "Returns the value.")
-        .def("setValue", &ExpressionUnary::setValue, py::arg("value"), "Sets the value.");
+    py::class_<ValuePair, Value, std::shared_ptr<ValuePair>>(m, "ValuePair")
+        .def(
+            py::init<const std::shared_ptr<Value> &, const std::shared_ptr<Value> &>(),
+            py::arg("first")  = nullptr,
+            py::arg("second") = nullptr,
+            "Construct a new value pair.")
+        .def_property("first", &ValuePair::getFirst, &ValuePair::setFirst, "The first value.")
+        .def_property("second", &ValuePair::getSecond, &ValuePair::setSecond, "The second value.")
+        .def("__str__", &ValuePair::toString)
+        .def("__repr__", &ValuePair::toString);
 
     // ========================================================================
-    py::class_<Identifier, Value>(m, "Identifier")
-        .def(py::init<>(), "Construct a new identifier.")
-        .def(py::init<const std::string &>(), py::arg("name"), "Construct a new identifier.");
+    py::class_<Expression, Value, std::shared_ptr<Expression>>(m, "Expression")
+        .def(
+            py::init<Operator, const std::shared_ptr<Value> &, const std::shared_ptr<Value> &>(),
+            py::arg("op")     = Operator::op_none,
+            py::arg("first")  = nullptr,
+            py::arg("second") = nullptr,
+            "Construct a new expression.")
+        .def_property("operator", &Expression::getOperator, &Expression::setOperator, "The operator of the expression.")
+        .def_property("first", &Expression::getFirst, &Expression::setFirst, "The first value.")
+        .def_property("second", &Expression::getSecond, &Expression::setSecond, "The second value.")
+        .def("__str__", &Expression::toString)
+        .def("__repr__", &Expression::toString);
 
     // ========================================================================
-    py::class_<Number<unsigned>, Value>(m, "Unsigned")
-        .def(py::init<unsigned, std::string>(), "Construct a new unsigned.")
-        .def("getValue", &Number<unsigned>::getValue, "Returns the value.")
-        .def("setValue", &Number<unsigned>::setValue, py::arg("value"), "Sets the value.")
-        .def("getUnit", &Number<unsigned>::getUnit, "Returns the unit of the number.")
-        .def("setUnit", &Number<unsigned>::setUnit, py::arg("unit"), "Sets the unit of the number.");
+    py::class_<ExpressionUnary, Value, std::shared_ptr<ExpressionUnary>>(m, "ExpressionUnary")
+        .def(
+            py::init<Operator, const std::shared_ptr<Value> &>(),
+            py::arg("op")    = Operator::op_none,
+            py::arg("value") = nullptr,
+            "Construct a new unary expression.")
+        .def_property("operator", &ExpressionUnary::getOperator, &ExpressionUnary::setOperator, "The operator of the expression.")
+        .def_property("value", &ExpressionUnary::getValue, &ExpressionUnary::setValue, "The value.")
+        .def("__str__", &ExpressionUnary::toString)
+        .def("__repr__", &ExpressionUnary::toString);
 
     // ========================================================================
-    py::class_<Number<int>, Value>(m, "Int")
-        .def(py::init<int, std::string>(), "Construct a new int.")
-        .def("getValue", &Number<int>::getValue, "Returns the value.")
-        .def("setValue", &Number<int>::setValue, py::arg("value"), "Sets the value.")
-        .def("getUnit", &Number<int>::getUnit, "Returns the unit of the number.")
-        .def("setUnit", &Number<int>::setUnit, py::arg("unit"), "Sets the unit of the number.");
+    py::class_<Identifier, Value, NamedObject, std::shared_ptr<Identifier>>(m, "Identifier")
+        .def(
+            py::init<const std::string &>(),
+            py::arg("name") = std::string(),
+            "Construct a new identifier.")
+        .def("__str__", &Identifier::toString)
+        .def("__repr__", &Identifier::toString);
 
     // ========================================================================
-    py::class_<Number<double>, Value>(m, "Double")
-        .def(py::init<double, std::string>(), "Construct a new double.")
-        .def("getValue", &Number<double>::getValue, "Returns the value.")
-        .def("setValue", &Number<double>::setValue, py::arg("value"), "Sets the value.")
-        .def("getUnit", &Number<double>::getUnit, "Returns the unit of the number.")
-        .def("setUnit", &Number<double>::setUnit, py::arg("unit"), "Sets the unit of the number.");
+    py::class_<Number<unsigned>, Value, std::shared_ptr<Number<unsigned>>>(m, "Unsigned")
+        .def(
+            py::init<unsigned, std::string>(),
+            py::arg("value") = unsigned(0),
+            py::arg("unit")  = std::string(),
+            "Construct a new unsigned.")
+        .def_property("value", &Number<unsigned>::getValue, &Number<unsigned>::setValue, "The stored value.")
+        .def_property("unit", &Number<unsigned>::getUnit, &Number<unsigned>::setUnit, "The unit of the number.")
+        .def("__str__", &Number<unsigned>::toString)
+        .def("__repr__", &Number<unsigned>::toString);
 
     // ========================================================================
-    py::class_<ValueList, Value>(m, "ValueList")
-        .def(py::init<>(), "Construct a new list of values.")
-        .def(py::init<DelimiterType, const ObjectList<Value>::base_type &>(), py::arg("delimiter"), py::arg("values"), "Construct a new list of values.")
+    py::class_<Number<int>, Value, std::shared_ptr<Number<int>>>(m, "Int")
+        .def(
+            py::init<int, std::string>(),
+            py::arg("value") = int(0),
+            py::arg("unit")  = std::string(),
+            "Construct a new int.")
+        .def_property("value", &Number<int>::getValue, &Number<int>::setValue, "The stored value.")
+        .def_property("unit", &Number<int>::getUnit, &Number<int>::setUnit, "The unit of the number.")
+        .def("__str__", &Number<int>::toString)
+        .def("__repr__", &Number<int>::toString);
+
+    // ========================================================================
+    py::class_<Number<double>, Value, std::shared_ptr<Number<double>>>(m, "Double")
+        .def(
+            py::init<double, std::string>(),
+            py::arg("value") = double(0),
+            py::arg("unit")  = std::string(),
+            "Construct a new double.")
+        .def_property("value", &Number<double>::getValue, &Number<double>::setValue, "The stored value.")
+        .def_property("unit", &Number<double>::getUnit, &Number<double>::setUnit, "The unit of the number.")
+        .def("__str__", &Number<double>::toString)
+        .def("__repr__", &Number<double>::toString);
+
+    // ========================================================================
+    py::class_<ValueList, Value, std::shared_ptr<ValueList>>(m, "ValueList")
+        .def(
+            py::init([](DelimiterType delimiter) {
+                auto _ptr = std::make_shared<structure::ValueList>(delimiter);
+                _ptr->values.setOwner(_ptr);
+                return _ptr;
+            }),
+            py::arg("delimiter") = DelimiterType::dlm_none,
+            "Construct a new list of values.")
         .def_readonly("values", &ValueList::values)
-        .def("getDelimiterType", &ValueList::getDelimiterType, "Returns the type of delimiter.")
-        .def("setDelimiterType", &ValueList::setDelimiterType, py::arg("value"), "Sets the type of delimiter.");
+        .def_property("delimiter", &ValueList::getDelimiterType, &ValueList::setDelimiterType, "The type of delimiter.")
+        .def("__str__", &ValueList::toString)
+        .def("__repr__", &ValueList::toString);
 
     // ========================================================================
-    py::class_<FunctionCall, Value>(m, "FunctionCall")
-        .def(py::init<>(), "Construct a new function call.")
-        .def(py::init<const std::string &, const ObjectList<Parameter>::base_type &>(), py::arg("name"), py::arg("parameters"), "Construct a new function call.")
-        .def_readonly("parameters", &FunctionCall::parameters);
+    py::class_<FunctionCall, Value, NamedObject, std::shared_ptr<FunctionCall>>(m, "FunctionCall")
+        .def(
+            py::init([](const std::string &name) {
+                auto _ptr = std::make_shared<structure::FunctionCall>(name);
+                _ptr->parameters.setOwner(_ptr);
+                return _ptr;
+            }),
+            py::arg("name") = std::string(),
+            "Construct a new function call.")
+        .def_readonly("parameters", &FunctionCall::parameters)
+        .def("__str__", &FunctionCall::toString)
+        .def("__repr__", &FunctionCall::toString);
 
     // ========================================================================
-    py::class_<Node, Object, NamedObject>(m, "Node")
-        .def(py::init<const std::string &>(), py::arg("name"), "Construct a new node.", py::return_value_policy::reference);
+    py::class_<Node, Object, NamedObject, std::shared_ptr<Node>>(m, "Node")
+        .def(
+            py::init<const std::string &>(),
+            py::arg("name") = std::string(),
+            "Construct a new node.")
+        .def("__str__", &Node::toString)
+        .def("__repr__", &Node::toString);
 
     // ========================================================================
-    py::class_<Component, Object, NamedObject>(m, "Component")
-        .def(py::init<>(), "Construct a new component.")
-        .def(py::init<const std::string &, const std::string &, const ObjectList<Node>::base_type &, const ObjectList<Parameter>::base_type &>(),
-             py::arg("name"),
-             py::arg("master"),
-             py::arg("nodes"),
-             py::arg("parameters"),
-             "Construct a new component.")
+    edacurry::structure::register_list<Node>(m, "Node");
+
+    // ========================================================================
+    py::class_<Component, Object, NamedObject, std::shared_ptr<Component>>(m, "Component")
+        .def(
+            py::init([](const std::string &name, const std::string &master) {
+                auto _ptr = std::make_shared<structure::Component>(name, master);
+                _ptr->nodes.setOwner(_ptr);
+                _ptr->parameters.setOwner(_ptr);
+                return _ptr;
+            }),
+            py::arg("name") = std::string(),
+            py::arg("master") = std::string(),
+            "Construct a new component.")
         .def_readonly("nodes", &Component::nodes)
         .def_readonly("parameters", &Component::parameters)
-        .def("getMaster", &Component::getMaster, "Returns the master.")
-        .def("setMaster", &Component::setMaster, py::arg("master"), "Sets the master.")
-        .def("matchMaster", &Component::matchMaster, py::arg("master"), "Checks whether given master is equals to this object master.");
+        .def_property("master", &Component::getMaster, &Component::setMaster, "The component's master.")
+        .def("matchMaster", &Component::matchMaster, py::arg("master"), "Checks whether given master is equals to this object master.")
+        .def("__str__", &Component::toString)
+        .def("__repr__", &Component::toString);
 
     // ========================================================================
-    py::class_<Model, Object, NamedObject>(m, "Model")
-        .def(py::init<>(), "Construct a new model.")
-        .def(py::init<const std::string &, const std::string &, const std::string &, const std::string &, const ObjectList<Parameter>::base_type &>(),
+    py::class_<Model, Object, NamedObject, std::shared_ptr<Model>>(m, "Model")
+        .def(
+            py::init([](const std::string &name, const std::string &master, const std::string &library, const std::string &library_type) {
+                auto _ptr = std::make_shared<structure::Model>(name, master, library, library_type);
+                _ptr->parameters.setOwner(_ptr);
+                return _ptr;
+            }),
              py::arg("name"),
              py::arg("master"),
              py::arg("library"),
              py::arg("library_type"),
-             py::arg("parameters"),
              "Construct a new model.")
         .def_readonly("parameters", &Model::parameters)
-        .def("getMaster", &Model::getMaster, "Returns the master.")
-        .def("setMaster", &Model::setMaster, py::arg("master"), "Sets the master.")
+        .def_property("master", &Model::getMaster, &Model::setMaster, "The model's master.")
+        .def_property("library", &Model::getLibrary, &Model::setLibrary, "The model's library.")
+        .def_property("library_type", &Model::getLibraryType, &Model::setLibraryType, "The model's library type.")
         .def("matchMaster", &Model::matchMaster, py::arg("master"), "Checks whether given master is equals to this object master.")
-        .def("getLibrary", &Model::getLibrary, "Returns the library.")
-        .def("setLibrary", &Model::setLibrary, py::arg("master"), "Sets the library.")
-        .def("getLibraryType", &Model::getLibraryType, "Returns the library type.")
-        .def("setLibraryType", &Model::setLibraryType, py::arg("master"), "Sets the library type.");
+        .def("__str__", &Model::toString)
+        .def("__repr__", &Model::toString);
 
     // ========================================================================
-    py::class_<Include, Object>(m, "Include")
-        .def(py::init<>(), "Construct a new include.")
-        .def(py::init<IncludeType, const std::string &, const ObjectList<Parameter>::base_type &>(),
-             py::arg("include_type"),
-             py::arg("path"),
-             py::arg("params"),
+    py::class_<Include, Object, std::shared_ptr<Include>>(m, "Include")
+        .def(
+            py::init([](IncludeType include_type, const std::string &path)
+            {
+                auto _ptr = std::make_shared<structure::Include>(include_type, path);
+                _ptr->parameters.setOwner(_ptr);
+                return _ptr;
+            }),
+             py::arg("include_type") = IncludeType::inc_none,
+             py::arg("path") = std::string(),
              "Construct a new include.")
         .def_readonly("parameters", &Include::parameters)
-        .def("getIncludeType", &Include::getIncludeType, "Returns the include type.")
-        .def("setIncludeType", &Include::setIncludeType, py::arg("include_type"), "Sets the include type.")
-        .def("getPath", &Include::getPath, "Returns the path.")
-        .def("setPath", &Include::setPath, py::arg("path"), "Sets the path.");
+        .def_property("include_type", &Include::getIncludeType, &Include::setIncludeType, "The include type.")
+        .def_property("path", &Include::getPath, &Include::setPath, "The included path.")
+        .def("__str__", &Include::toString)
+        .def("__repr__", &Include::toString);
 
     // ========================================================================
-    py::class_<Library, Object>(m, "Library")
-        .def(py::init<>(), "Construct a new library.")
-        .def(py::init<const std::string &, const std::string &>(), py::arg("name"), py::arg("path"), "Construct a new library.")
-        .def("getPath", &Library::getPath, "Returns the path.")
-        .def("setPath", &Library::setPath, py::arg("path"), "Sets the path.");
+    py::class_<Library, Object, NamedObject, std::shared_ptr<Library>>(m, "Library")
+        .def(
+            py::init<const std::string &, const std::string &>(),
+            py::arg("name") = std::string(),
+            py::arg("path") = std::string(),
+            "Construct a new library.")
+        .def_property("path", &Library::getPath, &Library::setPath, "The included path.")
+        .def("__str__", &Library::toString)
+        .def("__repr__", &Library::toString);
 
     // ========================================================================
-    py::class_<Control, Object, NamedObject>(m, "Control")
-        .def(py::init<>(), "Construct a new control.")
-        .def(py::init<const std::string &, ControlType, const ObjectList<Parameter>::base_type &>(), py::arg("name"), py::arg("type"), py::arg("parameters"), "Construct a new control.")
+    py::class_<LibraryDef, Object, NamedObject, std::shared_ptr<LibraryDef>>(m, "LibraryDef")
+        .def(
+            py::init([](const std::string &name)
+            {
+                auto _ptr = std::make_shared<structure::LibraryDef>(name);
+                _ptr->content.setOwner(_ptr);
+                return _ptr;
+            }),
+            py::arg("name") = std::string(),
+            "Construct a new library def.")
+        .def_readonly("content", &LibraryDef::content)
+        .def("__str__", &LibraryDef::toString)
+        .def("__repr__", &LibraryDef::toString);
+
+    // ========================================================================
+    py::class_<Control, Object, NamedObject, std::shared_ptr<Control>>(m, "Control")
+        .def(
+            py::init([](const std::string &name, ControlType type)
+            {
+                auto _ptr = std::make_shared<structure::Control>(name, type);
+                _ptr->parameters.setOwner(_ptr);
+                return _ptr;
+            }),
+            py::arg("name") = std::string(),
+            py::arg("type") = ControlType::ctrl_none,
+            "Construct a new control.")
         .def_readonly("parameters", &Control::parameters)
-        .def("getControlType", &Control::getControlType, "Returns the type of control.")
-        .def("setControlType", &Control::setControlType, py::arg("value"), "Sets the type of control.");
+        .def_property("control_type", &Control::getControlType, &Control::setControlType, "The type of control.")
+        .def("__str__", &Control::toString)
+        .def("__repr__", &Control::toString);
 
     // ========================================================================
-    py::class_<Analysis, Object, NamedObject>(m, "Analysis")
-        .def(py::init<>(), "Construct a new analysis.")
-        .def(py::init<const std::string &, const ObjectList<Parameter>::base_type &>(), py::arg("name"), py::arg("parameters"), "Construct a new analysis.")
-        .def_readonly("parameters", &Analysis::parameters);
-
-    // ========================================================================
-    py::class_<LibraryDef, Object, NamedObject>(m, "LibraryDef")
-        .def(py::init<>(), "Construct a new analysis.")
-        .def(py::init<const std::string &, const ObjectList<Object>::base_type &>(), py::arg("name"), py::arg("content"), "Construct a new analysis.")
-        .def_readonly("content", &LibraryDef::content);
-
-    // ========================================================================
-    py::class_<ControlScope, Control>(m, "ControlScope")
-        .def(py::init<>(), "Construct a new control scope.")
-        .def(py::init<const std::string &, ControlType, const ObjectList<Parameter>::base_type &, const ObjectList<Node>::base_type &, const ObjectList<Object>::base_type &>(), 
-                 py::arg("name"), 
-                 py::arg("type"),
-                 py::arg("params"),
-                 py::arg("nodes"),
-                 py::arg("content"),
-                "Construct a new control scope.")
+    py::class_<ControlScope, Control, std::shared_ptr<ControlScope>>(m, "ControlScope")
+        .def(
+            py::init([](const std::string &name, ControlType type)
+            {
+                auto _ptr = std::make_shared<structure::ControlScope>(name, type);
+                _ptr->nodes.setOwner(_ptr);
+                _ptr->parameters.setOwner(_ptr);
+                _ptr->content.setOwner(_ptr);
+                return _ptr;
+            }),
+            py::arg("name") = std::string(),
+            py::arg("type") = ControlType::ctrl_none,
+            "Construct a new control scope.")
         .def_readonly("nodes", &ControlScope::nodes)
-        .def_readonly("content", &ControlScope::content);
+        .def_readonly("content", &ControlScope::content)
+        .def("__str__", &ControlScope::toString)
+        .def("__repr__", &ControlScope::toString);
 
     // ========================================================================
-    py::class_<Subckt, Object, NamedObject>(m, "Subckt")
-        .def(py::init<>(), "Construct a new subckt.")
-        .def(py::init<const std::string &, const ObjectList<Node>::base_type &, const ObjectList<Parameter>::base_type &, const ObjectList<Object>::base_type &>(), 
-                 py::arg("name"), 
-                 py::arg("nodes"),
-                 py::arg("params"),
-                 py::arg("content"),
-                "Construct a new subckt.")
+    py::class_<Analysis, Object, NamedObject, std::shared_ptr<Analysis>>(m, "Analysis")
+        .def(
+            py::init([](const std::string &name)
+            {
+                auto _ptr = std::make_shared<structure::Analysis>(name);
+                _ptr->parameters.setOwner(_ptr->weak_from_this());
+                return _ptr;
+            }),
+            py::arg("name") = std::string(),
+            "Construct a new analysis.")
+        .def_readonly("parameters", &Analysis::parameters)
+        .def("__str__", &Analysis::toString)
+        .def("__repr__", &Analysis::toString);
+
+    // ========================================================================
+    py::class_<Subckt, Object, NamedObject, std::shared_ptr<Subckt>>(m, "Subckt")
+        .def(
+            py::init([](const std::string &name)
+            {
+                auto _ptr = std::make_shared<structure::Subckt>(name);
+                _ptr->nodes.setOwner(_ptr);
+                _ptr->parameters.setOwner(_ptr);
+                _ptr->content.setOwner(_ptr);
+                return _ptr;
+            }),
+            py::arg("name") = std::string(),
+            "Construct a new subckt.")
         .def_readonly("nodes", &Subckt::nodes)
         .def_readonly("parameters", &Subckt::parameters)
-        .def_readonly("content", &Subckt::content);
+        .def_readonly("content", &Subckt::content)
+        .def("__str__", &Subckt::toString)
+        .def("__repr__", &Subckt::toString);
 
     // ========================================================================
-    py::class_<Circuit, Object, NamedObject>(m, "Circuit")
-        .def(py::init<>(), "Construct a new control scope.")
-        .def(py::init<const std::string &, const std::string &, const ObjectList<Node>::base_type &, const ObjectList<Parameter>::base_type &, const ObjectList<Object>::base_type &>(), 
-                 py::arg("name"), 
-                 py::arg("title"), 
-                 py::arg("nodes"),
-                 py::arg("params"),
-                 py::arg("content"),
-                "Construct a new control scope.")
+    py::class_<Circuit, Object, NamedObject, std::shared_ptr<Circuit>>(m, "Circuit")
+        .def(
+            py::init([](const std::string &name, const std::string &title)
+            {
+                auto _ptr = std::make_shared<structure::Circuit>(name, title);
+                _ptr->nodes.setOwner(_ptr);
+                _ptr->parameters.setOwner(_ptr);
+                _ptr->content.setOwner(_ptr);
+                return _ptr;
+            }),
+            py::arg("name") = std::string(),
+            py::arg("title") = std::string(),
+            "Construct a new control scope.")
         .def_readonly("nodes", &Circuit::nodes)
         .def_readonly("parameters", &Circuit::parameters)
         .def_readonly("content", &Circuit::content)
-        .def("getTitle", &Circuit::getTitle, "Returns the title.")
-        .def("setTitle", &Circuit::setTitle, py::arg("title"), "Sets the title.");
-
-    // ========================================================================
-    py::class_<ObjectList<Object>>(m, "ObjectList")
-        .def(py::init<Object *>())
-        .def(py::init<Object *, std::vector<Object *>>())
-        .def("getOwner", &ObjectList<Object>::getOwner, "Returns the owner of the list.")
-        .def("setOwner", &ObjectList<Object>::setOwner, py::arg("owner"), "Sets the owner of the list.")
-        .def("clear", &ObjectList<Object>::clear, "Clears the list and deletes the objects.")
-        .def(
-            "__len__", [](const ObjectList<Object> &self) { return self.size(); }, "Returns the size of the list.")
-        .def("add", &ObjectList<Object>::push_back, py::arg("object"), "Adds a new object to the list.")
-        .def("remove", static_cast<Object *(ObjectList<Object>::*)(Object *)>(&ObjectList<Object>::remove), py::arg("object"), "Removes the object from the list.")
-        .def(
-            "__getitem__", [](ObjectList<Object> &self, unsigned index) { return self[index]; }, "Returns the item at the given index.")
-        .def(
-            "__iter__", [](ObjectList<Object> &self) { return py::make_iterator(self.begin(), self.end()); }, py::keep_alive<0, 1>(), "Allows iterating the content of the dataset.");
-
-    // ========================================================================
-    py::class_<ObjectList<Node>>(m, "NodeList")
-        .def(py::init<Node *>())
-        .def(py::init<Node *, std::vector<Node *>>())
-        .def("getOwner", &ObjectList<Node>::getOwner, "Returns the owner of the list.")
-        .def("setOwner", &ObjectList<Node>::setOwner, py::arg("owner"), "Sets the owner of the list.")
-        .def("clear", &ObjectList<Node>::clear, "Clears the list and deletes the objects.")
-        .def(
-            "__len__", [](const ObjectList<Node> &self) { return self.size(); }, "Returns the size of the list.")
-        .def("add", &ObjectList<Node>::push_back, py::arg("node"), "Adds a new node to the list.")
-        .def("remove", static_cast<Node *(ObjectList<Node>::*)(Node *)>(&ObjectList<Node>::remove), py::arg("node"), "Removes the node from the list.")
-        .def(
-            "__getitem__", [](ObjectList<Node> &self, unsigned index) { return self[index]; }, "Returns the item at the given index.")
-        .def(
-            "__iter__", [](ObjectList<Node> &self) { return py::make_iterator(self.begin(), self.end()); }, py::keep_alive<0, 1>(), "Allows iterating the content of the dataset.");
-
-    // ========================================================================
-    py::class_<ObjectList<Parameter>>(m, "ParameterList")
-        .def(py::init<Parameter *>())
-        .def(py::init<Parameter *, std::vector<Parameter *>>())
-        .def("getOwner", &ObjectList<Parameter>::getOwner, "Returns the owner of the list.")
-        .def("setOwner", &ObjectList<Parameter>::setOwner, py::arg("owner"), "Sets the owner of the list.")
-        .def("clear", &ObjectList<Parameter>::clear, "Clears the list and deletes the objects.")
-        .def(
-            "__len__", [](const ObjectList<Parameter> &self) { return self.size(); }, "Returns the size of the list.")
-        .def("add", &ObjectList<Parameter>::push_back, py::arg("parameter"), "Adds a new parameter to the list.")
-        .def("remove", static_cast<Parameter *(ObjectList<Parameter>::*)(Parameter *)>(&ObjectList<Parameter>::remove), py::arg("parameter"), "Removes the parameter from the list.")
-        .def(
-            "__getitem__", [](ObjectList<Parameter> &self, unsigned index) { return self[index]; }, "Returns the item at the given index.")
-        .def(
-            "__iter__", [](ObjectList<Parameter> &self) { return py::make_iterator(self.begin(), self.end()); }, py::keep_alive<0, 1>(), "Allows iterating the content of the dataset.");
+        .def_property("title", &Circuit::getTitle, &Circuit::setTitle, "The title of the circuit.")
+        .def("__str__", &Circuit::toString)
+        .def("__repr__", &Circuit::toString);
 }

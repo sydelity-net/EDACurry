@@ -8,34 +8,28 @@
 
 namespace edacurry::structure
 {
-ValuePair::ValuePair(Value *first, Value *second)
+ValuePair::ValuePair(const std::shared_ptr<structure::Value> &first, const std::shared_ptr<structure::Value> &second)
     : Value(), _first(first), _second(second)
 {
     // Nothing to do.
 }
 
-ValuePair::~ValuePair()
-{
-    delete (_first);
-    delete (_second);
-}
-
-Value *ValuePair::getFirst() const
+std::shared_ptr<structure::Value> ValuePair::getFirst() const
 {
     return _first;
 }
 
-Value *ValuePair::setFirst(Value *value)
+std::shared_ptr<structure::Value> ValuePair::setFirst(const std::shared_ptr<structure::Value> &value)
 {
     return this->setChild(_first, value);
 }
 
-Value *ValuePair::getSecond() const
+std::shared_ptr<structure::Value> ValuePair::getSecond() const
 {
     return _second;
 }
 
-Value *ValuePair::setSecond(Value *value)
+std::shared_ptr<structure::Value> ValuePair::setSecond(const std::shared_ptr<structure::Value> &value)
 {
     return this->setChild(_second, value);
 }
@@ -43,8 +37,7 @@ Value *ValuePair::setSecond(Value *value)
 std::string ValuePair::toString() const
 {
     std::stringstream ss;
-    ss << "ValuePair(" << ((_first) ? _first->toString() : " NULL") << ", "
-       << ((_second) ? _second->toString() : " NULL") << ")";
+    ss << "(value_pair " << ((_first) ? _first->toString() : " NULL") << " " << ((_second) ? _second->toString() : " NULL") << ")";
     return ss.str();
 }
 

@@ -9,13 +9,6 @@
 
 namespace edacurry::structure
 {
-Identifier::Identifier()
-    : Value(),
-      NamedObject()
-{
-    // Nothing to do.
-}
-
 Identifier::Identifier(const std::string &name)
     : Value(),
       NamedObject(name)
@@ -23,13 +16,8 @@ Identifier::Identifier(const std::string &name)
     // Nothing to do.
 }
 
-Identifier::~Identifier()
-{
-    // Nothing to do.
-}
-
 std::string Identifier::toString() const
 {
-    return "Identifier(" + this->getName() + ")";
+    return "(identifier `" + this->getName() + "`)";
 }
 } // namespace edacurry::structure

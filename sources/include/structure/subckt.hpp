@@ -16,25 +16,19 @@ namespace edacurry::structure
 class Subckt : public Object, public features::NamedObject {
 public:
     /// The subckt nodes.
-    features::ObjectList<Node> nodes;
+    features::OwnedList<Node> nodes;
     /// The subckt parameters.
-    features::ObjectList<Parameter> parameters;
+    features::OwnedList<Parameter> parameters;
     /// The subckt content.
-    features::ObjectList<Object> content;
+    features::OwnedList<Object> content;
 
     explicit Subckt();
 
     /// @brief Construct a new Component object.
     /// @param name       the name of the subckt.
-    /// @param nodes      the new nodes to be set.
-    /// @param params the new parameters to be set.
-    /// @param content    the new content to be set.
-    Subckt(const std::string &name,
-           const features::ObjectList<Node>::base_type &nodes,
-           const features::ObjectList<Parameter>::base_type &params,
-           const features::ObjectList<Object>::base_type &content);
+    Subckt(const std::string &name);
 
-    ~Subckt() override;
+    ~Subckt() override = default;
 
     /// @brief Provides a string representation of the object for **debugging** purposes.
     /// @return the string representation.

@@ -89,7 +89,7 @@ pybind11_add_module(
     ./src/edacurry.cpp
     ./src/enums.cpp
     ./src/factory.cpp
-    ./src/json_parser.cpp
+    #./src/json_parser.cpp
     
     ./src/structure/analysis.cpp
     ./src/structure/circuit.cpp
@@ -200,7 +200,7 @@ if(DOXYGEN_FOUND)
         ./include/enums.hpp
         ./include/factory.hpp
         ./include/features/named_object.hpp
-        ./include/features/object_list.hpp
+        ./include/features/owned_list.hpp
         ./include/features/object_reference.hpp
         ./include/features/visitable_object.hpp
         ./include/frontend/eldo_frontend.hpp

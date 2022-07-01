@@ -10,11 +10,6 @@
 
 namespace edacurry::features
 {
-NamedObject::NamedObject() : _name()
-{
-    // Nothing to do.
-}
-
 NamedObject::NamedObject(const std::string &name) : _name(utility::trim(name))
 {
     // Nothing to do.

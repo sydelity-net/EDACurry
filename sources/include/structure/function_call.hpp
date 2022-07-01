@@ -16,18 +16,14 @@ namespace edacurry::structure
 class FunctionCall : public Value, public features::NamedObject {
 public:
     /// The parameters of the function.
-    features::ObjectList<Parameter> parameters;
-
-    /// @brief Construct a new Function Call object.
-    explicit FunctionCall();
+    features::OwnedList<Parameter> parameters;
 
     /// @brief Construct a new Function Call object.
     /// @param name the name.
-    /// @param parameters the parameters.
-    FunctionCall(const std::string &name, const features::ObjectList<Parameter>::base_type &parameters);
+    FunctionCall(const std::string &name = std::string());
 
-    /// @brief Destroy the Function Call object.
-    ~FunctionCall() override;
+    /// @brief Destroy the FunctionCall object.
+    ~FunctionCall() override = default;
 
     /// @brief Provides a string representation of the object for **debugging** purposes.
     /// @return the string representation.

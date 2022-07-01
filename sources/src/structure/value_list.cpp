@@ -10,19 +10,8 @@
 
 namespace edacurry::structure
 {
-ValueList::ValueList() : Value(), values(this), _delimiter()
-{
-    // Nothing to do.
-}
-
-ValueList::ValueList(DelimiterType delimiter,
-                     const features::ObjectList<Value>::base_type &values)
-    : Value(), values(this, values), _delimiter(delimiter)
-{
-    // Nothing to do.
-}
-
-ValueList::~ValueList()
+ValueList::ValueList(DelimiterType delimiter)
+    : Value(), values(this->weak_from_this()), _delimiter(delimiter)
 {
     // Nothing to do.
 }
@@ -40,8 +29,7 @@ void ValueList::setDelimiterType(DelimiterType delimiter)
 std::string ValueList::toString() const
 {
     std::stringstream ss;
-    ss << "ValueList(" << delimiter_type_to_plain_string(_delimiter) << ", "
-       << values.toString() << ")";
+    ss << "(value_list " << delimiter_type_to_plain_string(_delimiter) << " " << values.toString() << ")";
     return ss.str();
 }
 } // namespace edacurry::structure

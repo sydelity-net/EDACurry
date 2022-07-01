@@ -10,13 +10,6 @@
 
 namespace edacurry::structure
 {
-String::String()
-    : Value(),
-      _string()
-{
-    // Nothing to do.
-}
-
 String::String(const std::string & string)
     : Value(),
       _string(string)
@@ -24,15 +17,10 @@ String::String(const std::string & string)
     // Nothing to do.
 }
 
-String::~String()
-{
-    // Nothing to do.
-}
-
 std::string String::toString() const
 {
     std::stringstream ss;
-    ss << "String(" << _string << ")";
+    ss << "(string `" << _string << "`)";
     return ss.str();
 }
 

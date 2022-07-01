@@ -7,7 +7,7 @@
 #pragma once
 
 #include "features/named_object.hpp"
-#include "features/object_list.hpp"
+#include "features/owned_list.hpp"
 #include "object.hpp"
 #include "enums.hpp"
 #include "value.hpp"
@@ -21,31 +21,35 @@ public:
     /// @param left the right value of the parameter.
     /// @param right the initial right value of the parameter.
     /// @param type the parameter's type.
-    /// @param hide_left hide the left-hand side value during code generation.
-    Parameter(Value *left, Value *right, ParameterType type = param_assign, bool hide_left = false);
+    /// @param hide_name hide the left-hand side value during code generation.
+    Parameter(
+        const std::shared_ptr<structure::Value> &left = nullptr, 
+        const std::shared_ptr<structure::Value> &right = nullptr, 
+        ParameterType type = ParameterType::param_assign, 
+        bool hide_name = false);
 
     /// @brief Destroy the Parameter object.
-    ~Parameter() override;
+    ~Parameter() override = default;
 
     /// @brief Returns the initial value of the parameter.
     /// @return The initial value of the parameter.
-    Value *getRight() const;
+    std::shared_ptr<structure::Value> getRight() const;
 
     /// @brief Sets the initial value of the data parameter.
     /// @param value the initial value of the data parameter to be set.
     /// @return The old initial value of the data parameter if it is
     /// different from the new one, nullptr otherwise.
-    Value *setRight(Value *value);
+    std::shared_ptr<structure::Value> setRight(const std::shared_ptr<structure::Value> &value);
 
     /// @brief Returns the initial value of the parameter.
     /// @return The initial value of the parameter.
-    Value *getLeft() const;
+    std::shared_ptr<structure::Value> getLeft() const;
 
     /// @brief Sets the initial value of the data parameter.
     /// @param value the initial value of the data parameter to be set.
     /// @return The old initial value of the data parameter if it is
     /// different from the new one, nullptr otherwise.
-    Value *setLeft(Value *value);
+    std::shared_ptr<structure::Value> setLeft(const std::shared_ptr<structure::Value> &value);
 
     /// @brief Sets the type of parameter.
     /// @param type the parameter's type.
@@ -62,17 +66,17 @@ public:
     }
 
     /// @brief Sets if the left-hand side value is hidden during code generation.
-    /// @param hide_left if the left-hand side value should be hidden.
-    inline void setHideLeft(bool hide_left)
+    /// @param hide_name if the left-hand side value should be hidden.
+    inline void setHideName(bool hide_name)
     {
-        _hide_left = hide_left;
+        _hide_name = hide_name;
     }
 
     /// @brief Sets if the left-hand side value is hidden during code generation.
     /// @return if the left-hand side value should be hidden.
-    inline bool getHideLeft() const
+    inline bool getHideName() const
     {
-        return _hide_left;
+        return _hide_name;
     }
 
     /// @brief Provides a string representation of the object for **debugging** purposes.
@@ -88,13 +92,13 @@ public:
 
 private:
     /// The value on the left of the parameter.
-    Value *_left;
+    std::shared_ptr<structure::Value> _left;
     /// The value on the right of the parameter.
-    Value *_right;
+    std::shared_ptr<structure::Value> _right;
     /// The type of parameter.
     ParameterType _type;
     /// Hide the left-hand side value during code generation.
-    bool _hide_left;
+    bool _hide_name;
 };
 
 } // namespace edacurry::structure

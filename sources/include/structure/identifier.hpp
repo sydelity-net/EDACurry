@@ -15,13 +15,11 @@ namespace edacurry::structure
 class Identifier : public Value, public features::NamedObject {
 public:
     /// @brief Construct a new Identifier object.
-    explicit Identifier();
-
-    /// @brief Construct a new Identifier object.
     /// @param name The name of the identifier.
-    explicit Identifier(const std::string &name);
+    explicit Identifier(const std::string &name = std::string());
 
-    ~Identifier() override;
+    /// @brief Destroy the Identifier object.
+    ~Identifier() override = default;
 
     /// @brief Provides a string representation of the object for **debugging** purposes.
     /// @return the string representation.

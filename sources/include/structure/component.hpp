@@ -17,24 +17,17 @@ namespace edacurry::structure
 class Component : public Object, public features::NamedObject {
 public:
     /// The nodes.
-    features::ObjectList<Node> nodes;
+    features::OwnedList<Node> nodes;
     /// The parameters.
-    features::ObjectList<Parameter> parameters;
-
-    /// @brief Construct a new Component object.
-    explicit Component();
+    features::OwnedList<Parameter> parameters;
 
     /// @brief Construct a new Component object.
     /// @param name the name of the component.
     /// @param master the master of the component.
-    /// @param nodes the node connected to the component.
-    /// @param parameters the parameter assignments of the component.
-    Component(const std::string &name,
-              const std::string &master,
-              const features::ObjectList<Node>::base_type &nodes,
-              const features::ObjectList<Parameter>::base_type &parameters);
+    Component(const std::string &name = std::string(), const std::string &master = std::string());
 
-    ~Component() override;
+    /// @brief Destroy the Component object.
+    ~Component() override = default;
 
     /// @brief Sets the name.
     /// @param master the master to be set.

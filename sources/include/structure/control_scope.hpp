@@ -15,26 +15,17 @@ namespace edacurry::structure
 class ControlScope : public Control {
 public:
     /// The control scope nodes.
-    features::ObjectList<Node> nodes;
+    features::OwnedList<Node> nodes;
     /// The control scope content.
-    features::ObjectList<Object> content;
-
-    /// @brief Construct a new controlled scope.
-    explicit ControlScope();
+    features::OwnedList<Object> content;
 
     /// @brief Construct a new controlled scope.
     /// @param name the name of the control scope.
     /// @param type the type of control object.
-    /// @param params the parameters to be set.
-    /// @param nodes the nodes to be set.
-    /// @param content the content to be set.
-    ControlScope(const std::string &name,
-                 ControlType type,
-                 const features::ObjectList<Parameter>::base_type &params,
-                 const features::ObjectList<Node>::base_type &nodes,
-                 const features::ObjectList<Object>::base_type &content);
+    ControlScope(const std::string &name = std::string(), ControlType type = ControlType::ctrl_none);
 
-    ~ControlScope() override;
+    /// @brief Destroy the ControlScope object.
+    ~ControlScope() override = default;
 
     /// @brief Provides a string representation of the object for **debugging** purposes.
     /// @return the string representation.

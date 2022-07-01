@@ -15,15 +15,14 @@ namespace edacurry::structure
 class ExpressionUnary : public Value {
 public:
     /// @brief Constructor.
-    explicit ExpressionUnary();
-
-    /// @brief Constructor.
     /// @param op The operator. Default value is <tt>op_none</tt>.
     /// @param value The operand. Default value is <tt>nullptr</tt>.
-    ExpressionUnary(Operator op, Value *value = nullptr);
+    ExpressionUnary(
+        Operator op = Operator::op_none,
+        const std::shared_ptr<structure::Value> &value = nullptr);
 
-    /// @brief Destructor.
-    ~ExpressionUnary() override;
+    /// @brief Destroy the ExpressionUnary object.
+    ~ExpressionUnary() override = default;
 
     /// @brief Disable copy constructor.
     ExpressionUnary(const ExpressionUnary &) = delete;
@@ -41,13 +40,13 @@ public:
 
     /// @brief Returns the operand of the expression.
     /// @return The operand of the expression.
-    Value *getValue() const;
+    std::shared_ptr<structure::Value> getValue() const;
 
     /// @brief Sets the operand of the expression.
     /// @param value The operand of the expression to be set.
     /// @return The old operand of the expression if it is different
     /// from the new one, nullptr otherwise.
-    Value *setValue(Value *value);
+    std::shared_ptr<structure::Value> setValue(const std::shared_ptr<structure::Value> &value);
 
     /// @brief Provides a string representation of the object for **debugging** purposes.
     /// @return the string representation.
@@ -64,7 +63,7 @@ private:
     /// @brief The operator of the expression.
     Operator _operator;
     /// @brief The operand of the expression.
-    Value *_value;
+    std::shared_ptr<structure::Value> _value;
 };
 
 } // namespace edacurry::structure

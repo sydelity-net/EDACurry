@@ -234,10 +234,10 @@ int EldoBackend::visitDouble(const structure::Number<double> *e)
 int EldoBackend::visitParameter(const structure::Parameter *e)
 {
     if ((e->getType() == param_assign) || (e->getType() == param_arithmetic)) {
-        if (e->getLeft() && !e->getHideLeft())
+        if (e->getLeft() && !e->getHideName())
             e->getLeft()->accept(this);
         if (e->getRight()) {
-            if (e->getLeft() && !e->getHideLeft())
+            if (e->getLeft() && !e->getHideName())
                 ss << '=';
             if (e->getType() == param_arithmetic)
                 ss << '{';
@@ -247,7 +247,7 @@ int EldoBackend::visitParameter(const structure::Parameter *e)
         }
     } else if (e->getType() == param_tabular) {
         ss << "table ";
-        auto table = dynamic_cast<const structure::ValueList *>(e->getRight());
+        auto table = std::dynamic_pointer_cast<const structure::ValueList>(e->getRight());
         if (table && (table->values.size() >= 2)) {
             for (size_t i = 0; i < table->values.size(); ++i) {
                 table->values[i]->accept(this);
@@ -261,7 +261,7 @@ int EldoBackend::visitParameter(const structure::Parameter *e)
         if (e->getLeft())
             e->getLeft()->accept(this);
         ss << "(";
-        auto table = dynamic_cast<const structure::ValueList *>(e->getRight());
+        auto table = std::dynamic_pointer_cast<const structure::ValueList>(e->getRight());
         for (size_t i = 0; table && (i < table->values.size()); ++i) {
             table->values[i]->accept(this);
             if (i < (table->values.size() - 1))

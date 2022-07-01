@@ -163,10 +163,10 @@ inline std::string to_lower(const std::string &s)
 /// @param ptr the pointer to cast.
 /// @return the pointer to the same object of type **Derived**.
 template <typename Derived, typename Base>
-inline Derived *to(Base *ptr)
+inline std::shared_ptr<Derived> to(const std::shared_ptr<Base>& ptr)
 {
     static_assert(std::is_convertible<Derived *, Base *>::value, "Class must inherit Base as public");
-    return dynamic_cast<Derived *>(ptr);
+    return std::dynamic_pointer_cast<Derived>(ptr);
 }
 
 /// @brief Helper function to cast a pointer of type **Base** to a pointer
@@ -176,10 +176,10 @@ inline Derived *to(Base *ptr)
 /// @param ptr the pointer to cast.
 /// @return the pointer to the same object of type **Derived**.
 template <typename Derived, typename Base>
-inline Derived *to_check(Base *ptr)
+inline std::shared_ptr<Derived> to_check(const std::shared_ptr<Base>& ptr)
 {
     static_assert(std::is_convertible<Derived *, Base *>::value, "Class must inherit Base as public");
-    auto derived = dynamic_cast<Derived *>(ptr);
+    auto derived = std::dynamic_pointer_cast<Derived>(ptr);
     if (derived == nullptr) {
         std::cerr << "Casting to `" << typeid(Derived).name() << "` failed.";
         std::abort();
@@ -195,7 +195,7 @@ inline Derived *to_check(Base *ptr)
 /// @return **true**  if the object is actually of type **Derived**.
 /// @return **false** if the object is not of type **Derived**.
 template <typename Derived, typename Base>
-inline bool is_a(Base *ptr)
+inline bool is_a(const std::shared_ptr<Base>& ptr)
 {
     static_assert(std::is_convertible<Derived *, Base *>::value, "Class must inherit Base as public");
     return utility::to<Derived>(ptr) != nullptr;

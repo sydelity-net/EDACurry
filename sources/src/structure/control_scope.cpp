@@ -9,27 +9,10 @@
 
 namespace edacurry::structure
 {
-ControlScope::ControlScope()
-    : Control(),
-      nodes(this),
-      content(this)
-{
-    // Nothing to do.
-}
-
-ControlScope::ControlScope(const std::string &name,
-                           ControlType type,
-                           const features::ObjectList<Parameter>::base_type &params,
-                           const features::ObjectList<Node>::base_type &nodes,
-                           const features::ObjectList<Object>::base_type &content)
-    : Control(name, type, params),
-      nodes(this, nodes),
-      content(this, content)
-{
-    // Nothing to do.
-}
-
-ControlScope::~ControlScope()
+ControlScope::ControlScope(const std::string &name, ControlType type)
+    : Control(name, type),
+      nodes(this->weak_from_this()),
+      content(this->weak_from_this())
 {
     // Nothing to do.
 }
@@ -37,11 +20,11 @@ ControlScope::~ControlScope()
 std::string ControlScope::toString() const
 {
     std::stringstream ss;
-    ss << "ControlScope("
-       << this->getName() << ", "
-       << control_type_to_plain_string(this->getControlType()) << ", "
-       << parameters.toString() << ", "
-       << nodes.toString() << ", "
+    ss << "(control_scope `"
+       << this->getName() << "` "
+       << control_type_to_plain_string(this->getControlType()) << " "
+       << parameters.toString() << " "
+       << nodes.toString() << " "
        << content.toString() << ")";
     return ss.str();
 }

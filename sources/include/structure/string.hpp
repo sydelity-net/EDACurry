@@ -14,14 +14,11 @@ namespace edacurry::structure
 class String : public Value {
 public:
     /// @brief Construct a new String object.
-    explicit String();
-
-    /// @brief Construct a new String object.
     /// @param string The string.
-    explicit String(const std::string &string);
+    explicit String(const std::string &string = std::string());
 
     /// @brief Destroy the String object.
-    ~String() override;
+    ~String() override = default;
 
     /// @brief Sets the string.
     /// @param string the string to be set.

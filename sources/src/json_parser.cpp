@@ -225,7 +225,7 @@ struct TypeName<edacurry::structure::ValuePair> {
 };
 
 template <typename T>
-struct TypeName<edacurry::features::ObjectList<T>> {
+struct TypeName<edacurry::features::OwnedList<T>> {
     static std::string get()
     {
         return "List<" + TypeName<T>::get() + ">";
@@ -407,10 +407,10 @@ const jnode_t &operator>><edacurry::structure::Value *>(const jnode_t &lhs, edac
 }
 
 template <typename T>
-json::jnode_t &operator<<(json::jnode_t &lhs, edacurry::features::ObjectList<T> const &rhs)
+json::jnode_t &operator<<(json::jnode_t &lhs, edacurry::features::OwnedList<T> const &rhs)
 {
     lhs.set_type(json::JOBJECT);
-    lhs["type"] << json::TypeName<edacurry::features::ObjectList<T>>::get();
+    lhs["type"] << json::TypeName<edacurry::features::OwnedList<T>>::get();
     lhs["objects"].clear();
     lhs["objects"].set_type(json::JARRAY);
     lhs["objects"].resize(rhs.size());
@@ -421,9 +421,9 @@ json::jnode_t &operator<<(json::jnode_t &lhs, edacurry::features::ObjectList<T> 
 }
 
 template <typename T>
-const json::jnode_t &operator>>(const json::jnode_t &lhs, edacurry::features::ObjectList<T> &rhs)
+const json::jnode_t &operator>>(const json::jnode_t &lhs, edacurry::features::OwnedList<T> &rhs)
 {
-    if (lhs["type"].get_value() == json::TypeName<edacurry::features::ObjectList<T>>::get()) {
+    if (lhs["type"].get_value() == json::TypeName<edacurry::features::OwnedList<T>>::get()) {
         // Clear the vector.
         rhs.clear();
         // Resize the vector.
@@ -926,7 +926,7 @@ jnode_t &operator<<<edacurry::structure::Parameter *>(jnode_t &lhs, edacurry::st
     }
     lhs["right"] << rhs->getRight();
     lhs["parameter_type"] << rhs->getType();
-    lhs["hide_left"] << rhs->getHideLeft();
+    lhs["hide_name"] << rhs->getHideName();
     return lhs;
 }
 
@@ -938,19 +938,19 @@ const jnode_t &operator>><edacurry::structure::Parameter *>(const jnode_t &lhs, 
         edacurry::structure::Value *left  = nullptr;
         edacurry::structure::Value *right = nullptr;
         edacurry::ParameterType parameter_type;
-        bool hide_left;
+        bool hide_name;
         // Read the values.
         lhs["left"] >> left;
         lhs["right"] >> right;
         lhs["parameter_type"] >> parameter_type;
-        lhs["hide_left"] >> hide_left;
+        lhs["hide_name"] >> hide_name;
         if (rhs == nullptr) {
-            rhs = new edacurry::structure::Parameter(left, right, parameter_type, hide_left);
+            rhs = new edacurry::structure::Parameter(left, right, parameter_type, hide_name);
         } else {
             rhs->setLeft(left);
             rhs->setRight(right);
             rhs->setType(parameter_type);
-            rhs->setHideLeft(hide_left);
+            rhs->setHideName(hide_name);
         }
     }
     return lhs;

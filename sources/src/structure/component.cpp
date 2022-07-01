@@ -10,22 +10,8 @@
 
 namespace edacurry::structure
 {
-Component::Component()
-    : Object(), features::NamedObject(), nodes(this), parameters(this), _master()
-{
-    // Nothing to do.
-}
-
-Component::Component(const std::string &name,
-                     const std::string &master,
-                     const features::ObjectList<Node>::base_type &nodes,
-                     const features::ObjectList<Parameter>::base_type &parameters)
-    : Object(), features::NamedObject(name),  nodes(this, nodes), parameters(this, parameters), _master(utility::trim(master))
-{
-    // Nothing to do.
-}
-
-Component::~Component()
+Component::Component(const std::string &name, const std::string &master)
+    : Object(), features::NamedObject(name),  nodes(this->weak_from_this()), parameters(this->weak_from_this()), _master(utility::trim(master))
 {
     // Nothing to do.
 }
@@ -48,8 +34,7 @@ bool Component::matchMaster(const std::string &master) const
 std::string Component::toString() const
 {
     std::stringstream ss;
-    ss << "Component(" << this->getName() << ", " << _master << ", " << nodes.toString() << ", "
-       << parameters.toString() << ")";
+    ss << "(component `" << this->getName() << "` `" << _master << "` " << nodes.toString() << " " << parameters.toString() << ")";
     return ss.str();
 }
 } // namespace edacurry::structure

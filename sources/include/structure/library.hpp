@@ -14,13 +14,11 @@ namespace edacurry::structure
 /// @brief Represent a library.
 class Library : public Object, public features::NamedObject {
 public:
-    /// @brief Construct a new Library object.
-    explicit Library();
 
     /// @brief Construct a new Library object.
     /// @param name the name of the library.
     /// @param path the path to the library file.
-    Library(const std::string &name, const std::string &path);
+    Library(const std::string &name = std::string(), const std::string &path = std::string());
 
     /// @brief Destroy the Library object.
     ~Library() override = default;

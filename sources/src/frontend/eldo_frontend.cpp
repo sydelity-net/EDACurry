@@ -19,10 +19,10 @@ std::string to_string(ELDOParser::Filepath_elementContext *ctx);
 std::string to_string(ELDOParser::FilepathContext *ctx);
 
 template <typename T>
-structure::Number<T> *to_number(antlr4::tree::TerminalNode *ctx)
+std::shared_ptr<structure::Number<T>> to_number(antlr4::tree::TerminalNode *ctx)
 {
     assert(ctx && "Received nullptr context.");
-
+    Factory factory;
     std::stringstream ss;
     ss << ctx->toString();
     T value;
@@ -33,10 +33,10 @@ structure::Number<T> *to_number(antlr4::tree::TerminalNode *ctx)
     if (!unit.empty()) {
         value *= letter_to_scaling_factor(unit[0]);
         if ((unit.size() > 1) && (utility::to_lower(unit) != "meg")) {
-            return new structure::Number<T>(value, unit.substr(1));
+            return factory.number<T>(value, unit.substr(1));
         }
     }
-    return new structure::Number<T>(value);
+    return factory.number<T>(value);
 }
 
 std::string to_string(ELDOParser::Expression_atomContext *ctx);
@@ -57,7 +57,7 @@ std::string to_string(ELDOParser::NodeContext *ctx);
 
 Any ELDOFrontend::visitNetlist(ELDOParser::NetlistContext *ctx)
 {
-    return this->advance_visit(ctx, _factory.circuit("", "", {}, {}, {}));
+    return this->advance_visit(ctx, _factory.circuit("", ""));
 }
 
 Any ELDOFrontend::visitNetlist_title(ELDOParser::Netlist_titleContext *ctx)
@@ -74,23 +74,17 @@ Any ELDOFrontend::visitInclude(ELDOParser::IncludeContext *ctx)
 
 Any ELDOFrontend::visitStandard_include(ELDOParser::Standard_includeContext *ctx)
 {
-    return this->advance_visit(ctx, _factory.include(IncludeType::inc_standard,
-                                                     to_string(ctx->filepath()),
-                                                     {}));
+    return this->advance_visit(ctx, _factory.include(IncludeType::inc_standard, to_string(ctx->filepath())));
 }
 
 Any ELDOFrontend::visitVerilog_include(ELDOParser::Verilog_includeContext *ctx)
 {
-    return this->advance_visit(ctx, _factory.include(IncludeType::inc_hdl,
-                                                     to_string(ctx->filepath()),
-                                                     {}));
+    return this->advance_visit(ctx, _factory.include(IncludeType::inc_hdl, to_string(ctx->filepath())));
 }
 
 Any ELDOFrontend::visitDspf_include(ELDOParser::Dspf_includeContext *ctx)
 {
-    return this->advance_visit(ctx, _factory.include(IncludeType::inc_ahdl,
-                                                     to_string(ctx->filepath()),
-                                                     {}));
+    return this->advance_visit(ctx, _factory.include(IncludeType::inc_ahdl, to_string(ctx->filepath())));
 }
 
 Any ELDOFrontend::visitLibrary(ELDOParser::LibraryContext *ctx)
@@ -127,7 +121,7 @@ Any ELDOFrontend::visitLibrary_name(ELDOParser::Library_nameContext *ctx)
 
 Any ELDOFrontend::visitLibrary_def(ELDOParser::Library_defContext *ctx)
 {
-    return this->advance_visit(ctx, _factory.libraryDef("", {}));
+    return this->advance_visit(ctx, _factory.libraryDef(""));
 }
 
 Any ELDOFrontend::visitLibrary_def_header(ELDOParser::Library_def_headerContext *ctx)
@@ -147,7 +141,7 @@ Any ELDOFrontend::visitLibrary_def_footer(ELDOParser::Library_def_footerContext 
 
 Any ELDOFrontend::visitSubckt(ELDOParser::SubcktContext *ctx)
 {
-    return this->advance_visit(ctx, _factory.subckt("", {}, {}, {}));
+    return this->advance_visit(ctx, _factory.subckt(""));
 }
 
 Any ELDOFrontend::visitSubckt_header(ELDOParser::Subckt_headerContext *ctx)
@@ -170,7 +164,7 @@ Any ELDOFrontend::visitSubckt_footer(ELDOParser::Subckt_footerContext *ctx)
 
 Any ELDOFrontend::visitAnalysis(ELDOParser::AnalysisContext *ctx)
 {
-    return this->advance_visit(ctx, _factory.analysis("", {}));
+    return this->advance_visit(ctx, _factory.analysis(""));
 }
 
 Any ELDOFrontend::visitAc(ELDOParser::AcContext *ctx)
@@ -920,7 +914,7 @@ Any ELDOFrontend::visitGlobal(ELDOParser::GlobalContext *ctx)
 
 Any ELDOFrontend::visitModel(ELDOParser::ModelContext *ctx)
 {
-    return this->advance_visit(ctx, _factory.model("", "", "", "", {}));
+    return this->advance_visit(ctx, _factory.model("", "", "", ""));
 }
 
 Any ELDOFrontend::visitModel_lib(ELDOParser::Model_libContext *ctx)
@@ -967,7 +961,7 @@ Any ELDOFrontend::visitAlter(ELDOParser::AlterContext *ctx)
 
 Any ELDOFrontend::visitAlter_definition(ELDOParser::Alter_definitionContext *ctx)
 {
-    return this->advance_visit(ctx, _factory.controlScope("", ctrl_altergroup, {}, {}, {}));
+    return this->advance_visit(ctx, _factory.controlScope("", ctrl_altergroup));
 }
 
 Any ELDOFrontend::visitAlter_header(ELDOParser::Alter_headerContext *ctx)
@@ -989,7 +983,7 @@ Any ELDOFrontend::visitAlter_footer(ELDOParser::Alter_footerContext *ctx)
 
 Any ELDOFrontend::visitSave(ELDOParser::SaveContext *ctx)
 {
-    return this->advance_visit(ctx, _factory.control("", ctrl_save, {}));
+    return this->advance_visit(ctx, _factory.control("", ctrl_save));
 }
 
 Any ELDOFrontend::visitSave_file(ELDOParser::Save_fileContext *ctx)
@@ -997,7 +991,8 @@ Any ELDOFrontend::visitSave_file(ELDOParser::Save_fileContext *ctx)
     this->add_to_parent(
         _factory.parameter(
             _factory.identifier((ctx->ID() ? ctx->ID()->toString() : "")),
-            _factory.string(to_string(ctx->filepath()))));
+            _factory.string(to_string(ctx->filepath())),
+            param_assign, false));
     return visitChildren(ctx);
 }
 
@@ -1021,12 +1016,12 @@ Any ELDOFrontend::visitSave_when(ELDOParser::Save_whenContext *ctx)
 
 Any ELDOFrontend::visitOption(ELDOParser::OptionContext *ctx)
 {
-    return this->advance_visit(ctx, _factory.control("", ctrl_option, {}));
+    return this->advance_visit(ctx, _factory.control("", ctrl_option));
 }
 
 Any ELDOFrontend::visitNodeset(ELDOParser::NodesetContext *ctx)
 {
-    return this->advance_visit(ctx, _factory.control("", ctrl_nodeset, {}));
+    return this->advance_visit(ctx, _factory.control("", ctrl_nodeset));
 }
 
 Any ELDOFrontend::visitCall_tcl(ELDOParser::Call_tclContext *ctx)
@@ -1046,13 +1041,13 @@ Any ELDOFrontend::visitUse_tcl(ELDOParser::Use_tclContext *ctx)
 
 Any ELDOFrontend::visitDefmac(ELDOParser::DefmacContext *ctx)
 {
-    return this->advance_visit(ctx, _factory.control("", ctrl_defmac, {}));
+    return this->advance_visit(ctx, _factory.control("", ctrl_defmac));
 }
 
 Any ELDOFrontend::visitChrent(ELDOParser::ChrentContext *ctx)
 {
-    auto chrent = _factory.control("", ctrl_chrent, {});
-    chrent->parameters.push_back(_factory.parameter(nullptr, _factory.identifier(to_string(ctx->node()))));
+    auto chrent = _factory.control("", ctrl_chrent);
+    chrent->parameters.push_back(_factory.parameter(nullptr, _factory.identifier(to_string(ctx->node())), param_assign, true));
     return this->advance_visit(ctx->chrent_behaviour(), chrent);
 }
 
@@ -1066,7 +1061,7 @@ Any ELDOFrontend::visitChrent_point(ELDOParser::Chrent_pointContext *ctx)
     auto ctrl   = utility::to_check<structure::Control>(this->back());
     auto result = visitChildren(ctx);
     if (ctx->NUMBER()) {
-        ctrl->parameters.push_back(_factory.parameter(nullptr, to_number<double>(ctx->NUMBER())));
+        ctrl->parameters.push_back(_factory.parameter(nullptr, to_number<double>(ctx->NUMBER()), param_assign, true));
     }
     return result;
 }
@@ -1076,8 +1071,9 @@ Any ELDOFrontend::visitChrent_pair(ELDOParser::Chrent_pairContext *ctx)
     auto ctrl = utility::to_check<structure::Control>(this->back());
     this->add_to_parent(
         _factory.parameter(
-            nullptr, _factory.valuePair(to_number<double>(ctx->NUMBER(0)),
-                                        to_number<double>(ctx->NUMBER(1)))));
+            nullptr, 
+            _factory.valuePair(to_number<double>(ctx->NUMBER(0)), to_number<double>(ctx->NUMBER(1))),
+            param_assign, true));
     return visitChildren(ctx);
 }
 
@@ -1101,7 +1097,7 @@ Any ELDOFrontend::visitPrint(ELDOParser::PrintContext *ctx)
     return this->advance_visit(
         ctx,
         _factory.control(
-            ctx->ID() ? ctx->ID()->toString() : "", ctrl_print, {}));
+            ctx->ID() ? ctx->ID()->toString() : "", ctrl_print));
 }
 
 Any ELDOFrontend::visitPlot(ELDOParser::PlotContext *ctx)
@@ -1109,7 +1105,7 @@ Any ELDOFrontend::visitPlot(ELDOParser::PlotContext *ctx)
     return this->advance_visit(
         ctx,
         _factory.control(
-            ctx->ID() ? ctx->ID()->toString() : "", ctrl_plot, {}));
+            ctx->ID() ? ctx->ID()->toString() : "", ctrl_plot));
 }
 
 Any ELDOFrontend::visitFfile(ELDOParser::FfileContext *ctx)
@@ -1139,12 +1135,9 @@ Any ELDOFrontend::visitFfile_storage_format(ELDOParser::Ffile_storage_formatCont
 
 Any ELDOFrontend::visitProbe(ELDOParser::ProbeContext *ctx)
 {
-    return this->advance_visit(
-        ctx,
-        _factory.control(
-            "",
-            ctrl_probe,
-            { _factory.parameter(nullptr, _factory.identifier(ctx->ID()->toString())) }));
+    auto ctrl =_factory.control("", ctrl_probe);
+    ctrl->parameters.push_back(_factory.parameter(nullptr, _factory.identifier(ctx->ID()->toString()), param_assign, false));
+    return this->advance_visit(ctx, ctrl);
 }
 
 Any ELDOFrontend::visitDefwave(ELDOParser::DefwaveContext *ctx)
@@ -1154,16 +1147,16 @@ Any ELDOFrontend::visitDefwave(ELDOParser::DefwaveContext *ctx)
 
 Any ELDOFrontend::visitTemp(ELDOParser::TempContext *ctx)
 {
-    auto ctrl = _factory.control("", ctrl_temp, {});
+    auto ctrl = _factory.control("", ctrl_temp);
     for (size_t i = 0; i < ctx->NUMBER().size(); ++i) {
-        ctrl->parameters.push_back(_factory.parameter(nullptr, to_number<double>(ctx->NUMBER(i))));
+        ctrl->parameters.push_back(_factory.parameter(nullptr, to_number<double>(ctx->NUMBER(i)), param_assign, false));
     }
     return this->advance_visit(ctx, ctrl);
 }
 
 Any ELDOFrontend::visitMeas(ELDOParser::MeasContext *ctx)
 {
-    auto ctrl = _factory.control("", ctrl_meas, {});
+    auto ctrl = _factory.control("", ctrl_meas);
     return this->advance_visit(ctx, ctrl);
 }
 
@@ -1183,7 +1176,8 @@ Any ELDOFrontend::visitMeas_vect(ELDOParser::Meas_vectContext *ctx)
     this->add_to_parent(
         _factory.parameter(
             nullptr,
-            _factory.identifier(ctx->VECT()->toString())));
+            _factory.identifier(ctx->VECT()->toString()),
+            param_assign, true));
     return visitChildren(ctx);
 }
 
@@ -1192,7 +1186,8 @@ Any ELDOFrontend::visitMeas_catvect(ELDOParser::Meas_catvectContext *ctx)
     this->add_to_parent(
         _factory.parameter(
             nullptr,
-            _factory.identifier(ctx->CATVECT()->toString())));
+            _factory.identifier(ctx->CATVECT()->toString()),
+            param_assign, true));
     return visitChildren(ctx);
 }
 
@@ -1219,7 +1214,7 @@ Any ELDOFrontend::visitMeas_find(ELDOParser::Meas_findContext *ctx)
         _factory.parameter(
             _factory.identifier(ctx->FIND()->toString()),
             nullptr,
-            param_no_equal));
+            param_no_equal, false));
 }
 
 Any ELDOFrontend::visitMeas_at(ELDOParser::Meas_atContext *ctx)
@@ -1229,7 +1224,7 @@ Any ELDOFrontend::visitMeas_at(ELDOParser::Meas_atContext *ctx)
         _factory.parameter(
             _factory.identifier(ctx->AT()->toString()),
             nullptr,
-            param_no_equal));
+            param_no_equal, false));
 }
 
 Any ELDOFrontend::visitMeas_when(ELDOParser::Meas_whenContext *ctx)
@@ -1239,7 +1234,7 @@ Any ELDOFrontend::visitMeas_when(ELDOParser::Meas_whenContext *ctx)
         _factory.parameter(
             _factory.identifier(ctx->WHEN()->toString()),
             nullptr,
-            param_no_equal));
+            param_no_equal, false));
 }
 
 Any ELDOFrontend::visitMeas_derivative(ELDOParser::Meas_derivativeContext *ctx)
@@ -1249,7 +1244,7 @@ Any ELDOFrontend::visitMeas_derivative(ELDOParser::Meas_derivativeContext *ctx)
         _factory.parameter(
             _factory.identifier(ctx->DERIVATIVE()->toString()),
             nullptr,
-            param_no_equal));
+            param_no_equal, false));
 }
 
 Any ELDOFrontend::visitMeas_param(ELDOParser::Meas_paramContext *ctx)
@@ -1259,18 +1254,18 @@ Any ELDOFrontend::visitMeas_param(ELDOParser::Meas_paramContext *ctx)
         _factory.parameter(
             _factory.identifier(ctx->PARAM()->toString()),
             nullptr,
-            param_no_equal));
+            param_no_equal, false));
 }
 
 Any ELDOFrontend::visitMeas_trig(ELDOParser::Meas_trigContext *ctx)
 {
-    this->add_to_parent(_factory.parameter(nullptr, _factory.identifier(ctx->TRIG()->toString()), param_assign));
+    this->add_to_parent(_factory.parameter(nullptr, _factory.identifier(ctx->TRIG()->toString()), param_assign, false));
     return visitChildren(ctx);
 }
 
 Any ELDOFrontend::visitMeas_targ(ELDOParser::Meas_targContext *ctx)
 {
-    this->add_to_parent(_factory.parameter(nullptr, _factory.identifier(ctx->TARG()->toString()), param_assign));
+    this->add_to_parent(_factory.parameter(nullptr, _factory.identifier(ctx->TARG()->toString()), param_assign, false));
     return visitChildren(ctx);
 }
 
@@ -1294,7 +1289,7 @@ Any ELDOFrontend::visitComponent(ELDOParser::ComponentContext *ctx)
         std::cout << "+" << token->getText();
     }
 #endif
-    return this->advance_visit(ctx, _factory.component("", {}, {}, {}));
+    return this->advance_visit(ctx, _factory.component("", ""));
 }
 
 Any ELDOFrontend::visitComponent_type(ELDOParser::Component_typeContext *ctx)
@@ -1310,9 +1305,7 @@ Any ELDOFrontend::visitComponent_attribute(ELDOParser::Component_attributeContex
 Any ELDOFrontend::visitComponent_value(ELDOParser::Component_valueContext *ctx)
 {
     if (ctx->STRING()) {
-        this->add_to_parent(
-            _factory.parameter(
-                nullptr, _factory.string(ctx->STRING()->toString())));
+        this->add_to_parent(_factory.parameter(nullptr, _factory.string(ctx->STRING()->toString()), param_assign, false));
     }
     return visitChildren(ctx);
 }
@@ -1320,9 +1313,7 @@ Any ELDOFrontend::visitComponent_value(ELDOParser::Component_valueContext *ctx)
 Any ELDOFrontend::visitComponent_parameter_list(ELDOParser::Component_parameter_listContext *ctx)
 {
     if (ctx->PARAM_LIST_START())
-        this->add_to_parent(
-            _factory.parameter(
-                nullptr, _factory.identifier(ctx->PARAM_LIST_START()->toString())));
+        this->add_to_parent(_factory.parameter(nullptr, _factory.identifier(ctx->PARAM_LIST_START()->toString()), param_assign, false));
     return visitChildren(ctx);
 }
 
@@ -1334,47 +1325,45 @@ Any ELDOFrontend::visitComponent_analysis(ELDOParser::Component_analysisContext 
 Any ELDOFrontend::visitComponent_positional_keywork(ELDOParser::Component_positional_keyworkContext *ctx)
 {
     if (ctx->NOISE())
-        this->add_to_parent(
-            _factory.parameter(
-                nullptr, _factory.identifier(ctx->NOISE()->toString())));
+        this->add_to_parent(_factory.parameter(nullptr, _factory.identifier(ctx->NOISE()->toString()), param_assign, false));
     return visitChildren(ctx);
 }
 
 Any ELDOFrontend::visitComponent_pin_list(ELDOParser::Component_pin_listContext *ctx)
 {
     if (ctx->PIN_LIST_START())
-        this->add_to_parent(_factory.parameter(nullptr, _factory.identifier(ctx->PIN_LIST_START()->toString())));
+        this->add_to_parent(_factory.parameter(nullptr, _factory.identifier(ctx->PIN_LIST_START()->toString()), param_assign, false));
     return visitChildren(ctx);
 }
 
 Any ELDOFrontend::visitComponent_port_list(ELDOParser::Component_port_listContext *ctx)
 {
     if (ctx->PORT_LIST_START())
-        this->add_to_parent(_factory.parameter(nullptr, _factory.identifier(ctx->PORT_LIST_START()->toString())));
+        this->add_to_parent(_factory.parameter(nullptr, _factory.identifier(ctx->PORT_LIST_START()->toString()), param_assign, false));
     return visitChildren(ctx);
 }
 
 Any ELDOFrontend::visitComponent_net_list(ELDOParser::Component_net_listContext *ctx)
 {
     if (ctx->NET_LIST_START())
-        this->add_to_parent(_factory.parameter(nullptr, _factory.identifier(ctx->NET_LIST_START()->toString())));
+        this->add_to_parent(_factory.parameter(nullptr, _factory.identifier(ctx->NET_LIST_START()->toString()), param_assign, false));
     return visitChildren(ctx);
 }
 
 Any ELDOFrontend::visitComponent_coupling_list(ELDOParser::Component_coupling_listContext *ctx)
 {
     if (ctx->COUPLING_LIST_START())
-        this->add_to_parent(_factory.parameter(nullptr, _factory.identifier(ctx->COUPLING_LIST_START()->toString())));
+        this->add_to_parent(_factory.parameter(nullptr, _factory.identifier(ctx->COUPLING_LIST_START()->toString()), param_assign, false));
     return visitChildren(ctx);
 }
 
 Any ELDOFrontend::visitComponent_table(ELDOParser::Component_tableContext *ctx)
 {
-    auto table_list = _factory.valueList(dlm_none, {});
+    auto table_list = _factory.valueList(dlm_none);
     this->push(table_list);
     Any result = this->visitChildren(ctx->expression());
     this->pop();
-    auto parameter = _factory.parameter(nullptr, table_list, param_tabular);
+    auto parameter = _factory.parameter(nullptr, table_list, param_tabular, false);
     this->add_to_parent(parameter);
     return result;
 }
@@ -1397,13 +1386,13 @@ Any ELDOFrontend::visitComponent_value_list(ELDOParser::Component_value_listCont
         name = ctx->EXP()->toString();
     else
         std::cerr << "Cannot identify the type of value list.\n";
-    auto table_list = _factory.valueList(dlm_round, {});
+    auto table_list = _factory.valueList(dlm_round);
     this->push(table_list);
     for (size_t i = 0; i < ctx->expression().size(); ++i) {
         result = visitChildren(ctx->expression(i));
     }
     this->pop();
-    auto parameter = _factory.parameter(_factory.identifier(name), table_list, param_list);
+    auto parameter = _factory.parameter(_factory.identifier(name), table_list, param_list, false);
     this->add_to_parent(parameter);
     return result;
 }
@@ -1657,8 +1646,8 @@ Any ELDOFrontend::visitExpression_function_call(ELDOParser::Expression_function_
     } else {
         name = ctx->MODEL()->toString();
     }
-    return this->advance_visit(ctx, _factory.functionCall(name, {}));
-    //auto function_call = _factory.functionCall(name, {});
+    return this->advance_visit(ctx, _factory.functionCall(name));
+    //auto function_call = _factory.functionCall(name);
     //this->push(function_call);
     //for (size_t i = 0; i < ctx->expression().size(); ++i) {
     //    this->visitExpression(ctx->expression(i));
@@ -1670,7 +1659,7 @@ Any ELDOFrontend::visitExpression_function_call(ELDOParser::Expression_function_
 
 Any ELDOFrontend::visitExpression_list(ELDOParser::Expression_listContext *ctx)
 {
-    return this->advance_visit(ctx, _factory.valueList(to_delimiter(ctx), {}));
+    return this->advance_visit(ctx, _factory.valueList(to_delimiter(ctx)));
 }
 
 Any ELDOFrontend::visitExpression_operator(ELDOParser::Expression_operatorContext *ctx)
@@ -1704,7 +1693,7 @@ Any ELDOFrontend::visitNode(ELDOParser::NodeContext *ctx)
 
 Any ELDOFrontend::visitParameter(ELDOParser::ParameterContext *ctx)
 {
-    auto parameter = _factory.parameter(nullptr, nullptr);
+    auto parameter = _factory.parameter(nullptr, nullptr, param_assign, false);
     auto result    = this->advance_visit(ctx, parameter);
 #if 0
     if (result.isNotNull()) {
@@ -1747,21 +1736,21 @@ Any ELDOFrontend::visitFilepath_element(ELDOParser::Filepath_elementContext *ctx
 }
 
 // ============================================================================
-structure::Object *ELDOFrontend::back() const
+std::shared_ptr<structure::Object> ELDOFrontend::back() const
 {
     if (_stack.empty())
         return nullptr;
     return _stack.back();
 }
 
-void ELDOFrontend::push(structure::Object *node)
+void ELDOFrontend::push(const std::shared_ptr<structure::Object>& node)
 {
     if (node == nullptr)
         _error("Executing push and receiving a NULL node!");
     _stack.emplace_back(node);
 }
 
-structure::Object *ELDOFrontend::pop()
+std::shared_ptr<structure::Object> ELDOFrontend::pop()
 {
     auto node = this->back();
     if (node == nullptr)
@@ -1770,7 +1759,7 @@ structure::Object *ELDOFrontend::pop()
     return node;
 }
 
-void ELDOFrontend::add_to_parent(structure::Object *node)
+void ELDOFrontend::add_to_parent(const std::shared_ptr<structure::Object>& node)
 {
     auto parent = this->back();
     // If there is no parent, it means that this node is the root of the tree.
@@ -1788,7 +1777,7 @@ void ELDOFrontend::add_to_parent(structure::Object *node)
             auto analysis_value = utility::to<structure::Value>(node);
             if (analysis_value) {
                 analysis->parameters.push_back(
-                    _factory.parameter(nullptr, analysis_value));
+                    _factory.parameter(nullptr, analysis_value, param_assign, false));
             } else {
                 _error("Wrong item added to the object..\n"
                        "(node:%s, parent:%s)",
@@ -1827,7 +1816,7 @@ void ELDOFrontend::add_to_parent(structure::Object *node)
                 auto component_value = utility::to<structure::Value>(node);
                 if (component_value) {
                     component->parameters.push_back(
-                        _factory.parameter(nullptr, component_value));
+                        _factory.parameter(nullptr, component_value, param_assign, false));
                 } else {
                     _error("Wrong item added to the object..\n"
                            "(node:%s, parent:%s)",
@@ -1920,7 +1909,7 @@ void ELDOFrontend::add_to_parent(structure::Object *node)
             auto function_call_value = utility::to<structure::Value>(node);
             if (function_call_value) {
                 function_call->parameters.push_back(
-                    _factory.parameter(nullptr, function_call_value));
+                    _factory.parameter(nullptr, function_call_value, param_assign, false));
             } else {
                 _error("Wrong item added to the object..\n"
                        "(node:%s, parent:%s)",
@@ -1991,8 +1980,7 @@ void ELDOFrontend::add_to_parent(structure::Object *node)
     }
 }
 
-Any ELDOFrontend::advance_visit(antlr4::ParserRuleContext *ctx,
-                                structure::Object *node)
+Any ELDOFrontend::advance_visit(antlr4::ParserRuleContext *ctx, const std::shared_ptr<structure::Object>& node)
 {
     this->add_to_parent(node);
     this->push(node);

@@ -9,19 +9,10 @@
 
 namespace edacurry::structure
 {
-Control::Control()
-    : Object(),
-      features::NamedObject(),
-      parameters(this),
-      _type(ctrl_none)
-{
-    // Nothing to do.
-}
-
-Control::Control(const std::string &name, ControlType type, const features::ObjectList<Parameter>::base_type &params)
+Control::Control(const std::string &name, ControlType type)
     : Object(),
       features::NamedObject(name),
-      parameters(this, params),
+      parameters(this->weak_from_this()),
       _type(type)
 {
     // Nothing to do.
@@ -30,11 +21,7 @@ Control::Control(const std::string &name, ControlType type, const features::Obje
 std::string Control::toString() const
 {
     std::stringstream ss;
-    ss << "Control("
-       << this->getName() << ", "
-       << control_type_to_plain_string(this->getControlType()) << ", "
-       << parameters.toString()
-       << ")";
+    ss << "(control `" << this->getName() << "` " << control_type_to_plain_string(this->getControlType()) << " " << parameters.toString() << ")";
     return ss.str();
 }
 } // namespace edacurry::structure

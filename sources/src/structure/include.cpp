@@ -10,28 +10,14 @@
 
 namespace edacurry::structure
 {
-Include::Include()
-    : Object(),
-      parameters(this),
-      _include_type(),
-      _path()
-{
-    // Nothing to do.
-}
 
-Include::Include(IncludeType include_type,
-                 const std::string &path,
-                 const features::ObjectList<Parameter>::base_type &params)
+Include::Include(IncludeType include_type, const std::string &path)
     : Object(),
-      parameters(this, params),
+      parameters(this->weak_from_this()),
       _include_type(include_type),
       _path(path)
 {
     // Nothing to do.
-}
-
-Include::~Include()
-{
 }
 
 IncludeType Include::getIncludeType() const
@@ -57,11 +43,7 @@ std::string Include::getPath() const
 std::string Include::toString() const
 {
     std::stringstream ss;
-    ss << "Include("
-       << include_type_to_plain_string(_include_type) << ", "
-       << _path << ", "
-       << parameters.toString()
-       << ")";
+    ss << "(include " << include_type_to_plain_string(_include_type) << " `"<< _path << "` " << parameters.toString() << ")";
     return ss.str();
 }
 

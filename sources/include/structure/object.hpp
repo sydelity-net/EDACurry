@@ -10,31 +10,53 @@
 #include <sstream>
 #include <vector>
 #include <string>
+#include <memory>
 
 namespace edacurry::structure
 {
 /// @brief Basic circuit element.
-class Object : public features::VisitableObject {
+class Object : public features::VisitableObject, public std::enable_shared_from_this<Object> {
 public:
     /// @brief Construct a new object.
     /// @param parent The parent of the object.
-    explicit Object(Object *parent = nullptr);
+    explicit Object(std::weak_ptr<Object> parent = std::weak_ptr<Object>())
+        : _parent(parent)
+    {
+        // Nothing to do.
+    }
+
+    /// @brief Construct a new object.
+    /// @param parent The parent of the object.
+    explicit Object(const std::shared_ptr<Object>& parent)
+        : _parent(parent)
+    {
+        // Nothing to do.
+    }
 
     /// @brief Destructor.
     virtual ~Object() = default;
 
-    /// @brief Provides a string representation of the object for **debugging** purposes.
-    /// @return the string representation.
-    virtual std::string toString() const;
-
     /// @brief Returns the parent of the object.
     /// @return The parent of the object.
-    Object *getParent() const;
+    std::weak_ptr<Object> getParent() const
+    {
+        return _parent;
+    }
 
     /// @brief Sets the parent of the object.
     /// @param parent The parent of the object.
     /// @return The old parent.
-    Object *setParent(Object *parent);
+    void setParent(std::weak_ptr<Object> parent)
+    {
+        _parent = parent;
+    }
+
+    /// @brief Provides a string representation of the object for **debugging** purposes.
+    /// @return the string representation.
+    virtual std::string toString() const
+    {
+        return "Object";
+    }
 
     /// @brief Removes the item from the list.
     /// @tparam Derived
@@ -59,30 +81,30 @@ public:
 protected:
     /// @brief Set the child of the current object.
     /// @tparam Derived the type of the child.
-    /// @param child the child to be replaced.
-    /// @param value the new child.
+    /// @param old_child the child to be replaced.
+    /// @param new_child the new child.
     /// @return The old child if it is different from the new one, nullptr otherwise.
     template <typename Derived>
-    Derived *setChild(Derived *&child, Derived *value)
+    std::shared_ptr<Derived> setChild(std::shared_ptr<Derived>& old_child, const std::shared_ptr<Derived>& new_child)
     {
         static_assert(std::is_convertible<Derived *, Object *>::value,
                       "Derived must inherit Object as public");
         // If child and new value are the same value, return it.
-        if (child == value)
-            return child;
+        if (old_child == new_child)
+            return old_child;
 
-        if (value != nullptr) {
-            // If value is child of another object, we need to migrate
-            // it from the old parent to the new one.
-            if (value->getParent() != nullptr)
-                value->getParent()->setChild(value, (Derived *)nullptr);
-            value->setParent(this);
+        if (new_child) {
+            auto parent = new_child->getParent().lock();
+            if (parent)
+                throw std::runtime_error("Cannot give object to another parent, first remove the object from the first parent.");
+            new_child->setParent(this->weak_from_this());
         }
-        if (child != nullptr) {
-            child->setParent(nullptr);
-        }
+
+        if (old_child)
+            old_child->setParent(std::weak_ptr<Object>());
+
         // Set the child and return it.
-        return (child = value);
+        return (old_child = new_child);
     }
 
     /// @brief Set the child of the current object.
@@ -115,7 +137,7 @@ protected:
 
 private:
     /// The parent of the object.
-    Object *_parent;
+    std::weak_ptr<Object> _parent;
 };
 
 template <typename Derived>

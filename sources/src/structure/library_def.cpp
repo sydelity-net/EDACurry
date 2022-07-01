@@ -9,19 +9,10 @@
 
 namespace edacurry::structure
 {
-LibraryDef::LibraryDef()
-    : Object(),
-      features::NamedObject(),
-      content(this)
-{
-    // Nothing to do.
-}
-
-LibraryDef::LibraryDef(const std::string &name,
-                       const features::ObjectList<Object>::base_type &content)
+LibraryDef::LibraryDef(const std::string &name)
     : Object(),
       features::NamedObject(name),
-      content(this, content)
+      content(this->weak_from_this())
 {
     // Nothing to do.
 }
@@ -29,9 +20,7 @@ LibraryDef::LibraryDef(const std::string &name,
 std::string LibraryDef::toString() const
 {
     std::stringstream ss;
-    ss << "LibraryDef("
-       << this->getName() << ", "
-       << content.toString() << ")";
+    ss << "(library_def `" << this->getName() << "` " << content.toString() << ")";
     return ss.str();
 }
 } // namespace edacurry::structure

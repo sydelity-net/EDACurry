@@ -10,25 +10,11 @@
 
 namespace edacurry::structure
 {
-Model::Model()
-    : Object(),
-      features::NamedObject(),
-      parameters(this),
-      _master(),
-      _library(),
-      _library_type()
-{
-    // Nothing to do.
-}
 
-Model::Model(const std::string &name,
-             const std::string &master,
-             const std::string &library,
-             const std::string &library_type,
-             const features::ObjectList<Parameter>::base_type &parameters)
+Model::Model(const std::string &name, const std::string &master, const std::string &library, const std::string &library_type)
     : Object(),
       features::NamedObject(name),
-      parameters(this, parameters),
+      parameters(this->weak_from_this()),
       _master(master),
       _library(library),
       _library_type(library_type)
@@ -39,13 +25,7 @@ Model::Model(const std::string &name,
 std::string Model::toString() const
 {
     std::stringstream ss;
-    ss << "Model("
-       << _library << ", "
-       << this->getName() << ", "
-       << _master << ", "
-       << _library_type << ", "
-       << parameters.toString()
-       << ")";
+    ss << "(model `" << _library << "` `" << this->getName() << "` `"<< _master << "` `" << _library_type << "` " << parameters.toString() << ")";
     return ss.str();
 }
 } // namespace edacurry::structure

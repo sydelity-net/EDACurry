@@ -16,21 +16,18 @@ namespace edacurry::structure
 class Model : public Object, public features::NamedObject {
 public:
     /// The assignments to parameters.
-    features::ObjectList<Parameter> parameters;
-
-    explicit Model();
+    features::OwnedList<Parameter> parameters;
 
     /// @brief Construct a new Component object.
     /// @param name the name.
     /// @param master the master.
     /// @param library the library to which the model belongs.
     /// @param library_type TODO: CHECK!
-    /// @param parameters the parameter assignments.
-    Model(const std::string &name,
-          const std::string &master,
-          const std::string &library,
-          const std::string &library_type,
-          const features::ObjectList<Parameter>::base_type &parameters);
+    Model(
+        const std::string &name = std::string(),
+        const std::string &master = std::string(),
+        const std::string &library = std::string(),
+        const std::string &library_type = std::string());
 
     ~Model() override = default;
 

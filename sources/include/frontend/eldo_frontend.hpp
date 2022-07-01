@@ -368,36 +368,36 @@ public:
 
     antlrcpp::Any visitFilepath_element(ELDOParser::Filepath_elementContext *ctx) override;
 
-    structure::Object *getRoot() const
+    std::shared_ptr<structure::Object> getRoot() const
     {
         return _root;
     }
 
 private:
     /// The
-    std::vector<structure::Object *> _stack;
+    std::vector<std::shared_ptr<structure::Object> > _stack;
     ///
-    structure::Object *_root;
+    std::shared_ptr<structure::Object> _root;
     /// Factory item.
     Factory _factory;
 
     /// @brief
     /// @return structure::Object*
-    structure::Object *back() const;
+    std::shared_ptr<structure::Object> back() const;
 
     /// @brief
     /// @param node
-    void push(structure::Object *node);
+    void push(const std::shared_ptr<structure::Object> &node);
 
     /// @brief
     /// @return structure::Object*
-    structure::Object *pop();
+    std::shared_ptr<structure::Object> pop();
 
     /// @brief
     /// @param node
-    void add_to_parent(structure::Object *node);
+    void add_to_parent(const std::shared_ptr<structure::Object>& node);
 
-    antlrcpp::Any advance_visit(antlr4::ParserRuleContext *ctx, structure::Object *node);
+    antlrcpp::Any advance_visit(antlr4::ParserRuleContext *ctx, const std::shared_ptr<structure::Object> & node);
 };
 
 } // namespace edacurry::frontend

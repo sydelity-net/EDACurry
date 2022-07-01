@@ -14,31 +14,22 @@ namespace edacurry::structure
 Analysis::Analysis()
     : Object(),
       features::NamedObject(),
-      parameters(this)
+      parameters(this->weak_from_this())
 {
     // Nothing to do.
 }
 
-Analysis::Analysis(const std::string &name, const features::ObjectList<Parameter>::base_type &params)
+Analysis::Analysis(const std::string &name)
     : Object(),
       features::NamedObject(name),
-      parameters(this, params)
+      parameters(this->weak_from_this())
 {
     // Nothing to do.
 }
-
-Analysis::~Analysis()
-{
-    // Nothing to do.
-}
-
 std::string Analysis::toString() const
 {
     std::stringstream ss;
-    ss << "Analysis("
-       << this->getName() << ", "
-       << parameters.toString()
-       << ")";
+    ss << "(analysis `" << this->getName() << "` " << parameters.toString() << ")";
     return ss.str();
 }
 } // namespace edacurry::structure
