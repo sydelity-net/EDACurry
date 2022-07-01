@@ -31,9 +31,9 @@ public:
 
     /// @brief Accepts a visitor.
     /// @param visitor the visitor.
-    inline int accept(features::Visitor *visitor) const override
+    inline int accept(features::Visitor *visitor) override
     {
-        return visitor->visitLibraryDef(this);
+        return visitor->visitLibraryDef(std::static_pointer_cast<LibraryDef>(this->shared_from_this()));
     }
 };
 

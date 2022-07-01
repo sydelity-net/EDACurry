@@ -22,11 +22,9 @@ public:
     /// The subckt content.
     features::OwnedList<Object> content;
 
-    explicit Subckt();
-
     /// @brief Construct a new Component object.
     /// @param name       the name of the subckt.
-    Subckt(const std::string &name);
+    Subckt(const std::string &name = std::string());
 
     ~Subckt() override = default;
 
@@ -36,9 +34,9 @@ public:
 
     /// @brief Accepts a visitor.
     /// @param visitor the visitor.
-    inline int accept(features::Visitor *visitor) const override
+    inline int accept(features::Visitor *visitor) override
     {
-        return visitor->visitSubckt(this);
+        return visitor->visitSubckt(std::static_pointer_cast<Subckt>(this->shared_from_this()));
     }
 };
 

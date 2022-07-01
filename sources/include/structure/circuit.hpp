@@ -27,12 +27,10 @@ public:
     /// The circuit content.
     features::OwnedList<Object> content;
 
-    explicit Circuit();
-
     /// @brief Construct a new circuit object.
     /// @param name the name of the file where the circuit resides.
     /// @param title the title of the circuit.
-    Circuit(const std::string &name, const std::string &title);
+    Circuit(const std::string &name = std::string(), const std::string &title = std::string());
 
     /// @brief Destroy the Circuit object.
     ~Circuit() override = default;
@@ -57,9 +55,9 @@ public:
 
     /// @brief Accepts a visitor.
     /// @param visitor the visitor.
-    inline int accept(features::Visitor *visitor) const override
+    inline int accept(features::Visitor *visitor) override
     {
-        return visitor->visitCircuit(this);
+        return visitor->visitCircuit(std::static_pointer_cast<Circuit>(this->shared_from_this()));
     }
 
 private:

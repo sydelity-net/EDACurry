@@ -16,7 +16,7 @@ XmlBackend::XmlBackend()
     // Nothing to do.
 }
 
-int XmlBackend::visitCircuit(const structure::Circuit *e)
+int XmlBackend::visitCircuit(const std::shared_ptr<structure::Circuit> &e)
 {
     ss << "<circuit name='" << e->getName() << "'>\n"
        << ind_increase;
@@ -40,7 +40,7 @@ int XmlBackend::visitCircuit(const structure::Circuit *e)
     return 0;
 }
 
-int XmlBackend::visitAnalysis(const structure::Analysis *e)
+int XmlBackend::visitAnalysis(const std::shared_ptr<structure::Analysis> &e)
 {
     ss << "<analysis name='" << e->getName() << "'>\n"
        << ind_increase;
@@ -54,7 +54,7 @@ int XmlBackend::visitAnalysis(const structure::Analysis *e)
     return 0;
 }
 
-int XmlBackend::visitComponent(const structure::Component *e)
+int XmlBackend::visitComponent(const std::shared_ptr<structure::Component> &e)
 {
     ss << "<component name='" << e->getName() << "' master='" << e->getMaster() << "'>\n"
        << ind_increase;
@@ -73,7 +73,7 @@ int XmlBackend::visitComponent(const structure::Component *e)
     return 0;
 }
 
-int XmlBackend::visitControlScope(const structure::ControlScope *e)
+int XmlBackend::visitControlScope(const std::shared_ptr<structure::ControlScope> &e)
 {
     ss << "<control_scope name='" << e->getName() << "' type='"
        << control_type_to_plain_string(e->getControlType()) << "'>\n"
@@ -98,7 +98,7 @@ int XmlBackend::visitControlScope(const structure::ControlScope *e)
     return 0;
 }
 
-int XmlBackend::visitControl(const structure::Control *e)
+int XmlBackend::visitControl(const std::shared_ptr<structure::Control> &e)
 {
     ss << "<control name='" << e->getName() << "' type='" << control_type_to_plain_string(e->getControlType())
        << "'>\n"
@@ -113,7 +113,7 @@ int XmlBackend::visitControl(const structure::Control *e)
     return 0;
 }
 
-int XmlBackend::visitExpressionUnary(const structure::ExpressionUnary *e)
+int XmlBackend::visitExpressionUnary(const std::shared_ptr<structure::ExpressionUnary> &e)
 {
     ss << "<expression_unary type='" << operator_to_plain_string(e->getOperator()) << "'>\n"
        << ind_increase;
@@ -127,7 +127,7 @@ int XmlBackend::visitExpressionUnary(const structure::ExpressionUnary *e)
     return 0;
 }
 
-int XmlBackend::visitExpression(const structure::Expression *e)
+int XmlBackend::visitExpression(const std::shared_ptr<structure::Expression> &e)
 {
     ss << "<expression type='" << operator_to_plain_string(e->getOperator()) << "'>\n"
        << ind_increase;
@@ -152,7 +152,7 @@ int XmlBackend::visitExpression(const structure::Expression *e)
     return 0;
 }
 
-int XmlBackend::visitFunctionCall(const structure::FunctionCall *e)
+int XmlBackend::visitFunctionCall(const std::shared_ptr<structure::FunctionCall> &e)
 {
     ss << "<function_call name='" << e->getName() << "'>\n"
        << ind_increase;
@@ -166,13 +166,13 @@ int XmlBackend::visitFunctionCall(const structure::FunctionCall *e)
     return 0;
 }
 
-int XmlBackend::visitIdentifier(const structure::Identifier *e)
+int XmlBackend::visitIdentifier(const std::shared_ptr<structure::Identifier> &e)
 {
     ss << "<identifier name='" << e->getName() << "'/>\n";
     return 0;
 }
 
-int XmlBackend::visitInclude(const structure::Include *e)
+int XmlBackend::visitInclude(const std::shared_ptr<structure::Include> &e)
 {
     ss << "<include path='" << e->getPath() << "' type='" << include_type_to_plain_string(e->getIncludeType())
        << "'>\n"
@@ -187,7 +187,7 @@ int XmlBackend::visitInclude(const structure::Include *e)
     return 0;
 }
 
-int XmlBackend::visitLibraryDef(const structure::LibraryDef *e)
+int XmlBackend::visitLibraryDef(const std::shared_ptr<structure::LibraryDef> &e)
 {
     ss << "<library_def name='" << e->getName() << "'>\n"
        << ind_increase;
@@ -201,13 +201,13 @@ int XmlBackend::visitLibraryDef(const structure::LibraryDef *e)
     return 0;
 }
 
-int XmlBackend::visitLibrary(const structure::Library *e)
+int XmlBackend::visitLibrary(const std::shared_ptr<structure::Library> &e)
 {
     ss << "<library name='" << e->getName() << "' path='" << e->getPath() << "'/>\n";
     return 0;
 }
 
-int XmlBackend::visitModel(const structure::Model *e)
+int XmlBackend::visitModel(const std::shared_ptr<structure::Model> &e)
 {
     ss << "<model"
        << " name='" << e->getName() << "'"
@@ -226,13 +226,13 @@ int XmlBackend::visitModel(const structure::Model *e)
     return 0;
 }
 
-int XmlBackend::visitNode(const structure::Node *e)
+int XmlBackend::visitNode(const std::shared_ptr<structure::Node> &e)
 {
     ss << "<node name='" << e->getName() << "'/>\n";
     return 0;
 }
 
-int XmlBackend::visitUnsigned(const structure::Number<unsigned> *e)
+int XmlBackend::visitUnsigned(const std::shared_ptr<structure::Number<unsigned>> &e)
 {
     ss << "<number value='" << e->getValue() << "'";
     if (!e->getUnit().empty())
@@ -241,7 +241,7 @@ int XmlBackend::visitUnsigned(const structure::Number<unsigned> *e)
     return 0;
 }
 
-int XmlBackend::visitInt(const structure::Number<int> *e)
+int XmlBackend::visitInt(const std::shared_ptr<structure::Number<int>> &e)
 {
     ss << "<number value='" << e->getValue() << "'";
     if (!e->getUnit().empty())
@@ -250,7 +250,7 @@ int XmlBackend::visitInt(const structure::Number<int> *e)
     return 0;
 }
 
-int XmlBackend::visitDouble(const structure::Number<double> *e)
+int XmlBackend::visitDouble(const std::shared_ptr<structure::Number<double>> &e)
 {
     ss << "<number value='" << e->getValue() << "'";
     if (!e->getUnit().empty())
@@ -259,7 +259,7 @@ int XmlBackend::visitDouble(const structure::Number<double> *e)
     return 0;
 }
 
-int XmlBackend::visitParameter(const structure::Parameter *e)
+int XmlBackend::visitParameter(const std::shared_ptr<structure::Parameter> &e)
 {
     ss << "<parameter"
        << " type='" << parameter_type_to_plain_string(e->getType()) << "'"
@@ -283,7 +283,7 @@ int XmlBackend::visitParameter(const structure::Parameter *e)
     return 0;
 }
 
-int XmlBackend::visitSubckt(const structure::Subckt *e)
+int XmlBackend::visitSubckt(const std::shared_ptr<structure::Subckt> &e)
 {
     ss << "<subckt name='" << e->getName() << "'>\n"
        << ind_increase;
@@ -307,13 +307,13 @@ int XmlBackend::visitSubckt(const structure::Subckt *e)
     return 0;
 }
 
-int XmlBackend::visitString(const structure::String *e)
+int XmlBackend::visitString(const std::shared_ptr<structure::String> &e)
 {
     ss << "<string value='" << e->getString() << "'/>\n";
     return 0;
 }
 
-int XmlBackend::visitValuePair(const structure::ValuePair *e)
+int XmlBackend::visitValuePair(const std::shared_ptr<structure::ValuePair> &e)
 {
     ss << "<pair>\n"
        << ind_increase;
@@ -338,7 +338,7 @@ int XmlBackend::visitValuePair(const structure::ValuePair *e)
     return 0;
 }
 
-int XmlBackend::visitValueList(const structure::ValueList *e)
+int XmlBackend::visitValueList(const std::shared_ptr<structure::ValueList> &e)
 {
     ss << "<list delimiter='" << delimiter_type_to_plain_string(e->getDelimiterType()) << "'>\n"
        << ind_increase;

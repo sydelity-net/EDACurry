@@ -10,16 +10,6 @@
 
 namespace edacurry::structure
 {
-Circuit::Circuit()
-    : Object(),
-      features::NamedObject(),
-      nodes(this->weak_from_this()),
-      parameters(this->weak_from_this()),
-      content(this->weak_from_this())
-{
-    // Nothing to do.
-}
-
 Circuit::Circuit(const std::string &name, const std::string &title)
     : Object(),
       features::NamedObject(name),

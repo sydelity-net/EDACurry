@@ -6,13 +6,15 @@
 
 #include "classes.hpp"
 
+#include<iostream>
+
 namespace edacurry::features
 {
 BaseVisitor::BaseVisitor()
 {
 }
 
-int BaseVisitor::visitCircuit(const structure::Circuit *e)
+int BaseVisitor::visitCircuit(const std::shared_ptr<structure::Circuit> &e)
 {
     int ret;
     for (auto it : e->nodes)
@@ -27,7 +29,7 @@ int BaseVisitor::visitCircuit(const structure::Circuit *e)
     return 0;
 }
 
-int BaseVisitor::visitAnalysis(const structure::Analysis *e)
+int BaseVisitor::visitAnalysis(const std::shared_ptr<structure::Analysis> &e)
 {
     int ret;
     for (auto it : e->parameters)
@@ -36,7 +38,7 @@ int BaseVisitor::visitAnalysis(const structure::Analysis *e)
     return 0;
 }
 
-int BaseVisitor::visitComponent(const structure::Component *e)
+int BaseVisitor::visitComponent(const std::shared_ptr<structure::Component> &e)
 {
     int ret;
     for (auto it : e->nodes)
@@ -48,7 +50,7 @@ int BaseVisitor::visitComponent(const structure::Component *e)
     return 0;
 }
 
-int BaseVisitor::visitControlScope(const structure::ControlScope *e)
+int BaseVisitor::visitControlScope(const std::shared_ptr<structure::ControlScope> &e)
 {
     int ret;
     for (auto it : e->nodes)
@@ -63,7 +65,7 @@ int BaseVisitor::visitControlScope(const structure::ControlScope *e)
     return 0;
 }
 
-int BaseVisitor::visitControl(const structure::Control *e)
+int BaseVisitor::visitControl(const std::shared_ptr<structure::Control> &e)
 {
     int ret;
     for (auto it : e->parameters)
@@ -72,7 +74,7 @@ int BaseVisitor::visitControl(const structure::Control *e)
     return 0;
 }
 
-int BaseVisitor::visitExpressionUnary(const structure::ExpressionUnary *e)
+int BaseVisitor::visitExpressionUnary(const std::shared_ptr<structure::ExpressionUnary> &e)
 {
     int ret;
     if (e->getValue())
@@ -81,7 +83,7 @@ int BaseVisitor::visitExpressionUnary(const structure::ExpressionUnary *e)
     return 0;
 }
 
-int BaseVisitor::visitExpression(const structure::Expression *e)
+int BaseVisitor::visitExpression(const std::shared_ptr<structure::Expression> &e)
 {
     int ret;
     if (e->getFirst())
@@ -93,7 +95,7 @@ int BaseVisitor::visitExpression(const structure::Expression *e)
     return 0;
 }
 
-int BaseVisitor::visitFunctionCall(const structure::FunctionCall *e)
+int BaseVisitor::visitFunctionCall(const std::shared_ptr<structure::FunctionCall> &e)
 {
     int ret;
     for (auto it : e->parameters)
@@ -102,12 +104,12 @@ int BaseVisitor::visitFunctionCall(const structure::FunctionCall *e)
     return 0;
 }
 
-int BaseVisitor::visitIdentifier(const structure::Identifier *e)
+int BaseVisitor::visitIdentifier(const std::shared_ptr<structure::Identifier> &e)
 {
     return 0;
 }
 
-int BaseVisitor::visitInclude(const structure::Include *e)
+int BaseVisitor::visitInclude(const std::shared_ptr<structure::Include> &e)
 {
     int ret;
     for (auto it : e->parameters)
@@ -116,7 +118,7 @@ int BaseVisitor::visitInclude(const structure::Include *e)
     return 0;
 }
 
-int BaseVisitor::visitLibraryDef(const structure::LibraryDef *e)
+int BaseVisitor::visitLibraryDef(const std::shared_ptr<structure::LibraryDef> &e)
 {
     int ret;
     for (auto it : e->content)
@@ -125,12 +127,12 @@ int BaseVisitor::visitLibraryDef(const structure::LibraryDef *e)
     return 0;
 }
 
-int BaseVisitor::visitLibrary(const structure::Library *e)
+int BaseVisitor::visitLibrary(const std::shared_ptr<structure::Library> &e)
 {
     return 0;
 }
 
-int BaseVisitor::visitModel(const structure::Model *e)
+int BaseVisitor::visitModel(const std::shared_ptr<structure::Model> &e)
 {
     int ret;
     for (auto it : e->parameters)
@@ -139,27 +141,27 @@ int BaseVisitor::visitModel(const structure::Model *e)
     return 0;
 }
 
-int BaseVisitor::visitNode(const structure::Node *e)
+int BaseVisitor::visitNode(const std::shared_ptr<structure::Node> &e)
 {
     return 0;
 }
 
-int BaseVisitor::visitUnsigned(const structure::Number<unsigned> *e)
+int BaseVisitor::visitUnsigned(const std::shared_ptr<structure::Number<unsigned>> &e)
 {
     return 0;
 }
 
-int BaseVisitor::visitInt(const structure::Number<int> *e)
+int BaseVisitor::visitInt(const std::shared_ptr<structure::Number<int>> &e)
 {
     return 0;
 }
 
-int BaseVisitor::visitDouble(const structure::Number<double> *e)
+int BaseVisitor::visitDouble(const std::shared_ptr<structure::Number<double>> &e)
 {
     return 0;
 }
 
-int BaseVisitor::visitParameter(const structure::Parameter *e)
+int BaseVisitor::visitParameter(const std::shared_ptr<structure::Parameter> &e)
 {
     int ret;
     if (e->getLeft())
@@ -171,7 +173,7 @@ int BaseVisitor::visitParameter(const structure::Parameter *e)
     return 0;
 }
 
-int BaseVisitor::visitSubckt(const structure::Subckt *e)
+int BaseVisitor::visitSubckt(const std::shared_ptr<structure::Subckt> &e)
 {
     int ret;
     for (auto it : e->nodes)
@@ -186,12 +188,12 @@ int BaseVisitor::visitSubckt(const structure::Subckt *e)
     return 0;
 }
 
-int BaseVisitor::visitString(const structure::String *e)
+int BaseVisitor::visitString(const std::shared_ptr<structure::String> &e)
 {
     return 0;
 }
 
-int BaseVisitor::visitValuePair(const structure::ValuePair *e)
+int BaseVisitor::visitValuePair(const std::shared_ptr<structure::ValuePair> &e)
 {
     int ret;
     if (e->getFirst())
@@ -203,7 +205,7 @@ int BaseVisitor::visitValuePair(const structure::ValuePair *e)
     return 0;
 }
 
-int BaseVisitor::visitValueList(const structure::ValueList *e)
+int BaseVisitor::visitValueList(const std::shared_ptr<structure::ValueList> &e)
 {
     int ret;
     for (auto it : e->values)

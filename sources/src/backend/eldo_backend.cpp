@@ -16,7 +16,7 @@ EldoBackend::EldoBackend()
     // Nothing to do.
 }
 
-int EldoBackend::visitCircuit(const structure::Circuit *e)
+int EldoBackend::visitCircuit(const std::shared_ptr<structure::Circuit> &e)
 {
     if (!e->getTitle().empty()) {
         ss << e->getTitle() << "\n";
@@ -43,7 +43,7 @@ int EldoBackend::visitCircuit(const structure::Circuit *e)
     return 0;
 }
 
-int EldoBackend::visitAnalysis(const structure::Analysis *e)
+int EldoBackend::visitAnalysis(const std::shared_ptr<structure::Analysis> &e)
 {
     if ((e->getName() == "ac_parameter_driven") || (e->getName() == "ac_data_driven") || (e->getName() == "ac_list_driven") || (e->getName() == "ac_adaptive")) {
         ss << ".ac";
@@ -58,7 +58,7 @@ int EldoBackend::visitAnalysis(const structure::Analysis *e)
     return 0;
 }
 
-int EldoBackend::visitComponent(const structure::Component *e)
+int EldoBackend::visitComponent(const std::shared_ptr<structure::Component> &e)
 {
     //r2 1 2 res1
     ss << e->getName();
@@ -82,7 +82,7 @@ int EldoBackend::visitComponent(const structure::Component *e)
     return 0;
 }
 
-int EldoBackend::visitControlScope(const structure::ControlScope *e)
+int EldoBackend::visitControlScope(const std::shared_ptr<structure::ControlScope> &e)
 {
     if (e->getControlType() == ctrl_altergroup) {
         ss << ".alter " << e->getName() << "\n";
@@ -101,7 +101,7 @@ int EldoBackend::visitControlScope(const structure::ControlScope *e)
     return 0;
 }
 
-int EldoBackend::visitControl(const structure::Control *e)
+int EldoBackend::visitControl(const std::shared_ptr<structure::Control> &e)
 {
     if (e->getControlType() == ctrl_option) {
         ss << ".option";
@@ -129,7 +129,7 @@ int EldoBackend::visitControl(const structure::Control *e)
     return 0;
 }
 
-int EldoBackend::visitExpressionUnary(const structure::ExpressionUnary *e)
+int EldoBackend::visitExpressionUnary(const std::shared_ptr<structure::ExpressionUnary> &e)
 {
     ss << operator_to_string(e->getOperator());
     if (e->getValue()) {
@@ -138,7 +138,7 @@ int EldoBackend::visitExpressionUnary(const structure::ExpressionUnary *e)
     return 0;
 }
 
-int EldoBackend::visitExpression(const structure::Expression *e)
+int EldoBackend::visitExpression(const std::shared_ptr<structure::Expression> &e)
 {
     if (e->getFirst()) {
         e->getFirst()->accept(this);
@@ -152,7 +152,7 @@ int EldoBackend::visitExpression(const structure::Expression *e)
     return 0;
 }
 
-int EldoBackend::visitFunctionCall(const structure::FunctionCall *e)
+int EldoBackend::visitFunctionCall(const std::shared_ptr<structure::FunctionCall> &e)
 {
     ss << e->getName() << '(';
     if (e->parameters) {
@@ -167,29 +167,29 @@ int EldoBackend::visitFunctionCall(const structure::FunctionCall *e)
     return 0;
 }
 
-int EldoBackend::visitIdentifier(const structure::Identifier *e)
+int EldoBackend::visitIdentifier(const std::shared_ptr<structure::Identifier> &e)
 {
     if (!e->getName().empty())
         ss << e->getName();
     return 0;
 }
 
-int EldoBackend::visitInclude(const structure::Include *e)
+int EldoBackend::visitInclude(const std::shared_ptr<structure::Include> &e)
 {
     return features::BaseVisitor::visitInclude(e);
 }
 
-int EldoBackend::visitLibraryDef(const structure::LibraryDef *e)
+int EldoBackend::visitLibraryDef(const std::shared_ptr<structure::LibraryDef> &e)
 {
     return features::BaseVisitor::visitLibraryDef(e);
 }
 
-int EldoBackend::visitLibrary(const structure::Library *e)
+int EldoBackend::visitLibrary(const std::shared_ptr<structure::Library> &e)
 {
     return features::BaseVisitor::visitLibrary(e);
 }
 
-int EldoBackend::visitModel(const structure::Model *e)
+int EldoBackend::visitModel(const std::shared_ptr<structure::Model> &e)
 {
     // .MODEL pfet PMOS ( LEVEL = 8
     ss << ".MODEL " << e->getName() << " " << e->getMaster() << "(";
@@ -201,13 +201,13 @@ int EldoBackend::visitModel(const structure::Model *e)
     return 0;
 }
 
-int EldoBackend::visitNode(const structure::Node *e)
+int EldoBackend::visitNode(const std::shared_ptr<structure::Node> &e)
 {
     ss << e->getName();
     return 0;
 }
 
-int EldoBackend::visitUnsigned(const structure::Number<unsigned> *e)
+int EldoBackend::visitUnsigned(const std::shared_ptr<structure::Number<unsigned>> &e)
 {
     ss << e->getValue();
     if (!e->getUnit().empty())
@@ -215,7 +215,7 @@ int EldoBackend::visitUnsigned(const structure::Number<unsigned> *e)
     return 0;
 }
 
-int EldoBackend::visitInt(const structure::Number<int> *e)
+int EldoBackend::visitInt(const std::shared_ptr<structure::Number<int>> &e)
 {
     ss << e->getValue();
     if (!e->getUnit().empty())
@@ -223,7 +223,7 @@ int EldoBackend::visitInt(const structure::Number<int> *e)
     return 0;
 }
 
-int EldoBackend::visitDouble(const structure::Number<double> *e)
+int EldoBackend::visitDouble(const std::shared_ptr<structure::Number<double>> &e)
 {
     ss << e->getValue();
     if (!e->getUnit().empty())
@@ -231,7 +231,7 @@ int EldoBackend::visitDouble(const structure::Number<double> *e)
     return 0;
 }
 
-int EldoBackend::visitParameter(const structure::Parameter *e)
+int EldoBackend::visitParameter(const std::shared_ptr<structure::Parameter> &e)
 {
     if ((e->getType() == param_assign) || (e->getType() == param_arithmetic)) {
         if (e->getLeft() && !e->getHideName())
@@ -280,7 +280,7 @@ int EldoBackend::visitParameter(const structure::Parameter *e)
     return 0;
 }
 
-int EldoBackend::visitSubckt(const structure::Subckt *e)
+int EldoBackend::visitSubckt(const std::shared_ptr<structure::Subckt> &e)
 {
     ss << ".subckt " << e->getName();
     for (const auto &node : e->nodes) {
@@ -302,13 +302,13 @@ int EldoBackend::visitSubckt(const structure::Subckt *e)
     return 0;
 }
 
-int EldoBackend::visitString(const structure::String *e)
+int EldoBackend::visitString(const std::shared_ptr<structure::String> &e)
 {
     ss << e->getString();
     return 0;
 }
 
-int EldoBackend::visitValuePair(const structure::ValuePair *e)
+int EldoBackend::visitValuePair(const std::shared_ptr<structure::ValuePair> &e)
 {
     if (e->getFirst()) {
         e->getFirst()->accept(this);
@@ -320,7 +320,7 @@ int EldoBackend::visitValuePair(const structure::ValuePair *e)
     return 0;
 }
 
-int EldoBackend::visitValueList(const structure::ValueList *e)
+int EldoBackend::visitValueList(const std::shared_ptr<structure::ValueList> &e)
 {
     ss << delimiter_type_open_char(e->getDelimiterType());
     if (e->values) {

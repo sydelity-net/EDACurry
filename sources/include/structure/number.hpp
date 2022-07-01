@@ -67,7 +67,7 @@ public:
 
     /// @brief Accepts a visitor.
     /// @param visitor the visitor.
-    inline int accept(features::Visitor *visitor) const override;
+    inline int accept(features::Visitor *visitor) override;
 
 private:
     /// @brief The value of the number.
@@ -77,21 +77,21 @@ private:
 };
 
 template <>
-inline int structure::Number<unsigned>::accept(features::Visitor *visitor) const
+inline int structure::Number<unsigned>::accept(features::Visitor *visitor)
 {
-    return visitor->visitUnsigned(this);
+    return visitor->visitUnsigned(std::static_pointer_cast<Number<unsigned>>(this->shared_from_this()));
 }
 
 template <>
-inline int structure::Number<int>::accept(features::Visitor *visitor) const
+inline int structure::Number<int>::accept(features::Visitor *visitor)
 {
-    return visitor->visitInt(this);
+    return visitor->visitInt(std::static_pointer_cast<Number<int>>(this->shared_from_this()));
 }
 
 template <>
-inline int structure::Number<double>::accept(features::Visitor *visitor) const
+inline int structure::Number<double>::accept(features::Visitor *visitor)
 {
-    return visitor->visitDouble(this);
+    return visitor->visitDouble(std::static_pointer_cast<Number<double>>(this->shared_from_this()));
 }
 
 } // namespace edacurry::structure

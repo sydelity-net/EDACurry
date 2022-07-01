@@ -9,16 +9,6 @@
 
 namespace edacurry::structure
 {
-Subckt::Subckt()
-    : Object(),
-      features::NamedObject(),
-      nodes(this->weak_from_this()),
-      parameters(this->weak_from_this()),
-      content(this->weak_from_this())
-{
-    // Nothing to do.
-}
-
 Subckt::Subckt(const std::string &name)
     : Object(),
       features::NamedObject(name),
