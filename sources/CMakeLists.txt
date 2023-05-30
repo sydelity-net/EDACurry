@@ -117,7 +117,6 @@ pybind11_add_module(
     
     ./src/utility/logging.cpp
     ./src/utility/utility.cpp
-    ./src/utility/json.cpp
 
     ./src/frontend/eldo_frontend.cpp
     ./src/frontend/spectre_frontend.cpp
