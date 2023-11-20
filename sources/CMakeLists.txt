@@ -5,80 +5,125 @@
 # @update : 20/08/2019
 # -----------------------------------------------------------------------------
 
-# -----------------------------------------------------------------------------
-# Set the minimum CMake version.
-# -----------------------------------------------------------------------------
+# Set the minimum CMake version, the project name and default build type.
 cmake_minimum_required(VERSION 3.1...3.18)
 
-# -----------------------------------------------------------------------------
 # Set the project name.
-# -----------------------------------------------------------------------------
 project(edacurry CXX)
 
 # Set the default build type to Debug.
 if(NOT CMAKE_BUILD_TYPE)
-  message(STATUS "Setting build type to 'Debug' as none was specified.")
-  set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Choose the type of build." FORCE)
+    message(STATUS "Setting build type to 'Debug' as none was specified.")
+    set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Choose the type of build." FORCE)
 endif()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 # -----------------------------------------------------------------------------
-# Find ANTLR4
+# ENABLE FETCH CONTENT
 # -----------------------------------------------------------------------------
-find_package(ANTLR4 REQUIRED)
 
-# -----------------------------------------------------------------------------
-# External projects.
-# -----------------------------------------------------------------------------
 # We need this in order to import external projects.
 include(FetchContent)
-
-set(PYBIND11 "pybind11")
-message(STATUS "Retrieving ${PYBIND11}...")
-FetchContent_Declare(
-        ${PYBIND11}
-        GIT_REPOSITORY "https://github.com/pybind/pybind11.git"
-        GIT_SHALLOW    TRUE
-        GIT_PROGRESS   TRUE
+# Hide fetchcontent variables.
+mark_as_advanced(FORCE
+    FETCHCONTENT_QUIET
+    FETCHCONTENT_BASE_DIR
+    FETCHCONTENT_FULLY_DISCONNECTED
+    FETCHCONTENT_UPDATES_DISCONNECTED
 )
-FetchContent_GetProperties(${PYBIND11})
-if(NOT ${PYBIND11}_POPULATED)
-        FetchContent_MakeAvailable(${PYBIND11})
-endif(NOT ${PYBIND11}_POPULATED)
 
 # -----------------------------------------------------------------------------
-# Set the compilation flags.
+# OPTIONS
 # -----------------------------------------------------------------------------
-# Set C++ Standard.
-set(CMAKE_CXX_STANDARD 17)
 
-# Set the other flags.
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wfloat-equal")
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic")
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic-errors")
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-attributes")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-variable")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-local-typedefs")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-but-set-variable")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-local-typedefs")
+option(STRICT_WARNINGS "Enable strict compiler warnings" ON)
+option(WARNINGS_AS_ERRORS "Treat all warnings as errors" OFF)
+option(BUILD_EXAMPLES "Build examples" OFF)
+option(BUILD_TESTS "Build tests" OFF)
 
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+# -----------------------------------------------------------------------------
+# DEPENDENCY
+# -----------------------------------------------------------------------------
 
-    message(STATUS "Disabling optimizations.")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
+find_package (Python COMPONENTS Interpreter Development)
+find_package(Doxygen)
+find_package(ANTLR4 REQUIRED)
 
-elseif (CMAKE_BUILD_TYPE STREQUAL "Release")
+# =====================================
+# PYBIND11
+# =====================================
+# Retrieve the pybind11.
+FetchContent_Declare(pybind11
+    GIT_REPOSITORY "https://github.com/pybind/pybind11.git"
+    GIT_TAG master
+    GIT_SHALLOW TRUE
+    GIT_PROGRESS TRUE
+)
+# Get the properties of pybind11.
+FetchContent_GetProperties(pybind11)
+# If we did not made the pybind11 properties available yet, do it now.
+if(NOT pybind11_POPULATED)
+    message(STATUS "Retrieving `pybind11`...")
+    # Ensures the named dependencies have been populated.
+    FetchContent_MakeAvailable(pybind11)
+    # Hide fetchcontent variables, otherwise with ccmake it's a mess.
+    mark_as_advanced(FORCE
+        FETCHCONTENT_UPDATES_DISCONNECTED_pybind11
+        FETCHCONTENT_SOURCE_DIR_pybind11
+    )
+endif(NOT pybind11_POPULATED)
+# =====================================
 
-    message(STATUS "Enabling optimizations.")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+# =====================================
+# PYBIND11-STUBGEN
+# =====================================
+# Retrieve the stubgen.
+FetchContent_Declare(stubgen
+    GIT_REPOSITORY "https://github.com/sizmailov/pybind11-stubgen.git"
+    GIT_TAG master
+    GIT_SHALLOW TRUE
+    GIT_PROGRESS TRUE
+)
+# Get the properties of stubgen.
+FetchContent_GetProperties(stubgen)
+# If we did not made the stubgen properties available yet, do it now.
+if(NOT stubgen_POPULATED)
+    message(STATUS "Retrieving `stubgen`...")
+    # Ensures the named dependencies have been populated.
+    FetchContent_MakeAvailable(stubgen)
+    # Hide fetchcontent variables, otherwise with ccmake it's a mess.
+    mark_as_advanced(FORCE
+        FETCHCONTENT_UPDATES_DISCONNECTED_stubgen
+        FETCHCONTENT_SOURCE_DIR_stubgen
+    )
+endif(NOT stubgen_POPULATED)
+# =====================================
 
-endif (CMAKE_BUILD_TYPE STREQUAL "Debug")
+# =====================================
+# JSON
+# =====================================
+# Retrieve the json.
+FetchContent_Declare(json
+    GIT_REPOSITORY "https://github.com/Galfurian/json.git"
+    GIT_TAG main
+    GIT_SHALLOW TRUE
+    GIT_PROGRESS TRUE
+)
+# Get the properties of json.
+FetchContent_GetProperties(json)
+# If we did not made the json properties available yet, do it now.
+if(NOT json_POPULATED)
+    message(STATUS "Retrieving `json`...")
+    # Ensures the named dependencies have been populated.
+    FetchContent_MakeAvailable(json)
+    # Hide fetchcontent variables, otherwise with ccmake it's a mess.
+    mark_as_advanced(FORCE
+        FETCHCONTENT_UPDATES_DISCONNECTED_json
+        FETCHCONTENT_SOURCE_DIR_json
+    )
+endif(NOT json_POPULATED)
+# =====================================
 
 # -----------------------------------------------------------------------------
 # C++ Library with Python wrapping.
@@ -90,7 +135,6 @@ pybind11_add_module(
     ./src/enums.cpp
     ./src/factory.cpp
     #./src/json_parser.cpp
-    
     ./src/structure/analysis.cpp
     ./src/structure/circuit.cpp
     ./src/structure/control.cpp
@@ -114,19 +158,14 @@ pybind11_add_module(
     ./src/structure/value_pair.cpp
     ./src/structure/number.cpp
     ./src/structure/string.cpp
-    
     ./src/utility/logging.cpp
     ./src/utility/utility.cpp
-
     ./src/frontend/eldo_frontend.cpp
     ./src/frontend/spectre_frontend.cpp
-
     ./src/backend/xml_backend.cpp
     ./src/backend/eldo_backend.cpp
-    
     ./src/features/named_object.cpp
     ./src/features/visitable_object.cpp
-
     ./src/antlr4parser/ELDOLexer.cpp
     ./src/antlr4parser/ELDOParser.cpp
     ./src/antlr4parser/ELDOParserBaseListener.cpp
@@ -153,7 +192,6 @@ target_include_directories(
     ./include
     SYSTEM ${ANTLR4_INCLUDE_DIRS}
     SYSTEM ./include/antlr4parser
-    SYSTEM ${pybind11_SOURCE_DIR}/include
 )
 
 # Add the libraries for linking (python wrapped).
@@ -166,31 +204,103 @@ target_link_libraries(
     ${ANTLR4_LIBRARIES}
 )
 
+# Inlcude header directories from pybind11.
+target_include_directories(${PROJECT_NAME} PRIVATE ${pybind11_SOURCE_DIR}/include)
+
+# Inlcude header directories from json.
+target_include_directories(${PROJECT_NAME} PRIVATE ${json_SOURCE_DIR}/include)
+# Inlcude header directories from json.
+target_link_libraries(${PROJECT_NAME} PRIVATE json)
+
+# -----------------------------------------------------------------------------
+# COMPILATION FLAGS
+# -----------------------------------------------------------------------------
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    # Disable warnings that suggest using MSVC-specific safe functions
+    target_compile_definitions(${PROJECT_NAME} PRIVATE _CRT_SECURE_NO_WARNINGS)
+    if(WARNINGS_AS_ERRORS)
+        target_compile_options(${PROJECT_NAME} PRIVATE /WX)
+    endif()
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    if(WARNINGS_AS_ERRORS)
+        target_compile_options(${PROJECT_NAME} PRIVATE -Werror)
+    endif()
+endif()
+
+if(STRICT_WARNINGS)
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+        # Mark system headers as external for MSVC explicitly
+        # https://devblogs.microsoft.com/cppblog/broken-warnings-theory
+        target_compile_options(${PROJECT_NAME} PRIVATE /experimental:external)
+        target_compile_options(${PROJECT_NAME} PRIVATE /external:I ${CMAKE_BINARY_DIR})
+        target_compile_options(${PROJECT_NAME} PRIVATE /external:anglebrackets)
+        target_compile_options(${PROJECT_NAME} PRIVATE /external:W0)
+
+        target_compile_options(${PROJECT_NAME} PRIVATE /W4)
+    elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wconversion -pedantic)
+    endif()
+endif()
+
+# -----------------------------------------------------------------------------
+# Add the target for generating the python interface.
+# -----------------------------------------------------------------------------
+
+add_custom_target(
+    stubs
+    DEPENDS ${STUBGEN}
+    DEPENDS ${PROJECT_NAME}
+)
+add_custom_command(
+    TARGET stubs
+    COMMAND echo "Generating python stubs..."
+    COMMAND PYTHONPATH=${stubgen_SOURCE_DIR} ${Python_EXECUTABLE} -c \"import pybind11_stubgen\; pybind11_stubgen.main()\;\" ${PROJECT_NAME}
+    COMMAND echo "Generating python stubs... done!"
+    DEPENDS ${PROJECT_NAME}
+)
+
 # -----------------------------------------------------------------------------
 # DOCUMENTATION
 # -----------------------------------------------------------------------------
-find_package(Doxygen)
+
 if(DOXYGEN_FOUND)
-    # Doxygen theme
-    include(FetchContent)
-    FetchContent_Declare(DoxygenAwesome
+
+    # Record the options that describe how to populate the specified content.
+    FetchContent_Declare(
+        doxygenawesome
         GIT_REPOSITORY https://github.com/jothepro/doxygen-awesome-css
         GIT_TAG 4cd62308d825fe0396d2f66ffbab45d0e247724c # 2.0.3
     )
-    FetchContent_MakeAvailable(DoxygenAwesome)
-    FetchContent_GetProperties(DoxygenAwesome SOURCE_DIR DoxygenAwesome_SOURCE_DIR)
+    # Retrieve the properties related to the content.
+    FetchContent_GetProperties(doxygenawesome)
+    # If not populated, make the content available.
+    if(NOT doxygenawesome_POPULATED)
+        message(STATUS "Retrieving `doxygen-awesome-css`...")
+        # Ensures the named dependencies have been populated.
+        FetchContent_MakeAvailable(doxygenawesome)
+        # Hide fetchcontent variables, otherwise with ccmake it's a mess.
+        mark_as_advanced(FORCE
+            FETCHCONTENT_UPDATES_DISCONNECTED_DOXYGENAWESOME
+            FETCHCONTENT_SOURCE_DIR_DOXYGENAWESOME
+        )
+    endif()
 
-    set(DOXYGEN_USE_MDFILE_AS_MAINPAGE README.md)
+    # = CUSTOMIZATION =========================================================
+    set(DOXYGEN_WARN_FORMAT "$file:$line: $text")
+    set(DOXYGEN_PROJECT_NAME "Lumen et Umbra (LeU)")
+    set(DOXYGEN_USE_MDFILE_AS_MAINPAGE ${PROJECT_SOURCE_DIR}/README.md)
+    set(DOXYGEN_SHOW_INCLUDE_FILES NO)
     set(DOXYGEN_GENERATE_TREEVIEW YES)
-    set(DOXYGEN_HTML_HEADER ${DoxygenAwesome_SOURCE_DIR}/doxygen-custom/header.html)
-    set(DOXYGEN_HTML_EXTRA_STYLESHEET ${DoxygenAwesome_SOURCE_DIR}/doxygen-awesome.css)
+    set(DOXYGEN_HTML_HEADER ${doxygenawesome_SOURCE_DIR}/doxygen-custom/header.html)
+    set(DOXYGEN_HTML_EXTRA_STYLESHEET ${doxygenawesome_SOURCE_DIR}/doxygen-awesome.css)
     set(DOXYGEN_HTML_EXTRA_FILES
-        ${DoxygenAwesome_SOURCE_DIR}/doxygen-awesome-fragment-copy-button.js
-        ${DoxygenAwesome_SOURCE_DIR}/doxygen-awesome-paragraph-link.js
-        ${DoxygenAwesome_SOURCE_DIR}/doxygen-awesome-darkmode-toggle.js
+        ${doxygenawesome_SOURCE_DIR}/doxygen-awesome-fragment-copy-button.js
+        ${doxygenawesome_SOURCE_DIR}/doxygen-awesome-paragraph-link.js
+        ${doxygenawesome_SOURCE_DIR}/doxygen-awesome-darkmode-toggle.js
     )
-
-    doxygen_add_docs(${PROJECT_NAME}_documentation
+    doxygen_add_docs(
+        ${PROJECT_NAME}_documentation
         ./include/backend/eldo_backend.hpp
         ./include/backend/indented_stream.hpp
         ./include/backend/json_backend.hpp
@@ -234,22 +344,3 @@ if(DOXYGEN_FOUND)
         README.md
     )
 endif()
-
-# -----------------------------------------------------------------------------
-# Add the target for generating the python interface.
-# -----------------------------------------------------------------------------
-set(STUBGEN ${PROJECT_SOURCE_DIR}/third_party/pybind11_stubgen/pybind11-stubgen.py)
-add_custom_target(
-        stubs
-        DEPENDS ${STUBGEN}
-        DEPENDS ${PROJECT_NAME}
-)
-add_custom_command(
-        TARGET stubs
-        COMMAND echo "Generating python stubs..."
-        COMMAND cp ${STUBGEN} ${PROJECT_BINARY_DIR}
-        COMMAND ${PYTHON_EXECUTABLE} pybind11-stubgen.py ${PROJECT_NAME} --output-dir="." --root-module-suffix="" --no-setup-py --log-level=DEBUG
-        COMMAND echo "Generating python stubs... done!"
-        DEPENDS ${STUBGEN}
-        DEPENDS ${PROJECT_NAME}
-)

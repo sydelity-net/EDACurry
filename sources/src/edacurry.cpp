@@ -4,31 +4,27 @@
 /// Distributed under the MIT License (MIT) (See accompanying LICENSE file or
 ///  copy at http://opensource.org/licenses/MIT)
 
+#include "enums.hpp"
 #include "factory.hpp"
-
-#include "pybind11/pybind11.h"
-#include "pybind11/stl.h"
-
-#include "utility/logging.hpp"
-#include "utility/json/json.hpp"
-
-#include "antlr4parser/ELDOParser.h"
-#include "antlr4parser/ELDOLexer.h"
 #include "antlr4-runtime.h"
+#include "antlr4parser/ELDOLexer.h"
+#include "antlr4parser/ELDOParser.h"
+#include "backend/eldo_backend.hpp"
+#include "backend/xml_backend.hpp"
 #include "frontend/eldo_frontend.hpp"
-
-#include "structure/identifier.hpp"
+#include "structure/component.hpp"
 #include "structure/expression.hpp"
-#include "structure/value_list.hpp"
 #include "structure/function_call.hpp"
+#include "structure/identifier.hpp"
 #include "structure/node.hpp"
 #include "structure/parameter.hpp"
-#include "structure/component.hpp"
-
+#include "structure/value_list.hpp"
+#include "utility/logging.hpp"
 #include "utility/utility.hpp"
 
-#include "backend/xml_backend.hpp"
-#include "backend/eldo_backend.hpp"
+#include <json/json.hpp>
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
 std::string parse_to_xml(const std::string &path)
 {
@@ -136,315 +132,319 @@ namespace edacurry
 
 namespace features
 {
-    class PyAbstractVisitor : public edacurry::features::Visitor {
-    public:
-        /* Inherit the constructors */
-        using edacurry::features::Visitor::Visitor;
+class PyAbstractVisitor : public edacurry::features::Visitor {
+public:
+    PyAbstractVisitor()
+        : edacurry::features::Visitor()
+    {
+    }
 
-        PyAbstractVisitor()
-        {
-        }
+    int visitCircuit(const std::shared_ptr<structure::Circuit> &e) override
+    {
+        PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitCircuit, e);
+    }
 
-        int visitCircuit(const std::shared_ptr<structure::Circuit> &e) override
-        {
-            PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitCircuit, e);
-        }
+    int visitAnalysis(const std::shared_ptr<structure::Analysis> &e) override
+    {
+        PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitAnalysis, e);
+    }
 
-        int visitAnalysis(const std::shared_ptr<structure::Analysis> &e) override
-        {
-            PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitAnalysis, e);
-        }
+    int visitComponent(const std::shared_ptr<structure::Component> &e) override
+    {
+        PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitComponent, e);
+    }
 
-        int visitComponent(const std::shared_ptr<structure::Component> &e) override
-        {
-            PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitComponent, e);
-        }
+    int visitControlScope(const std::shared_ptr<structure::ControlScope> &e) override
+    {
+        PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitControlScope, e);
+    }
 
-        int visitControlScope(const std::shared_ptr<structure::ControlScope> &e) override
-        {
-            PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitControlScope, e);
-        }
+    int visitControl(const std::shared_ptr<structure::Control> &e) override
+    {
+        PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitControl, e);
+    }
 
-        int visitControl(const std::shared_ptr<structure::Control> &e) override
-        {
-            PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitControl, e);
-        }
+    int visitExpressionUnary(const std::shared_ptr<structure::ExpressionUnary> &e) override
+    {
+        PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitExpressionUnary, e);
+    }
 
-        int visitExpressionUnary(const std::shared_ptr<structure::ExpressionUnary> &e) override
-        {
-            PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitExpressionUnary, e);
-        }
+    int visitExpression(const std::shared_ptr<structure::Expression> &e) override
+    {
+        PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitExpression, e);
+    }
 
-        int visitExpression(const std::shared_ptr<structure::Expression> &e) override
-        {
-            PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitExpression, e);
-        }
+    int visitFunctionCall(const std::shared_ptr<structure::FunctionCall> &e) override
+    {
+        PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitFunctionCall, e);
+    }
 
-        int visitFunctionCall(const std::shared_ptr<structure::FunctionCall> &e) override
-        {
-            PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitFunctionCall, e);
-        }
+    int visitIdentifier(const std::shared_ptr<structure::Identifier> &e) override
+    {
+        PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitIdentifier, e);
+    }
 
-        int visitIdentifier(const std::shared_ptr<structure::Identifier> &e) override
-        {
-            PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitIdentifier, e);
-        }
+    int visitInclude(const std::shared_ptr<structure::Include> &e) override
+    {
+        PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitInclude, e);
+    }
 
-        int visitInclude(const std::shared_ptr<structure::Include> &e) override
-        {
-            PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitInclude, e);
-        }
+    int visitLibraryDef(const std::shared_ptr<structure::LibraryDef> &e) override
+    {
+        PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitLibraryDef, e);
+    }
 
-        int visitLibraryDef(const std::shared_ptr<structure::LibraryDef> &e) override
-        {
-            PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitLibraryDef, e);
-        }
+    int visitLibrary(const std::shared_ptr<structure::Library> &e) override
+    {
+        PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitLibrary, e);
+    }
 
-        int visitLibrary(const std::shared_ptr<structure::Library> &e) override
-        {
-            PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitLibrary, e);
-        }
+    int visitModel(const std::shared_ptr<structure::Model> &e) override
+    {
+        PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitModel, e);
+    }
 
-        int visitModel(const std::shared_ptr<structure::Model> &e) override
-        {
-            PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitModel, e);
-        }
+    int visitNode(const std::shared_ptr<structure::Node> &e) override
+    {
+        PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitNode, e);
+    }
 
-        int visitNode(const std::shared_ptr<structure::Node> &e) override
-        {
-            PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitNode, e);
-        }
+    int visitUnsigned(const std::shared_ptr<structure::Number<unsigned>> &e) override
+    {
+        PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitUnsigned, e);
+    }
 
-        int visitUnsigned(const std::shared_ptr<structure::Number<unsigned>> &e) override
-        {
-            PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitUnsigned, e);
-        }
+    int visitInt(const std::shared_ptr<structure::Number<int>> &e) override
+    {
+        PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitInt, e);
+    }
 
-        int visitInt(const std::shared_ptr<structure::Number<int>> &e) override
-        {
-            PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitInt, e);
-        }
+    int visitDouble(const std::shared_ptr<structure::Number<double>> &e) override
+    {
+        PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitDouble, e);
+    }
 
-        int visitDouble(const std::shared_ptr<structure::Number<double>> &e) override
-        {
-            PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitDouble, e);
-        }
+    int visitParameter(const std::shared_ptr<structure::Parameter> &e) override
+    {
+        PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitParameter, e);
+    }
 
-        int visitParameter(const std::shared_ptr<structure::Parameter> &e) override
-        {
-            PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitParameter, e);
-        }
+    int visitSubckt(const std::shared_ptr<structure::Subckt> &e) override
+    {
+        PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitSubckt, e);
+    }
 
-        int visitSubckt(const std::shared_ptr<structure::Subckt> &e) override
-        {
-            PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitSubckt, e);
-        }
+    int visitString(const std::shared_ptr<structure::String> &e) override
+    {
+        PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitString, e);
+    }
 
-        int visitString(const std::shared_ptr<structure::String> &e) override
-        {
-            PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitString, e);
-        }
+    int visitValuePair(const std::shared_ptr<structure::ValuePair> &e) override
+    {
+        PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitValuePair, e);
+    }
 
-        int visitValuePair(const std::shared_ptr<structure::ValuePair> &e) override
-        {
-            PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitValuePair, e);
-        }
+    int visitValueList(const std::shared_ptr<structure::ValueList> &e) override
+    {
+        PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitValueList, e);
+    }
+};
 
-        int visitValueList(const std::shared_ptr<structure::ValueList> &e) override
-        {
-            PYBIND11_OVERRIDE_PURE(int, edacurry::features::Visitor, visitValueList, e);
-        }
-    };
-    
-    class PyBaseVisitor : public edacurry::features::BaseVisitor {
-    public:
-        /* Inherit the constructors */
-        using edacurry::features::BaseVisitor::BaseVisitor;
+class PyBaseVisitor : public edacurry::features::BaseVisitor {
+public:
+    PyBaseVisitor()
+        : edacurry::features::BaseVisitor()
+    {
+    }
 
-        PyBaseVisitor()
-        {
-        }
+    int visitCircuit(const std::shared_ptr<structure::Circuit> &e) override
+    {
+        PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitCircuit, e);
+    }
 
-        int visitCircuit(const std::shared_ptr<structure::Circuit> &e) override
-        {
-            PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitCircuit, e);
-        }
+    int visitAnalysis(const std::shared_ptr<structure::Analysis> &e) override
+    {
+        PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitAnalysis, e);
+    }
 
-        int visitAnalysis(const std::shared_ptr<structure::Analysis> &e) override
-        {
-            PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitAnalysis, e);
-        }
+    int visitComponent(const std::shared_ptr<structure::Component> &e) override
+    {
+        PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitComponent, e);
+    }
 
-        int visitComponent(const std::shared_ptr<structure::Component> &e) override
-        {
-            PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitComponent, e);
-        }
+    int visitControlScope(const std::shared_ptr<structure::ControlScope> &e) override
+    {
+        PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitControlScope, e);
+    }
 
-        int visitControlScope(const std::shared_ptr<structure::ControlScope> &e) override
-        {
-            PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitControlScope, e);
-        }
+    int visitControl(const std::shared_ptr<structure::Control> &e) override
+    {
+        PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitControl, e);
+    }
 
-        int visitControl(const std::shared_ptr<structure::Control> &e) override
-        {
-            PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitControl, e);
-        }
+    int visitExpressionUnary(const std::shared_ptr<structure::ExpressionUnary> &e) override
+    {
+        PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitExpressionUnary, e);
+    }
 
-        int visitExpressionUnary(const std::shared_ptr<structure::ExpressionUnary> &e) override
-        {
-            PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitExpressionUnary, e);
-        }
+    int visitExpression(const std::shared_ptr<structure::Expression> &e) override
+    {
+        PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitExpression, e);
+    }
 
-        int visitExpression(const std::shared_ptr<structure::Expression> &e) override
-        {
-            PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitExpression, e);
-        }
+    int visitFunctionCall(const std::shared_ptr<structure::FunctionCall> &e) override
+    {
+        PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitFunctionCall, e);
+    }
 
-        int visitFunctionCall(const std::shared_ptr<structure::FunctionCall> &e) override
-        {
-            PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitFunctionCall, e);
-        }
+    int visitIdentifier(const std::shared_ptr<structure::Identifier> &e) override
+    {
+        PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitIdentifier, e);
+    }
 
-        int visitIdentifier(const std::shared_ptr<structure::Identifier> &e) override
-        {
-            PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitIdentifier, e);
-        }
+    int visitInclude(const std::shared_ptr<structure::Include> &e) override
+    {
+        PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitInclude, e);
+    }
 
-        int visitInclude(const std::shared_ptr<structure::Include> &e) override
-        {
-            PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitInclude, e);
-        }
+    int visitLibraryDef(const std::shared_ptr<structure::LibraryDef> &e) override
+    {
+        PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitLibraryDef, e);
+    }
 
-        int visitLibraryDef(const std::shared_ptr<structure::LibraryDef> &e) override
-        {
-            PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitLibraryDef, e);
-        }
+    int visitLibrary(const std::shared_ptr<structure::Library> &e) override
+    {
+        PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitLibrary, e);
+    }
 
-        int visitLibrary(const std::shared_ptr<structure::Library> &e) override
-        {
-            PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitLibrary, e);
-        }
+    int visitModel(const std::shared_ptr<structure::Model> &e) override
+    {
+        PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitModel, e);
+    }
 
-        int visitModel(const std::shared_ptr<structure::Model> &e) override
-        {
-            PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitModel, e);
-        }
+    int visitNode(const std::shared_ptr<structure::Node> &e) override
+    {
+        PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitNode, e);
+    }
 
-        int visitNode(const std::shared_ptr<structure::Node> &e) override
-        {
-            PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitNode, e);
-        }
+    int visitUnsigned(const std::shared_ptr<structure::Number<unsigned>> &e) override
+    {
+        PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitUnsigned, e);
+    }
 
-        int visitUnsigned(const std::shared_ptr<structure::Number<unsigned>> &e) override
-        {
-            PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitUnsigned, e);
-        }
+    int visitInt(const std::shared_ptr<structure::Number<int>> &e) override
+    {
+        PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitInt, e);
+    }
 
-        int visitInt(const std::shared_ptr<structure::Number<int>> &e) override
-        {
-            PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitInt, e);
-        }
+    int visitDouble(const std::shared_ptr<structure::Number<double>> &e) override
+    {
+        PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitDouble, e);
+    }
 
-        int visitDouble(const std::shared_ptr<structure::Number<double>> &e) override
-        {
-            PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitDouble, e);
-        }
+    int visitParameter(const std::shared_ptr<structure::Parameter> &e) override
+    {
+        PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitParameter, e);
+    }
 
-        int visitParameter(const std::shared_ptr<structure::Parameter> &e) override
-        {
-            PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitParameter, e);
-        }
+    int visitSubckt(const std::shared_ptr<structure::Subckt> &e) override
+    {
+        PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitSubckt, e);
+    }
 
-        int visitSubckt(const std::shared_ptr<structure::Subckt> &e) override
-        {
-            PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitSubckt, e);
-        }
+    int visitString(const std::shared_ptr<structure::String> &e) override
+    {
+        PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitString, e);
+    }
 
-        int visitString(const std::shared_ptr<structure::String> &e) override
-        {
-            PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitString, e);
-        }
+    int visitValuePair(const std::shared_ptr<structure::ValuePair> &e) override
+    {
+        PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitValuePair, e);
+    }
 
-        int visitValuePair(const std::shared_ptr<structure::ValuePair> &e) override
-        {
-            PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitValuePair, e);
-        }
-
-        int visitValueList(const std::shared_ptr<structure::ValueList> &e) override
-        {
-            PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitValueList, e);
-        }
-    };
+    int visitValueList(const std::shared_ptr<structure::ValueList> &e) override
+    {
+        PYBIND11_OVERRIDE(int, edacurry::features::BaseVisitor, visitValueList, e);
+    }
+};
 } // namespace features
 
 namespace structure
 {
 
-    class PyObject : public edacurry::structure::Object {
-    public:
-        using edacurry::structure::Object::Object;
-        int accept(edacurry::features::Visitor *visitor) override
-        {
-            PYBIND11_OVERRIDE_PURE(int, edacurry::structure::Object, accept, visitor);
-        }
-    };
-
-    class PyValue : public edacurry::structure::Value {
-    public:
-        using edacurry::structure::Value::Value;
-        int accept(edacurry::features::Visitor *visitor) override
-        {
-            PYBIND11_OVERRIDE_PURE(int, edacurry::structure::Value, accept, visitor);
-        }
-    };
-
-    template <typename T>
-    void register_list(pybind11::module_ &m, const std::string &name)
+class PyObject : public edacurry::structure::Object {
+public:
+    /// @brief Construct a new object.
+    /// @param parent The parent of the object.
+    explicit PyObject(std::weak_ptr<edacurry::structure::Object> parent)
+        : edacurry::structure::Object(parent)
     {
-        // ========================================================================
-        namespace py = pybind11;
-        using namespace edacurry;
-        using namespace edacurry::features;
-        using namespace edacurry::structure;
-
-        // ========================================================================
-        std::string list_name = "List[";
-        list_name += name + "]";
-        py::class_<OwnedList<T>>(m, list_name.c_str())
-            .def(py::init<std::shared_ptr<Object>>())
-            .def("clear", &OwnedList<T>::clear, "Clears the list and deletes the objects.")
-            .def("empty", &OwnedList<T>::empty, "Checks if the list is empty.")
-            .def("__len__", &OwnedList<T>::size, "Returns the size of the list.")
-            .def("append",
-                 &OwnedList<T>::push_back,
-                 py::arg("item"),
-                 "Adds a new item to the list.")
-            .def("pop", &OwnedList<T>::pop_back, "Removes the last inserted object.", py::return_value_policy::move)
-            .def("remove",
-                 static_cast<typename OwnedList<T>::value_type (OwnedList<T>::*)(typename OwnedList<T>::value_type)>(&OwnedList<T>::remove),
-                 py::arg("item"),
-                 "Removes the item from the list.",
-                 py::return_value_policy::move)
-            .def("remove",
-                 static_cast<typename OwnedList<T>::value_type (OwnedList<T>::*)(const std::string &)>(&OwnedList<T>::remove),
-                 py::arg("name"),
-                 "Removes the item from the list based on the name.",
-                 py::return_value_policy::move)
-            .def("transfer_to",
-                 static_cast<void (OwnedList<T>::*)(typename OwnedList<T>::value_type, OwnedList<T> &)>(&OwnedList<T>::transfer_to),
-                 py::arg("item"),
-                 py::arg("other"),
-                 "Transfer the item from this list to the other.")
-            .def(
-                "__getitem__",
-                [](OwnedList<T> &self, unsigned index) { return self[index]; },
-                "Returns the item at the given index.")
-            .def(
-                "__iter__",
-                [](OwnedList<T> &self) { return py::make_iterator(self.begin(), self.end()); },
-                py::keep_alive<0, 1>(),
-                "Allows iterating the content of the dataset.");
     }
+
+    int accept(edacurry::features::Visitor *visitor) override
+    {
+        PYBIND11_OVERRIDE_PURE(int, edacurry::structure::Object, accept, visitor);
+    }
+};
+
+class PyValue : public edacurry::structure::Value {
+public:
+    explicit PyValue()
+        : edacurry::structure::Value()
+    {
+    }
+
+    int accept(edacurry::features::Visitor *visitor) override
+    {
+        PYBIND11_OVERRIDE_PURE(int, edacurry::structure::Value, accept, visitor);
+    }
+};
+
+template <typename T>
+void register_list(pybind11::module_ &m, const std::string &name)
+{
+    // ========================================================================
+    namespace py = pybind11;
+    using namespace edacurry;
+    using namespace edacurry::features;
+    using namespace edacurry::structure;
+
+    // ========================================================================
+    py::class_<OwnedList<T>>(m, ("List" + name).c_str())
+        .def(py::init<std::shared_ptr<Object>>())
+        .def("clear", &OwnedList<T>::clear, "Clears the list and deletes the objects.")
+        .def("empty", &OwnedList<T>::empty, "Checks if the list is empty.")
+        .def("__len__", &OwnedList<T>::size, "Returns the size of the list.")
+        .def("append",
+             &OwnedList<T>::push_back,
+             py::arg("item"),
+             "Adds a new item to the list.")
+        .def("pop", &OwnedList<T>::pop_back, "Removes the last inserted object.", py::return_value_policy::move)
+        .def("remove",
+             static_cast<typename OwnedList<T>::value_type (OwnedList<T>::*)(typename OwnedList<T>::value_type)>(&OwnedList<T>::remove),
+             py::arg("item"),
+             "Removes the item from the list.",
+             py::return_value_policy::move)
+        .def("remove",
+             static_cast<typename OwnedList<T>::value_type (OwnedList<T>::*)(const std::string &)>(&OwnedList<T>::remove),
+             py::arg("name"),
+             "Removes the item from the list based on the name.",
+             py::return_value_policy::move)
+        .def("transfer_to",
+             static_cast<void (OwnedList<T>::*)(typename OwnedList<T>::value_type, OwnedList<T> &)>(&OwnedList<T>::transfer_to),
+             py::arg("item"),
+             py::arg("other"),
+             "Transfer the item from this list to the other.")
+        .def(
+            "__getitem__",
+            [](OwnedList<T> &self, unsigned index) { return self[index]; },
+            "Returns the item at the given index.")
+        .def(
+            "__iter__",
+            [](OwnedList<T> &self) { return py::make_iterator(self.begin(), self.end()); },
+            py::keep_alive<0, 1>(),
+            "Allows iterating the content of the dataset.");
+}
 } // namespace structure
 
 } // namespace edacurry
@@ -458,6 +458,10 @@ PYBIND11_MODULE(edacurry, m)
     using namespace edacurry;
     using namespace edacurry::features;
     using namespace edacurry::structure;
+
+    // ========================================================================
+    m.def("parse_to_xml", parse_to_xml);
+    m.def("parse_to_eldo", parse_to_eldo);
 
     // ========================================================================
     py::enum_<NetlistType>(m, "NetlistType", "All the supported languages.")
@@ -535,13 +539,13 @@ PYBIND11_MODULE(edacurry, m)
         .export_values();
 
     // ========================================================================
-    py::enum_<ParameterType>(m, "ParameterType", "The type of paramters.")
-        .value("param_none", ParameterType::param_none, "No type of parameter.")
-        .value("param_assign", ParameterType::param_assign, "Normal parameter assign.")
-        .value("param_tabular", ParameterType::param_tabular, "A tabular parameter.")
-        .value("param_list", ParameterType::param_list, "A list of values.")
-        .value("param_arithmetic", ParameterType::param_arithmetic, "An arithmetic expression.")
-        .value("param_no_equal", ParameterType::param_no_equal, "A label followed by its value, without the equal sign.")
+    py::enum_<edacurry::ParameterType>(m, "ParameterType")
+        .value("param_none", param_none)
+        .value("param_assign", param_assign)
+        .value("param_tabular", param_tabular)
+        .value("param_list", param_list)
+        .value("param_arithmetic", param_arithmetic)
+        .value("param_no_equal", param_no_equal)
         .export_values();
 
     // ========================================================================
@@ -613,7 +617,7 @@ PYBIND11_MODULE(edacurry, m)
             py::init<const std::shared_ptr<Value> &, const std::shared_ptr<Value> &, ParameterType, bool>(),
             py::arg("left")      = nullptr,
             py::arg("right")     = nullptr,
-            py::arg("type")      = ParameterType::param_assign,
+            py::arg("type")      = static_cast<int>(ParameterType::param_assign),
             py::arg("hide_name") = false,
             "Construct a new Parameter object.")
         .def_property("left", &Parameter::getLeft, &Parameter::setLeft, "The left-hand side value.")
@@ -642,7 +646,7 @@ PYBIND11_MODULE(edacurry, m)
     py::class_<Expression, Value, std::shared_ptr<Expression>>(m, "Expression")
         .def(
             py::init<Operator, const std::shared_ptr<Value> &, const std::shared_ptr<Value> &>(),
-            py::arg("op")     = Operator::op_none,
+            py::arg("op")     = static_cast<int>(Operator::op_none),
             py::arg("first")  = nullptr,
             py::arg("second") = nullptr,
             "Construct a new expression.")
@@ -656,7 +660,7 @@ PYBIND11_MODULE(edacurry, m)
     py::class_<ExpressionUnary, Value, std::shared_ptr<ExpressionUnary>>(m, "ExpressionUnary")
         .def(
             py::init<Operator, const std::shared_ptr<Value> &>(),
-            py::arg("op")    = Operator::op_none,
+            py::arg("op")    = static_cast<int>(Operator::op_none),
             py::arg("value") = nullptr,
             "Construct a new unary expression.")
         .def_property("operator", &ExpressionUnary::getOperator, &ExpressionUnary::setOperator, "The operator of the expression.")
@@ -677,7 +681,7 @@ PYBIND11_MODULE(edacurry, m)
     py::class_<Number<unsigned>, Value, std::shared_ptr<Number<unsigned>>>(m, "Unsigned")
         .def(
             py::init<unsigned, std::string>(),
-            py::arg("value") = unsigned(0),
+            py::arg("value") = 0u,
             py::arg("unit")  = std::string(),
             "Construct a new unsigned.")
         .def_property("value", &Number<unsigned>::getValue, &Number<unsigned>::setValue, "The stored value.")
@@ -689,7 +693,7 @@ PYBIND11_MODULE(edacurry, m)
     py::class_<Number<int>, Value, std::shared_ptr<Number<int>>>(m, "Int")
         .def(
             py::init<int, std::string>(),
-            py::arg("value") = int(0),
+            py::arg("value") = 0,
             py::arg("unit")  = std::string(),
             "Construct a new int.")
         .def_property("value", &Number<int>::getValue, &Number<int>::setValue, "The stored value.")
@@ -701,7 +705,7 @@ PYBIND11_MODULE(edacurry, m)
     py::class_<Number<double>, Value, std::shared_ptr<Number<double>>>(m, "Double")
         .def(
             py::init<double, std::string>(),
-            py::arg("value") = double(0),
+            py::arg("value") = .0,
             py::arg("unit")  = std::string(),
             "Construct a new double.")
         .def_property("value", &Number<double>::getValue, &Number<double>::setValue, "The stored value.")
@@ -717,7 +721,7 @@ PYBIND11_MODULE(edacurry, m)
                 _ptr->values.setOwner(_ptr);
                 return _ptr;
             }),
-            py::arg("delimiter") = DelimiterType::dlm_none,
+            py::arg("delimiter") = static_cast<int>(DelimiterType::dlm_none),
             "Construct a new list of values.")
         .def_readonly("values", &ValueList::values)
         .def_property("delimiter", &ValueList::getDelimiterType, &ValueList::setDelimiterType, "The type of delimiter.")
@@ -759,7 +763,7 @@ PYBIND11_MODULE(edacurry, m)
                 _ptr->parameters.setOwner(_ptr);
                 return _ptr;
             }),
-            py::arg("name") = std::string(),
+            py::arg("name")   = std::string(),
             py::arg("master") = std::string(),
             "Construct a new component.")
         .def_readonly("nodes", &Component::nodes)
@@ -777,11 +781,11 @@ PYBIND11_MODULE(edacurry, m)
                 _ptr->parameters.setOwner(_ptr);
                 return _ptr;
             }),
-             py::arg("name"),
-             py::arg("master"),
-             py::arg("library"),
-             py::arg("library_type"),
-             "Construct a new model.")
+            py::arg("name"),
+            py::arg("master"),
+            py::arg("library"),
+            py::arg("library_type"),
+            "Construct a new model.")
         .def_readonly("parameters", &Model::parameters)
         .def_property("master", &Model::getMaster, &Model::setMaster, "The model's master.")
         .def_property("library", &Model::getLibrary, &Model::setLibrary, "The model's library.")
@@ -793,15 +797,14 @@ PYBIND11_MODULE(edacurry, m)
     // ========================================================================
     py::class_<Include, Object, std::shared_ptr<Include>>(m, "Include")
         .def(
-            py::init([](IncludeType include_type, const std::string &path)
-            {
+            py::init([](IncludeType include_type, const std::string &path) {
                 auto _ptr = std::make_shared<structure::Include>(include_type, path);
                 _ptr->parameters.setOwner(_ptr);
                 return _ptr;
             }),
-             py::arg("include_type") = IncludeType::inc_none,
-             py::arg("path") = std::string(),
-             "Construct a new include.")
+            py::arg("include_type") = static_cast<int>(IncludeType::inc_none),
+            py::arg("path")         = std::string(),
+            "Construct a new include.")
         .def_readonly("parameters", &Include::parameters)
         .def_property("include_type", &Include::getIncludeType, &Include::setIncludeType, "The include type.")
         .def_property("path", &Include::getPath, &Include::setPath, "The included path.")
@@ -822,8 +825,7 @@ PYBIND11_MODULE(edacurry, m)
     // ========================================================================
     py::class_<LibraryDef, Object, NamedObject, std::shared_ptr<LibraryDef>>(m, "LibraryDef")
         .def(
-            py::init([](const std::string &name)
-            {
+            py::init([](const std::string &name) {
                 auto _ptr = std::make_shared<structure::LibraryDef>(name);
                 _ptr->content.setOwner(_ptr);
                 return _ptr;
@@ -837,14 +839,13 @@ PYBIND11_MODULE(edacurry, m)
     // ========================================================================
     py::class_<Control, Object, NamedObject, std::shared_ptr<Control>>(m, "Control")
         .def(
-            py::init([](const std::string &name, ControlType type)
-            {
+            py::init([](const std::string &name, ControlType type) {
                 auto _ptr = std::make_shared<structure::Control>(name, type);
                 _ptr->parameters.setOwner(_ptr);
                 return _ptr;
             }),
             py::arg("name") = std::string(),
-            py::arg("type") = ControlType::ctrl_none,
+            py::arg("type") = static_cast<int>(ControlType::ctrl_none),
             "Construct a new control.")
         .def_readonly("parameters", &Control::parameters)
         .def_property("control_type", &Control::getControlType, &Control::setControlType, "The type of control.")
@@ -854,8 +855,7 @@ PYBIND11_MODULE(edacurry, m)
     // ========================================================================
     py::class_<ControlScope, Control, std::shared_ptr<ControlScope>>(m, "ControlScope")
         .def(
-            py::init([](const std::string &name, ControlType type)
-            {
+            py::init([](const std::string &name, ControlType type) {
                 auto _ptr = std::make_shared<structure::ControlScope>(name, type);
                 _ptr->nodes.setOwner(_ptr);
                 _ptr->parameters.setOwner(_ptr);
@@ -863,7 +863,7 @@ PYBIND11_MODULE(edacurry, m)
                 return _ptr;
             }),
             py::arg("name") = std::string(),
-            py::arg("type") = ControlType::ctrl_none,
+            py::arg("type") = static_cast<int>(ControlType::ctrl_none),
             "Construct a new control scope.")
         .def_readonly("nodes", &ControlScope::nodes)
         .def_readonly("content", &ControlScope::content)
@@ -873,8 +873,7 @@ PYBIND11_MODULE(edacurry, m)
     // ========================================================================
     py::class_<Analysis, Object, NamedObject, std::shared_ptr<Analysis>>(m, "Analysis")
         .def(
-            py::init([](const std::string &name)
-            {
+            py::init([](const std::string &name) {
                 auto _ptr = std::make_shared<structure::Analysis>(name);
                 _ptr->parameters.setOwner(_ptr->weak_from_this());
                 return _ptr;
@@ -888,8 +887,7 @@ PYBIND11_MODULE(edacurry, m)
     // ========================================================================
     py::class_<Subckt, Object, NamedObject, std::shared_ptr<Subckt>>(m, "Subckt")
         .def(
-            py::init([](const std::string &name)
-            {
+            py::init([](const std::string &name) {
                 auto _ptr = std::make_shared<structure::Subckt>(name);
                 _ptr->nodes.setOwner(_ptr);
                 _ptr->parameters.setOwner(_ptr);
@@ -907,15 +905,14 @@ PYBIND11_MODULE(edacurry, m)
     // ========================================================================
     py::class_<Circuit, Object, NamedObject, std::shared_ptr<Circuit>>(m, "Circuit")
         .def(
-            py::init([](const std::string &name, const std::string &title)
-            {
+            py::init([](const std::string &name, const std::string &title) {
                 auto _ptr = std::make_shared<structure::Circuit>(name, title);
                 _ptr->nodes.setOwner(_ptr);
                 _ptr->parameters.setOwner(_ptr);
                 _ptr->content.setOwner(_ptr);
                 return _ptr;
             }),
-            py::arg("name") = std::string(),
+            py::arg("name")  = std::string(),
             py::arg("title") = std::string(),
             "Construct a new control scope.")
         .def_readonly("nodes", &Circuit::nodes)
@@ -924,7 +921,7 @@ PYBIND11_MODULE(edacurry, m)
         .def_property("title", &Circuit::getTitle, &Circuit::setTitle, "The title of the circuit.")
         .def("__str__", &Circuit::toString)
         .def("__repr__", &Circuit::toString);
-        
+
     // ========================================================================
     py::class_<BaseVisitor, Visitor, PyBaseVisitor>(m, "Visitor")
         .def(py::init<>())
@@ -950,5 +947,4 @@ PYBIND11_MODULE(edacurry, m)
         .def("visitString", &BaseVisitor::visitString, "Visit a String")
         .def("visitValuePair", &BaseVisitor::visitValuePair, "Visit a ValuePair")
         .def("visitValueList", &BaseVisitor::visitValueList, "Visit a ValueList");
-
 }

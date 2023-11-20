@@ -1,4 +1,4 @@
-/// @file json_parser.hpp
+/// @file json_frontend.hpp
 /// @author Enrico Fraccaroli (enry.frak@gmail.com)
 /// @brief
 /// @copyright Copyright (c) 2021 sydelity.net (info@sydelity.com)

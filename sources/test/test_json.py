@@ -5,10 +5,10 @@ import re
 import os
 import sys
 import difflib
-from colorama import Fore, Back, Style
 from io import TextIOWrapper
 import edacurry
 import logging
+
 # Get the C++ declared logger.
 logger = logging.getLogger("edacurry_logger")
 # Set the level.
