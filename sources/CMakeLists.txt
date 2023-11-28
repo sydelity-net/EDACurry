@@ -100,6 +100,81 @@ if(NOT stubgen_POPULATED)
 endif(NOT stubgen_POPULATED)
 # =====================================
 
+# -----------------------------------------------------------------------------
+# C++ Library with Python wrapping.
+# -----------------------------------------------------------------------------
+# Add the python wrapped library.
+pybind11_add_module(
+    ${PROJECT_NAME}
+    ${PROJECT_SOURCE_DIR}/src/edacurry.cpp
+    ${PROJECT_SOURCE_DIR}/src/enums.cpp
+    ${PROJECT_SOURCE_DIR}/src/factory.cpp
+    ${PROJECT_SOURCE_DIR}/src/structure/analysis.cpp
+    ${PROJECT_SOURCE_DIR}/src/structure/circuit.cpp
+    ${PROJECT_SOURCE_DIR}/src/structure/control.cpp
+    ${PROJECT_SOURCE_DIR}/src/structure/control_scope.cpp
+    ${PROJECT_SOURCE_DIR}/src/structure/node.cpp
+    ${PROJECT_SOURCE_DIR}/src/structure/object.cpp
+    ${PROJECT_SOURCE_DIR}/src/structure/parameter.cpp
+    ${PROJECT_SOURCE_DIR}/src/structure/subckt.cpp
+    ${PROJECT_SOURCE_DIR}/src/structure/include.cpp
+    ${PROJECT_SOURCE_DIR}/src/structure/library.cpp
+    ${PROJECT_SOURCE_DIR}/src/structure/library_def.cpp
+    ${PROJECT_SOURCE_DIR}/src/structure/component.cpp
+    ${PROJECT_SOURCE_DIR}/src/structure/model.cpp
+    ${PROJECT_SOURCE_DIR}/src/structure/identifier.cpp
+    ${PROJECT_SOURCE_DIR}/src/structure/function_call.cpp
+    ${PROJECT_SOURCE_DIR}/src/structure/expression.cpp
+    ${PROJECT_SOURCE_DIR}/src/structure/value_list.cpp
+    ${PROJECT_SOURCE_DIR}/src/structure/expression_unary.cpp
+    ${PROJECT_SOURCE_DIR}/src/structure/value.cpp
+    ${PROJECT_SOURCE_DIR}/src/structure/value_list.cpp
+    ${PROJECT_SOURCE_DIR}/src/structure/value_pair.cpp
+    ${PROJECT_SOURCE_DIR}/src/structure/number.cpp
+    ${PROJECT_SOURCE_DIR}/src/structure/string.cpp
+    ${PROJECT_SOURCE_DIR}/src/utility/logging.cpp
+    ${PROJECT_SOURCE_DIR}/src/utility/utility.cpp
+    ${PROJECT_SOURCE_DIR}/src/frontend/eldo_frontend.cpp
+    ${PROJECT_SOURCE_DIR}/src/frontend/json_frontend.cpp
+    ${PROJECT_SOURCE_DIR}/src/frontend/spectre_frontend.cpp
+    ${PROJECT_SOURCE_DIR}/src/backend/xml_backend.cpp
+    ${PROJECT_SOURCE_DIR}/src/backend/json_backend.cpp
+    ${PROJECT_SOURCE_DIR}/src/backend/eldo_backend.cpp
+    ${PROJECT_SOURCE_DIR}/src/features/named_object.cpp
+    ${PROJECT_SOURCE_DIR}/src/features/visitable_object.cpp
+    ${PROJECT_SOURCE_DIR}/src/antlr4parser/ELDOLexer.cpp
+    ${PROJECT_SOURCE_DIR}/src/antlr4parser/ELDOParser.cpp
+    ${PROJECT_SOURCE_DIR}/src/antlr4parser/ELDOParserBaseListener.cpp
+    ${PROJECT_SOURCE_DIR}/src/antlr4parser/ELDOParserBaseVisitor.cpp
+    ${PROJECT_SOURCE_DIR}/src/antlr4parser/ELDOParserListener.cpp
+    ${PROJECT_SOURCE_DIR}/src/antlr4parser/ELDOParserVisitor.cpp
+    ${PROJECT_SOURCE_DIR}/src/antlr4parser/SPECTRELexer.cpp
+    ${PROJECT_SOURCE_DIR}/src/antlr4parser/SPECTREParser.cpp
+    ${PROJECT_SOURCE_DIR}/src/antlr4parser/SPECTREParserBaseListener.cpp
+    ${PROJECT_SOURCE_DIR}/src/antlr4parser/SPECTREParserBaseVisitor.cpp
+    ${PROJECT_SOURCE_DIR}/src/antlr4parser/SPECTREParserListener.cpp
+    ${PROJECT_SOURCE_DIR}/src/antlr4parser/SPECTREParserVisitor.cpp
+)
+
+# Add a macro inside the C++, so that we can de-activate the python wrapping code.
+target_compile_definitions(
+    ${PROJECT_NAME} PRIVATE
+    PYTHON_INTERFACE_ENABLED
+)
+
+# Include the python directories.
+target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/include)
+
+# Include the python directories.
+target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${ANTLR4_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/include/antlr4parser)
+
+# Add the libraries for linking (python wrapped).
+target_link_directories(${PROJECT_NAME} PRIVATE ${ANTLR4_LINK_DIRECTORIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${ANTLR4_LIBRARIES})
+
+# Inlcude header directories from pybind11.
+target_include_directories(${PROJECT_NAME} PRIVATE ${pybind11_SOURCE_DIR}/include)
+
 # =====================================
 # JSON
 # =====================================
@@ -123,94 +198,11 @@ if(NOT json_POPULATED)
         FETCHCONTENT_SOURCE_DIR_json
     )
 endif(NOT json_POPULATED)
-# =====================================
-
-# -----------------------------------------------------------------------------
-# C++ Library with Python wrapping.
-# -----------------------------------------------------------------------------
-# Add the python wrapped library.
-pybind11_add_module(
-    ${PROJECT_NAME}
-    ./src/edacurry.cpp
-    ./src/enums.cpp
-    ./src/factory.cpp
-    #./src/json_parser.cpp
-    ./src/structure/analysis.cpp
-    ./src/structure/circuit.cpp
-    ./src/structure/control.cpp
-    ./src/structure/control_scope.cpp
-    ./src/structure/node.cpp
-    ./src/structure/object.cpp
-    ./src/structure/parameter.cpp
-    ./src/structure/subckt.cpp
-    ./src/structure/include.cpp
-    ./src/structure/library.cpp
-    ./src/structure/library_def.cpp
-    ./src/structure/component.cpp
-    ./src/structure/model.cpp
-    ./src/structure/identifier.cpp
-    ./src/structure/function_call.cpp
-    ./src/structure/expression.cpp
-    ./src/structure/value_list.cpp
-    ./src/structure/expression_unary.cpp
-    ./src/structure/value.cpp
-    ./src/structure/value_list.cpp
-    ./src/structure/value_pair.cpp
-    ./src/structure/number.cpp
-    ./src/structure/string.cpp
-    ./src/utility/logging.cpp
-    ./src/utility/utility.cpp
-    ./src/frontend/eldo_frontend.cpp
-    ./src/frontend/spectre_frontend.cpp
-    ./src/backend/xml_backend.cpp
-    ./src/backend/eldo_backend.cpp
-    ./src/features/named_object.cpp
-    ./src/features/visitable_object.cpp
-    ./src/antlr4parser/ELDOLexer.cpp
-    ./src/antlr4parser/ELDOParser.cpp
-    ./src/antlr4parser/ELDOParserBaseListener.cpp
-    ./src/antlr4parser/ELDOParserBaseVisitor.cpp
-    ./src/antlr4parser/ELDOParserListener.cpp
-    ./src/antlr4parser/ELDOParserVisitor.cpp
-    ./src/antlr4parser/SPECTRELexer.cpp
-    ./src/antlr4parser/SPECTREParser.cpp
-    ./src/antlr4parser/SPECTREParserBaseListener.cpp
-    ./src/antlr4parser/SPECTREParserBaseVisitor.cpp
-    ./src/antlr4parser/SPECTREParserListener.cpp
-    ./src/antlr4parser/SPECTREParserVisitor.cpp
-)
-
-# Add a macro inside the C++, so that we can de-activate the python wrapping code.
-target_compile_definitions(
-    ${PROJECT_NAME} PRIVATE
-    PYTHON_INTERFACE_ENABLED
-)
-
-# Include the python directories.
-target_include_directories(
-    ${PROJECT_NAME} PRIVATE
-    ./include
-    SYSTEM ${ANTLR4_INCLUDE_DIRS}
-    SYSTEM ./include/antlr4parser
-)
-
-# Add the libraries for linking (python wrapped).
-target_link_directories(
-    ${PROJECT_NAME} PRIVATE
-    ${ANTLR4_LINK_DIRECTORIES}
-)
-target_link_libraries(
-    ${PROJECT_NAME} PRIVATE
-    ${ANTLR4_LIBRARIES}
-)
-
-# Inlcude header directories from pybind11.
-target_include_directories(${PROJECT_NAME} PRIVATE ${pybind11_SOURCE_DIR}/include)
-
 # Inlcude header directories from json.
 target_include_directories(${PROJECT_NAME} PRIVATE ${json_SOURCE_DIR}/include)
 # Inlcude header directories from json.
 target_link_libraries(${PROJECT_NAME} PRIVATE json)
+# =====================================
 
 # -----------------------------------------------------------------------------
 # COMPILATION FLAGS
@@ -255,7 +247,7 @@ add_custom_target(
 add_custom_command(
     TARGET stubs
     COMMAND echo "Generating python stubs..."
-    COMMAND PYTHONPATH=${stubgen_SOURCE_DIR} ${Python_EXECUTABLE} -c \"import pybind11_stubgen\; pybind11_stubgen.main()\;\" ${PROJECT_NAME}
+    COMMAND PYTHONPATH=${stubgen_SOURCE_DIR} ${Python_EXECUTABLE} -c \"import pybind11_stubgen \; pybind11_stubgen.main() \;\" ${PROJECT_NAME}
     COMMAND echo "Generating python stubs... done!"
     DEPENDS ${PROJECT_NAME}
 )
@@ -301,46 +293,45 @@ if(DOXYGEN_FOUND)
     )
     doxygen_add_docs(
         ${PROJECT_NAME}_documentation
-        ./include/backend/eldo_backend.hpp
-        ./include/backend/indented_stream.hpp
-        ./include/backend/json_backend.hpp
-        ./include/backend/xml_backend.hpp
-        ./include/classes.hpp
-        ./include/enums.hpp
-        ./include/factory.hpp
-        ./include/features/named_object.hpp
-        ./include/features/owned_list.hpp
-        ./include/features/object_reference.hpp
-        ./include/features/visitable_object.hpp
-        ./include/frontend/eldo_frontend.hpp
-        ./include/frontend/json_frontend.hpp
-        ./include/frontend/spectre_frontend.hpp
-        ./include/structure/analysis.hpp
-        ./include/structure/circuit.hpp
-        ./include/structure/component.hpp
-        ./include/structure/control.hpp
-        ./include/structure/control_scope.hpp
-        ./include/structure/expression.hpp
-        ./include/structure/expression_unary.hpp
-        ./include/structure/function_call.hpp
-        ./include/structure/identifier.hpp
-        ./include/structure/include.hpp
-        ./include/structure/library.hpp
-        ./include/structure/library_def.hpp
-        ./include/structure/model.hpp
-        ./include/structure/node.hpp
-        ./include/structure/number.hpp
-        ./include/structure/object.hpp
-        ./include/structure/parameter.hpp
-        ./include/structure/string.hpp
-        ./include/structure/subckt.hpp
-        ./include/structure/value.hpp
-        ./include/structure/value_list.hpp
-        ./include/structure/value_pair.hpp
-        ./include/utility/json.hpp
-        ./include/utility/logging.hpp
-        ./include/utility/typename.hpp
-        ./include/utility/utility.hpp
+        ${PROJECT_SOURCE_DIR}/include/backend/eldo_backend.hpp
+        ${PROJECT_SOURCE_DIR}/include/backend/indented_stream.hpp
+        ${PROJECT_SOURCE_DIR}/include/backend/json_backend.hpp
+        ${PROJECT_SOURCE_DIR}/include/backend/xml_backend.hpp
+        ${PROJECT_SOURCE_DIR}/include/classes.hpp
+        ${PROJECT_SOURCE_DIR}/include/enums.hpp
+        ${PROJECT_SOURCE_DIR}/include/factory.hpp
+        ${PROJECT_SOURCE_DIR}/include/features/named_object.hpp
+        ${PROJECT_SOURCE_DIR}/include/features/owned_list.hpp
+        ${PROJECT_SOURCE_DIR}/include/features/object_reference.hpp
+        ${PROJECT_SOURCE_DIR}/include/features/visitable_object.hpp
+        ${PROJECT_SOURCE_DIR}/include/frontend/eldo_frontend.hpp
+        ${PROJECT_SOURCE_DIR}/include/frontend/json_frontend.hpp
+        ${PROJECT_SOURCE_DIR}/include/frontend/spectre_frontend.hpp
+        ${PROJECT_SOURCE_DIR}/include/structure/analysis.hpp
+        ${PROJECT_SOURCE_DIR}/include/structure/circuit.hpp
+        ${PROJECT_SOURCE_DIR}/include/structure/component.hpp
+        ${PROJECT_SOURCE_DIR}/include/structure/control.hpp
+        ${PROJECT_SOURCE_DIR}/include/structure/control_scope.hpp
+        ${PROJECT_SOURCE_DIR}/include/structure/expression.hpp
+        ${PROJECT_SOURCE_DIR}/include/structure/expression_unary.hpp
+        ${PROJECT_SOURCE_DIR}/include/structure/function_call.hpp
+        ${PROJECT_SOURCE_DIR}/include/structure/identifier.hpp
+        ${PROJECT_SOURCE_DIR}/include/structure/include.hpp
+        ${PROJECT_SOURCE_DIR}/include/structure/library.hpp
+        ${PROJECT_SOURCE_DIR}/include/structure/library_def.hpp
+        ${PROJECT_SOURCE_DIR}/include/structure/model.hpp
+        ${PROJECT_SOURCE_DIR}/include/structure/node.hpp
+        ${PROJECT_SOURCE_DIR}/include/structure/number.hpp
+        ${PROJECT_SOURCE_DIR}/include/structure/object.hpp
+        ${PROJECT_SOURCE_DIR}/include/structure/parameter.hpp
+        ${PROJECT_SOURCE_DIR}/include/structure/string.hpp
+        ${PROJECT_SOURCE_DIR}/include/structure/subckt.hpp
+        ${PROJECT_SOURCE_DIR}/include/structure/value.hpp
+        ${PROJECT_SOURCE_DIR}/include/structure/value_list.hpp
+        ${PROJECT_SOURCE_DIR}/include/structure/value_pair.hpp
+        ${PROJECT_SOURCE_DIR}/include/utility/logging.hpp
+        ${PROJECT_SOURCE_DIR}/include/utility/typename.hpp
+        ${PROJECT_SOURCE_DIR}/include/utility/utility.hpp
         README.md
     )
 endif()

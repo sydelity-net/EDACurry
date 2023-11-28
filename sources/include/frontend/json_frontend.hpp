@@ -7,21 +7,19 @@
 
 #pragma once
 
-namespace json
-{
-class jnode_t;
-} // namespace json
+#include <json/json.hpp>
+#include <memory>
 
 namespace edacurry
 {
 namespace structure
 {
-    class Object;
+class Object;
 } // namespace structure
 
 namespace frontend
 {
-    json::jnode_t &write(json::jnode_t &jnode, structure::Object *object);
+std::shared_ptr<edacurry::structure::Object> parse_json(const std::string &path);
 } // namespace frontend
 
 } // namespace edacurry

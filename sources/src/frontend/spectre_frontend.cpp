@@ -5,12 +5,21 @@
 ///  copy at http://opensource.org/licenses/MIT)
 
 #include "frontend/spectre_frontend.hpp"
+#include "utility/logging.hpp"
+#include "utility/utility.hpp"
+#include "classes.hpp"
+
+#include "antlr4parser/SPECTREParser.h"
+#include "antlr4parser/SPECTRELexer.h"
 
 namespace edacurry::frontend
 {
 
 SPECTREFrontend::SPECTREFrontend(antlr4::CommonTokenStream &_tokens)
-    : tokens(_tokens)
+    : tokens(_tokens),
+      _stack(),
+      _root(),
+      _factory()
 {
 }
 
@@ -662,6 +671,277 @@ antlrcpp::Any SPECTREFrontend::visitAnalysis_type(SPECTREParser::Analysis_typeCo
 antlrcpp::Any SPECTREFrontend::visitComponent_type(SPECTREParser::Component_typeContext *ctx)
 {
     return visitChildren(ctx);
+}
+
+// ============================================================================
+std::shared_ptr<structure::Object> SPECTREFrontend::back() const
+{
+    if (_stack.empty())
+        return nullptr;
+    return _stack.back();
+}
+
+void SPECTREFrontend::push(const std::shared_ptr<structure::Object> &node)
+{
+    if (node == nullptr)
+        _error("Executing push and receiving a NULL node!");
+    _stack.emplace_back(node);
+}
+
+std::shared_ptr<structure::Object> SPECTREFrontend::pop()
+{
+    auto node = this->back();
+    if (node == nullptr)
+        _error("Executing pop and receiving a NULL node!");
+    _stack.pop_back();
+    return node;
+}
+
+void SPECTREFrontend::add_to_parent(const std::shared_ptr<structure::Object> &node)
+{
+    auto parent = this->back();
+    // If there is no parent, it means that this node is the root of the tree.
+    if (parent == nullptr) {
+        _root = node;
+        return;
+    }
+
+    auto analysis = utility::to<structure::Analysis>(parent);
+    if (analysis) {
+        auto analysis_parameter = utility::to<structure::Parameter>(node);
+        if (analysis_parameter) {
+            analysis->parameters.push_back(analysis_parameter);
+        } else {
+            auto analysis_value = utility::to<structure::Value>(node);
+            if (analysis_value) {
+                analysis->parameters.push_back(
+                    _factory.parameter(nullptr, analysis_value, param_assign, false));
+            } else {
+                _error("Wrong item added to the object..\n"
+                       "(node:%s, parent:%s)",
+                       node->toString().c_str(), parent->toString().c_str());
+            }
+        }
+        return;
+    }
+
+    auto circuit = utility::to<structure::Circuit>(parent);
+    if (circuit) {
+        auto circuit_node = utility::to<structure::Node>(node);
+        if (circuit_node) {
+            circuit->nodes.push_back(circuit_node);
+        } else {
+            auto circuit_parameter = utility::to<structure::Parameter>(node);
+            if (circuit_parameter) {
+                circuit->parameters.push_back(circuit_parameter);
+            } else {
+                circuit->content.push_back(node);
+            }
+        }
+        return;
+    }
+
+    auto component = utility::to<structure::Component>(parent);
+    if (component) {
+        auto component_node = utility::to<structure::Node>(node);
+        if (component_node) {
+            component->nodes.push_back(component_node);
+        } else {
+            auto component_parameter = utility::to<structure::Parameter>(node);
+            if (component_parameter) {
+                component->parameters.push_back(component_parameter);
+            } else {
+                auto component_value = utility::to<structure::Value>(node);
+                if (component_value) {
+                    component->parameters.push_back(
+                        _factory.parameter(nullptr, component_value, param_assign, false));
+                } else {
+                    _error("Wrong item added to the object..\n"
+                           "(node:%s, parent:%s)",
+                           node->toString().c_str(),
+                           parent->toString().c_str());
+                }
+            }
+        }
+        return;
+    }
+
+    auto control_scope = utility::to<structure::ControlScope>(parent);
+    if (control_scope) {
+        auto control_scope_node = utility::to<structure::Node>(node);
+        if (control_scope_node) {
+            control_scope->nodes.push_back(control_scope_node);
+        } else {
+            auto control_parameter = utility::to<structure::Parameter>(node);
+            if (control_parameter) {
+                control_scope->parameters.push_back(control_parameter);
+            } else {
+                control_scope->content.push_back(node);
+            }
+        }
+        return;
+    }
+
+    auto control = utility::to<structure::Control>(parent);
+    if (control) {
+        auto control_parameter = utility::to<structure::Parameter>(node);
+        if (control_parameter)
+            control->parameters.push_back(control_parameter);
+        else {
+            _error("The parent is not meant to hold the given node..\n"
+                   "(node:%s, parent:%s)",
+                   node->toString().c_str(), parent->toString().c_str());
+        }
+        return;
+    }
+
+    auto value_list = utility::to<structure::ValueList>(parent);
+    if (value_list) {
+        value_list->values.push_back(utility::to<structure::Value>(node));
+        return;
+    }
+
+    auto value_pair = utility::to<structure::ValuePair>(parent);
+    if (value_pair) {
+        if (!value_pair->getFirst())
+            value_pair->setFirst(utility::to<structure::Value>(node));
+        else if (!value_pair->getSecond())
+            value_pair->setSecond(utility::to<structure::Value>(node));
+        else
+            _error("The parent has no space for the node..\n"
+                   "(node:%s, parent:%s)",
+                   node->toString().c_str(), parent->toString().c_str());
+        return;
+    }
+
+    auto expression_unary = utility::to<structure::ExpressionUnary>(parent);
+    if (expression_unary) {
+        if (!expression_unary->getValue())
+            expression_unary->setValue(utility::to<structure::Value>(node));
+        else
+            _error("The parent has no space for the node..\n"
+                   "(node:%s, parent:%s)",
+                   node->toString().c_str(), parent->toString().c_str());
+        return;
+    }
+
+    auto expression = utility::to<structure::Expression>(parent);
+    if (expression) {
+        if (!expression->getFirst())
+            expression->setFirst(utility::to<structure::Value>(node));
+        else if (!expression->getSecond())
+            expression->setSecond(utility::to<structure::Value>(node));
+        else
+            _error("The parent has no space for the node..\n"
+                   "(node:%s, parent:%s)",
+                   node->toString().c_str(), parent->toString().c_str());
+        return;
+    }
+
+    auto function_call = utility::to<structure::FunctionCall>(parent);
+    if (function_call) {
+        auto function_call_parameter = utility::to<structure::Parameter>(node);
+        if (function_call_parameter) {
+            function_call->parameters.push_back(function_call_parameter);
+        } else {
+            auto function_call_value = utility::to<structure::Value>(node);
+            if (function_call_value) {
+                function_call->parameters.push_back(
+                    _factory.parameter(nullptr, function_call_value, param_assign, false));
+            } else {
+                _error("Wrong item added to the object..\n"
+                       "(node:%s, parent:%s)",
+                       node->toString().c_str(), parent->toString().c_str());
+            }
+        }
+        return;
+    }
+
+    auto include = utility::to<structure::Include>(parent);
+    if (include) {
+        auto include_parameter = utility::to<structure::Parameter>(node);
+        if (include_parameter)
+            include->parameters.push_back(include_parameter);
+        else
+            _error("The parent is not meant to hold the given node..\n"
+                   "(node:%s, parent:%s)",
+                   node->toString().c_str(), parent->toString().c_str());
+        return;
+    }
+
+    auto library_def = utility::to<structure::LibraryDef>(parent);
+    if (library_def) {
+        library_def->content.push_back(node);
+        return;
+    }
+
+    auto model = utility::to<structure::Model>(parent);
+    if (model) {
+        auto model_parameter = utility::to<structure::Parameter>(node);
+        if (model_parameter) {
+            model->parameters.push_back(model_parameter);
+        } else {
+            _error("Wrong item added to the object..\n"
+                   "(node:%s, parent:%s)",
+                   node->toString().c_str(), parent->toString().c_str());
+        }
+        return;
+    }
+
+    auto parameter = utility::to<structure::Parameter>(parent);
+    if (parameter) {
+        if (!parameter->getLeft())
+            parameter->setLeft(utility::to<structure::Value>(node));
+        else if (!parameter->getRight())
+            parameter->setRight(utility::to<structure::Value>(node));
+        else
+            _error("The parent has no space for the node..\n"
+                   "(node:%s, parent:%s)",
+                   node->toString().c_str(), parent->toString().c_str());
+        return;
+    }
+
+    auto subckt = utility::to<structure::Subckt>(parent);
+    if (subckt) {
+        auto subckt_node = utility::to<structure::Node>(node);
+        if (subckt_node) {
+            subckt->nodes.push_back(subckt_node);
+        } else {
+            auto subckt_parameter = utility::to<structure::Parameter>(node);
+            if (subckt_parameter) {
+                subckt->parameters.push_back(subckt_parameter);
+            } else {
+                subckt->content.push_back(node);
+            }
+        }
+        return;
+    }
+}
+
+antlrcpp::Any SPECTREFrontend::advance_visit(antlr4::ParserRuleContext *ctx, const std::shared_ptr<structure::Object> &node)
+{
+    this->add_to_parent(node);
+    this->push(node);
+    auto result = visitChildren(ctx);
+    this->pop();
+    return result;
+}
+
+std::shared_ptr<edacurry::structure::Object> parse_spectre(const std::string &path)
+{
+    std::ifstream fileStream(path);
+    antlr4::ANTLRInputStream input(fileStream);
+    edacurry::SPECTRELexer lexer(&input);
+    antlr4::CommonTokenStream tokens(&lexer);
+    tokens.fill();
+    // Create the parser.
+    edacurry::SPECTREParser parser(&tokens);
+    // Create the frontend.
+    edacurry::frontend::SPECTREFrontend frontend(tokens);
+    // Parse the circuit.
+    parser.netlist()->accept(&frontend);
+    // Return the object.
+    return frontend.getRoot();
 }
 
 } // namespace edacurry::frontend

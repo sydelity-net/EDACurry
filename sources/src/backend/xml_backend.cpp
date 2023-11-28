@@ -354,4 +354,11 @@ int XmlBackend::visitValueList(const std::shared_ptr<structure::ValueList> &e)
     return 0;
 }
 
+std::string write_xml(const std::shared_ptr<structure::Object> &object)
+{
+    edacurry::backend::XmlBackend backend;
+    object->accept(&backend);
+    return backend.str();
+}
+
 } // namespace edacurry::backend

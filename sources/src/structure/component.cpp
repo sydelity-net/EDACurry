@@ -11,7 +11,11 @@
 namespace edacurry::structure
 {
 Component::Component(const std::string &name, const std::string &master)
-    : Object(), features::NamedObject(name),  nodes(this->weak_from_this()), parameters(this->weak_from_this()), _master(utility::trim(master))
+    : Object(),
+      features::NamedObject(name),
+      nodes(this->weak_from_this()),
+      parameters(this->weak_from_this()),
+      _master(utility::trim(master))
 {
     // Nothing to do.
 }

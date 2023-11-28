@@ -7,21 +7,19 @@
 
 #pragma once
 
-namespace json
-{
-class jnode_t;
-} // namespace json
+#include <json/json.hpp>
+#include <memory>
 
 namespace edacurry
 {
 namespace structure
 {
-    class Object;
+class Object;
 } // namespace structure
 
 namespace backend
 {
-    json::jnode_t &write(json::jnode_t &jnode, structure::Object *object);
+std::string write_json(const std::shared_ptr<structure::Object> &object);
 } // namespace backend
 
 } // namespace edacurry

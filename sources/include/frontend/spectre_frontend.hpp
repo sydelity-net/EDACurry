@@ -281,6 +281,39 @@ public:
     antlrcpp::Any visitAnalysis_type(SPECTREParser::Analysis_typeContext *ctx) override;
 
     antlrcpp::Any visitComponent_type(SPECTREParser::Component_typeContext *ctx) override;
+
+    std::shared_ptr<structure::Object> getRoot() const
+    {
+        return _root;
+    }
+
+private:
+    /// The
+    std::vector<std::shared_ptr<structure::Object> > _stack;
+    ///
+    std::shared_ptr<structure::Object> _root;
+    /// Factory item.
+    Factory _factory;
+
+    /// @brief
+    /// @return structure::Object*
+    std::shared_ptr<structure::Object> back() const;
+
+    /// @brief
+    /// @param node
+    void push(const std::shared_ptr<structure::Object> &node);
+
+    /// @brief
+    /// @return structure::Object*
+    std::shared_ptr<structure::Object> pop();
+
+    /// @brief
+    /// @param node
+    void add_to_parent(const std::shared_ptr<structure::Object> &node);
+
+    antlrcpp::Any advance_visit(antlr4::ParserRuleContext *ctx, const std::shared_ptr<structure::Object> &node);
 };
+
+std::shared_ptr<edacurry::structure::Object> parse_spectre(const std::string &path);
 
 } // namespace edacurry::frontend

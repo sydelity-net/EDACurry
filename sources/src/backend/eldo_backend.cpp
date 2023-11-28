@@ -335,4 +335,12 @@ int EldoBackend::visitValueList(const std::shared_ptr<structure::ValueList> &e)
     return 0;
 }
 
+
+std::string write_eldo(const std::shared_ptr<structure::Object> &object)
+{
+    edacurry::backend::EldoBackend backend;
+    object->accept(&backend);
+    return backend.str();
+}
+
 } // namespace edacurry::backend

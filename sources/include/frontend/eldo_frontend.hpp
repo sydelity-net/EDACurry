@@ -20,7 +20,10 @@ public:
     antlr4::CommonTokenStream &tokens;
 
     ELDOFrontend(antlr4::CommonTokenStream &_tokens)
-        : tokens(_tokens)
+        : tokens(_tokens),
+          _stack(),
+          _root(),
+          _factory()
     {
     }
 
@@ -395,9 +398,11 @@ private:
 
     /// @brief
     /// @param node
-    void add_to_parent(const std::shared_ptr<structure::Object>& node);
+    void add_to_parent(const std::shared_ptr<structure::Object> &node);
 
-    antlrcpp::Any advance_visit(antlr4::ParserRuleContext *ctx, const std::shared_ptr<structure::Object> & node);
+    antlrcpp::Any advance_visit(antlr4::ParserRuleContext *ctx, const std::shared_ptr<structure::Object> &node);
 };
+
+std::shared_ptr<edacurry::structure::Object> parse_eldo(const std::string &path);
 
 } // namespace edacurry::frontend

@@ -27,7 +27,6 @@ logger.addHandler(ch)
 # Import the EDACurry library.
 
 
-
 class Changes(Enum):
     NONE = 0
     EXTRA = 1
@@ -114,28 +113,6 @@ def compare(filepath1: str, filepath2: str):
             previous_type = handle_print(line, line_number, line_type, previous_type)
 
 
-def test_xml(inp: str, outp: str):
-    # Get the content.
-    print("Parsing `{}`".format(inp))
-    content = edacurry.parse_to_xml(inp)
-    # If required generate the output file.
-    print("Writing `{}`".format(outp))
-    with open(outp, "w") as outf:
-        outf.write(content)
-
-
-def test_eldo(inp: str, outp: str):
-    # Get the content.
-    print("Parsing `{}`".format(inp))
-    content = edacurry.parse_to_eldo(inp)
-    # If required generate the output file.
-    print("Writing `{}`".format(outp))
-    with open(outp, "w") as outf:
-        outf.write(content)
-    # Compare the two files.
-    compare(inp, outp)
-
-
 if not os.path.exists("eldo_result"):
     os.mkdir("eldo_result")
 
@@ -155,18 +132,61 @@ for i in range(1, len(sys.argv)):
             name, _ = os.path.splitext(filename)
             # Set the input path.
             inp = os.path.join(argument, filename)
-            # Parse to ELDO.
-            test_eldo(inp, os.path.join("eldo_result/", "{}.cir".format(name)))
-            # Parse to XML.
-            test_xml(inp, os.path.join("eldo_result/", "{}.xml".format(name)))
+            out_xml = os.path.join("eldo_result/", "{}.xml".format(name))
+            out_json = os.path.join("eldo_result/", "{}.json".format(name))
+            out_eldo = os.path.join("eldo_result/", "{}.cir".format(name))
+            # Get the content.
+            print("Parsing `{}`".format(inp))
+            root = edacurry.parse_eldo(inp)
+            # Write to XML.
+            xml_content = edacurry.write_xml(root)
+            # If required generate the output file.
+            print("Writing `{}`".format(out_xml))
+            with open(out_xml, "w") as outf:
+                outf.write(xml_content)
+            # Write to JSON.
+            json_content = edacurry.write_json(root)
+            # If required generate the output file.
+            print("Writing `{}`".format(out_json))
+            with open(out_json, "w") as outf:
+                outf.write(json_content)
+            # Write to ELDO.
+            eldo_content = edacurry.write_eldo(root)
+            # If required generate the output file.
+            print("Writing `{}`".format(out_eldo))
+            with open(out_eldo, "w") as outf:
+                outf.write(eldo_content)
+            # Compare the two files.
+            compare(inp, out_eldo)
+
     elif os.path.isfile(argument):
         # Get the basename.
         basename = os.path.basename(argument)
         # Get just the name.
         name, _ = os.path.splitext(basename)
-        # Parse to ELDO.
-        test_eldo(argument, os.path.join("eldo_result/", "{}.cir".format(name)))
-        # Parse to XML.
-        test_xml(argument, os.path.join("eldo_result/", "{}.xml".format(name)))
+        # Generate output names.
+        out_xml = os.path.join("eldo_result/", "{}.xml".format(name))
+        out_json = os.path.join("eldo_result/", "{}.json".format(name))
+        out_eldo = os.path.join("eldo_result/", "{}.cir".format(name))
+        # Write to XML.
+        xml_content = edacurry.write_xml(root)
+        # If required generate the output file.
+        print("Writing `{}`".format(out_xml))
+        with open(out_xml, "w") as outf:
+            outf.write(xml_content)
+        # Write to JSON.
+        json_content = edacurry.write_json(root)
+        # If required generate the output file.
+        print("Writing `{}`".format(out_json))
+        with open(out_json, "w") as outf:
+            outf.write(json_content)
+        # Write to ELDO.
+        eldo_content = edacurry.write_eldo(root)
+        # If required generate the output file.
+        print("Writing `{}`".format(out_eldo))
+        with open(out_eldo, "w") as outf:
+            outf.write(eldo_content)
+        # Compare the two files.
+        compare(inp, out_eldo)
     else:
         print("The argument `{}` is not valid!".format(argument))

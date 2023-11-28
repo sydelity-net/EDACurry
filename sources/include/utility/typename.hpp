@@ -9,7 +9,7 @@
 
 #include <string>
 
-namespace json
+namespace edacurry
 {
 
 template <typename T>
@@ -113,4 +113,4 @@ struct TypeName<long double> {
     }
 };
 
-} // namespace json
+} // namespace edacurry

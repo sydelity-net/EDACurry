@@ -11,7 +11,10 @@
 #include "antlr4parser/ELDOParser.h"
 #include "backend/eldo_backend.hpp"
 #include "backend/xml_backend.hpp"
+#include "backend/json_backend.hpp"
 #include "frontend/eldo_frontend.hpp"
+#include "frontend/json_frontend.hpp"
+#include "frontend/spectre_frontend.hpp"
 #include "structure/component.hpp"
 #include "structure/expression.hpp"
 #include "structure/function_call.hpp"
@@ -22,110 +25,11 @@
 #include "utility/logging.hpp"
 #include "utility/utility.hpp"
 
+#include <SPECTRELexer.h>
+#include <SPECTREParser.h>
 #include <json/json.hpp>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
-
-std::string parse_to_xml(const std::string &path)
-{
-    std::ifstream fileStream(path);
-    antlr4::ANTLRInputStream input(fileStream);
-    edacurry::ELDOLexer lexer(&input);
-    antlr4::CommonTokenStream tokens(&lexer);
-    tokens.fill();
-#if 0
-    for (size_t index = 0; index < tokens.size(); ++index) {
-        antlr4::Token *token = tokens.get(index);
-        std::cout << "Channel: " << token->getChannel() << "\n";
-        std::cout << " Type: " << token->getType() << "\n";
-        std::cout << " Hidden: ";
-        for (auto const &hidden : tokens.getHiddenTokensToLeft(index)) {
-            std::cout << "\n\tChannel: " << hidden->getChannel() << ", Type: " << hidden->getType() << "\n";
-        }
-        std::cout << token->getText() << "\n";
-    }
-#endif
-
-    edacurry::ELDOParser parser(&tokens);
-    edacurry::frontend::ELDOFrontend frontend(tokens);
-
-    // Parse the circuit.
-    parser.netlist()->accept(&frontend);
-
-    edacurry::backend::XmlBackend backend;
-    frontend.getRoot()->accept(&backend);
-    return backend.str();
-}
-
-std::string parse_to_eldo(const std::string &path)
-{
-    std::ifstream fileStream(path);
-    antlr4::ANTLRInputStream input(fileStream);
-    edacurry::ELDOLexer lexer(&input);
-    antlr4::CommonTokenStream tokens(&lexer);
-    tokens.fill();
-#if 0
-    for (size_t index = 0; index < tokens.size(); ++index) {
-        antlr4::Token *token = tokens.get(index);
-        std::cout << "Channel: " << token->getChannel() << "\n";
-        std::cout << " Type: " << token->getType() << "\n";
-        std::cout << " Hidden: ";
-        for (auto const &hidden : tokens.getHiddenTokensToLeft(index)) {
-            std::cout << "\n\tChannel: " << hidden->getChannel() << ", Type: " << hidden->getType() << "\n";
-        }
-        std::cout << token->getText() << "\n";
-    }
-#endif
-
-    edacurry::ELDOParser parser(&tokens);
-    edacurry::frontend::ELDOFrontend frontend(tokens);
-
-    // Parse the circuit.
-    parser.netlist()->accept(&frontend);
-
-    edacurry::backend::EldoBackend backend;
-    frontend.getRoot()->accept(&backend);
-    return backend.str();
-}
-
-#if 0
-void test_json(const std::string &path)
-{
-    std::ifstream fileStream(path);
-    antlr4::ANTLRInputStream input(fileStream);
-    edacurry::ELDOLexer lexer(&input);
-    antlr4::CommonTokenStream tokens(&lexer);
-    tokens.fill();
-
-    edacurry::ELDOParser parser(&tokens);
-
-    edacurry::frontend::ELDOFrontend frontend(tokens);
-
-    // Parse the circuit.
-    parser.netlist()->accept(&frontend);
-
-    auto output_root = frontend.getRoot();
-
-    json::jnode_t json_0;
-
-    json_0 << output_root;
-
-    json::parser::write_file("output.json", json_0, false);
-
-    json::jnode_t json_1 = json::parser::parse_file("output.json");
-
-    json_1 << input_root;
-
-    std::cout << std::string(80, '=') << "\n";
-    std::cout << json_0.to_string() << "\n";
-    std::cout << std::string(80, '=') << "\n";
-    std::cout << json_1.to_string() << "\n";
-    std::cout << std::string(80, '=') << "\n";
-
-    delete input_root;
-    delete output_root;
-}
-#endif
 
 namespace edacurry
 {
@@ -376,7 +280,7 @@ class PyObject : public edacurry::structure::Object {
 public:
     /// @brief Construct a new object.
     /// @param parent The parent of the object.
-    explicit PyObject(std::weak_ptr<edacurry::structure::Object> parent)
+    explicit PyObject(std::shared_ptr<edacurry::structure::Object> parent)
         : edacurry::structure::Object(parent)
     {
     }
@@ -460,8 +364,14 @@ PYBIND11_MODULE(edacurry, m)
     using namespace edacurry::structure;
 
     // ========================================================================
-    m.def("parse_to_xml", parse_to_xml);
-    m.def("parse_to_eldo", parse_to_eldo);
+    m.def("parse_eldo", edacurry::frontend::parse_eldo);
+    m.def("parse_spectre", edacurry::frontend::parse_spectre);
+    m.def("parse_json", edacurry::frontend::parse_json);
+    
+    m.def("write_eldo", edacurry::backend::write_eldo);
+    // m.def("write_spectre", edacurry::backend::write_spectre);
+    m.def("write_json", edacurry::backend::write_json);
+    m.def("write_xml", edacurry::backend::write_xml);
 
     // ========================================================================
     py::enum_<NetlistType>(m, "NetlistType", "All the supported languages.")
@@ -587,7 +497,7 @@ PYBIND11_MODULE(edacurry, m)
         .def("accept", &Object::accept, py::arg("visitor"), "Accepts a visitor and runs the visit starting from this object.")
         .def_property(
             "parent",
-            [](const std::shared_ptr<Object> &self) { return self->getParent().lock(); },
+            [](const std::shared_ptr<Object> &self) { return self->getParent(); },
             [](const std::shared_ptr<Object> &self, const std::shared_ptr<Object> &parent) { return self->setParent(parent); },
             "The parent of the object.");
 
@@ -875,7 +785,7 @@ PYBIND11_MODULE(edacurry, m)
         .def(
             py::init([](const std::string &name) {
                 auto _ptr = std::make_shared<structure::Analysis>(name);
-                _ptr->parameters.setOwner(_ptr->weak_from_this());
+                _ptr->parameters.setOwner(_ptr);
                 return _ptr;
             }),
             py::arg("name") = std::string(),

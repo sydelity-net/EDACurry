@@ -9,6 +9,9 @@
 #include "utility/utility.hpp"
 #include "classes.hpp"
 
+#include "antlr4parser/ELDOParser.h"
+#include "antlr4parser/ELDOLexer.h"
+
 using antlrcpp::Any;
 
 namespace edacurry::frontend
@@ -1743,7 +1746,7 @@ std::shared_ptr<structure::Object> ELDOFrontend::back() const
     return _stack.back();
 }
 
-void ELDOFrontend::push(const std::shared_ptr<structure::Object>& node)
+void ELDOFrontend::push(const std::shared_ptr<structure::Object> &node)
 {
     if (node == nullptr)
         _error("Executing push and receiving a NULL node!");
@@ -1759,7 +1762,7 @@ std::shared_ptr<structure::Object> ELDOFrontend::pop()
     return node;
 }
 
-void ELDOFrontend::add_to_parent(const std::shared_ptr<structure::Object>& node)
+void ELDOFrontend::add_to_parent(const std::shared_ptr<structure::Object> &node)
 {
     auto parent = this->back();
     // If there is no parent, it means that this node is the root of the tree.
@@ -1980,7 +1983,7 @@ void ELDOFrontend::add_to_parent(const std::shared_ptr<structure::Object>& node)
     }
 }
 
-Any ELDOFrontend::advance_visit(antlr4::ParserRuleContext *ctx, const std::shared_ptr<structure::Object>& node)
+Any ELDOFrontend::advance_visit(antlr4::ParserRuleContext *ctx, const std::shared_ptr<structure::Object> &node)
 {
     this->add_to_parent(node);
     this->push(node);
@@ -2147,6 +2150,23 @@ std::string to_string(ELDOParser::NodeContext *ctx)
             _error("Cannot type node context element.");
     }
     return name.substr(0, name.size() - 1);
+}
+
+std::shared_ptr<edacurry::structure::Object> parse_eldo(const std::string &path)
+{
+    std::ifstream fileStream(path);
+    antlr4::ANTLRInputStream input(fileStream);
+    edacurry::ELDOLexer lexer(&input);
+    antlr4::CommonTokenStream tokens(&lexer);
+    tokens.fill();
+    // Create the parser.
+    edacurry::ELDOParser parser(&tokens);
+    // Create the frontend.
+    edacurry::frontend::ELDOFrontend frontend(tokens);
+    // Parse the circuit.
+    parser.netlist()->accept(&frontend);
+    // Return the object.
+    return frontend.getRoot();
 }
 
 } // namespace edacurry::frontend

@@ -47,4 +47,6 @@ private:
     IndentedStream ss;
 };
 
+std::string write_xml(const std::shared_ptr<structure::Object> &object);
+
 } // namespace edacurry::backend
