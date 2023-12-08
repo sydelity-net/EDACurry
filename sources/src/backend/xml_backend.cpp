@@ -118,10 +118,11 @@ int XmlBackend::visitExpressionUnary(const std::shared_ptr<structure::Expression
     ss << "<expression_unary type='" << operator_to_plain_string(e->getOperator()) << "'>\n"
        << ind_increase;
 
-    if (e->getValue())
+    if (e->getValue()) {
         e->getValue()->accept(this);
-    else
+    } else {
         ss << "NULL\n";
+    }
 
     ss << ind_decrease << "</expression_unary>\n";
     return 0;
@@ -134,18 +135,20 @@ int XmlBackend::visitExpression(const std::shared_ptr<structure::Expression> &e)
 
     ss << "<value1>\n"
        << ind_increase;
-    if (e->getFirst())
+    if (e->getFirst()) {
         e->getFirst()->accept(this);
-    else
+    } else {
         ss << "NULL\n";
+    }
     ss << ind_decrease << "</value1>\n";
 
     ss << "<value2>\n"
        << ind_increase;
-    if (e->getSecond())
+    if (e->getSecond()) {
         e->getSecond()->accept(this);
-    else
+    } else {
         ss << "NULL\n";
+    }
     ss << ind_decrease << "</value2>\n";
 
     ss << ind_decrease << "</expression>\n";
@@ -235,8 +238,9 @@ int XmlBackend::visitNode(const std::shared_ptr<structure::Node> &e)
 int XmlBackend::visitUnsigned(const std::shared_ptr<structure::Number<unsigned>> &e)
 {
     ss << "<number value='" << e->getValue() << "'";
-    if (!e->getUnit().empty())
+    if (!e->getUnit().empty()) {
         ss << "unit = '" << e->getUnit() << "'";
+    }
     ss << "/>\n";
     return 0;
 }
@@ -244,8 +248,9 @@ int XmlBackend::visitUnsigned(const std::shared_ptr<structure::Number<unsigned>>
 int XmlBackend::visitInt(const std::shared_ptr<structure::Number<int>> &e)
 {
     ss << "<number value='" << e->getValue() << "'";
-    if (!e->getUnit().empty())
+    if (!e->getUnit().empty()) {
         ss << "unit = '" << e->getUnit() << "'";
+    }
     ss << "/>\n";
     return 0;
 }
@@ -253,8 +258,9 @@ int XmlBackend::visitInt(const std::shared_ptr<structure::Number<int>> &e)
 int XmlBackend::visitDouble(const std::shared_ptr<structure::Number<double>> &e)
 {
     ss << "<number value='" << e->getValue() << "'";
-    if (!e->getUnit().empty())
+    if (!e->getUnit().empty()) {
         ss << "unit = '" << e->getUnit() << "'";
+    }
     ss << "/>\n";
     return 0;
 }
@@ -267,17 +273,19 @@ int XmlBackend::visitParameter(const std::shared_ptr<structure::Parameter> &e)
        << ind_increase;
     ss << "<left>\n"
        << ind_increase;
-    if (e->getLeft())
+    if (e->getLeft()) {
         e->getLeft()->accept(this);
-    else
+    } else {
         ss << "NULL\n";
+    }
     ss << ind_decrease << "</left>\n";
     ss << "<right>\n"
        << ind_increase;
-    if (e->getRight())
+    if (e->getRight()) {
         e->getRight()->accept(this);
-    else
+    } else {
         ss << "NULL\n";
+    }
     ss << ind_decrease << "</right>\n";
     ss << ind_decrease << "</parameter>\n";
     return 0;
@@ -320,18 +328,20 @@ int XmlBackend::visitValuePair(const std::shared_ptr<structure::ValuePair> &e)
 
     ss << "<first>\n"
        << ind_increase;
-    if (e->getFirst())
+    if (e->getFirst()) {
         e->getFirst()->accept(this);
-    else
+    } else {
         ss << "NULL\n";
+    }
     ss << ind_decrease << "</first>\n";
 
     ss << "<second>\n"
        << ind_increase;
-    if (e->getSecond())
+    if (e->getSecond()) {
         e->getSecond()->accept(this);
-    else
+    } else {
         ss << "NULL\n";
+    }
     ss << ind_decrease << "</second>\n";
 
     ss << ind_decrease << "</pair>\n";

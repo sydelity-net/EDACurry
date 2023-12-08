@@ -5,12 +5,11 @@
 ///  copy at http://opensource.org/licenses/MIT)
 
 #include "frontend/eldo_frontend.hpp"
+#include "antlr4parser/ELDOLexer.h"
+#include "antlr4parser/ELDOParser.h"
+#include "classes.hpp"
 #include "utility/logging.hpp"
 #include "utility/utility.hpp"
-#include "classes.hpp"
-
-#include "antlr4parser/ELDOParser.h"
-#include "antlr4parser/ELDOLexer.h"
 
 using antlrcpp::Any;
 
@@ -111,13 +110,15 @@ Any ELDOFrontend::visitLibrary_name(ELDOParser::Library_nameContext *ctx)
 {
     auto library = utility::to<structure::Library>(this->back());
     if (library) {
-        if (ctx->ID())
+        if (ctx->ID()) {
             library->setName(ctx->ID()->toString());
+        }
     }
     auto library_def = utility::to<structure::LibraryDef>(this->back());
     if (library_def) {
-        if (ctx->ID())
+        if (ctx->ID()) {
             library_def->setName(ctx->ID()->toString());
+        }
     }
     return visitChildren(ctx);
 }
@@ -150,8 +151,9 @@ Any ELDOFrontend::visitSubckt(ELDOParser::SubcktContext *ctx)
 Any ELDOFrontend::visitSubckt_header(ELDOParser::Subckt_headerContext *ctx)
 {
     auto subckt = utility::to_check<structure::Subckt>(this->back());
-    if (ctx->ID())
+    if (ctx->ID()) {
         subckt->setName(ctx->ID()->toString());
+    }
     return visitChildren(ctx);
 }
 
@@ -585,7 +587,7 @@ Any ELDOFrontend::visitOp_selective(ELDOParser::Op_selectiveContext *ctx)
     // Set the name.
     analysis->setName("op_selective");
     size_t id_index = 0, id_total = ctx->ID().size();
-    for (auto expression : ctx->expression()) {
+    for (auto *expression : ctx->expression()) {
         // [KEYWORD]
         if (id_index++ < id_total) {
             analysis->parameters.push_back(
@@ -876,8 +878,9 @@ Any ELDOFrontend::visitTran_parameterized(ELDOParser::Tran_parameterizedContext 
             _factory.parameter(_factory.identifier("Tn"),
                                nullptr, param_assign, true));
     }
-    if (ctx->parameter_list())
+    if (ctx->parameter_list()) {
         return this->visitChildren(ctx->parameter_list());
+    }
     return 0;
 }
 
@@ -923,32 +926,36 @@ Any ELDOFrontend::visitModel(ELDOParser::ModelContext *ctx)
 Any ELDOFrontend::visitModel_lib(ELDOParser::Model_libContext *ctx)
 {
     auto model = utility::to_check<structure::Model>(this->back());
-    if (ctx->ID())
+    if (ctx->ID()) {
         model->setLibrary(ctx->ID()->toString());
+    }
     return visitChildren(ctx);
 }
 
 Any ELDOFrontend::visitModel_name(ELDOParser::Model_nameContext *ctx)
 {
     auto model = utility::to_check<structure::Model>(this->back());
-    if (ctx->ID())
+    if (ctx->ID()) {
         model->setName(ctx->ID()->toString());
+    }
     return visitChildren(ctx);
 }
 
 Any ELDOFrontend::visitModel_master(ELDOParser::Model_masterContext *ctx)
 {
     auto model = utility::to_check<structure::Model>(this->back());
-    if (ctx->ID())
+    if (ctx->ID()) {
         model->setMaster(ctx->ID()->toString());
+    }
     return visitChildren(ctx);
 }
 
 Any ELDOFrontend::visitModel_lib_type(ELDOParser::Model_lib_typeContext *ctx)
 {
     auto model = utility::to_check<structure::Model>(this->back());
-    if (ctx->ID())
+    if (ctx->ID()) {
         model->setLibraryType(ctx->ID()->toString());
+    }
     return visitChildren(ctx);
 }
 
@@ -1074,7 +1081,7 @@ Any ELDOFrontend::visitChrent_pair(ELDOParser::Chrent_pairContext *ctx)
     auto ctrl = utility::to_check<structure::Control>(this->back());
     this->add_to_parent(
         _factory.parameter(
-            nullptr, 
+            nullptr,
             _factory.valuePair(to_number<double>(ctx->NUMBER(0)), to_number<double>(ctx->NUMBER(1))),
             param_assign, true));
     return visitChildren(ctx);
@@ -1138,7 +1145,7 @@ Any ELDOFrontend::visitFfile_storage_format(ELDOParser::Ffile_storage_formatCont
 
 Any ELDOFrontend::visitProbe(ELDOParser::ProbeContext *ctx)
 {
-    auto ctrl =_factory.control("", ctrl_probe);
+    auto ctrl = _factory.control("", ctrl_probe);
     ctrl->parameters.push_back(_factory.parameter(nullptr, _factory.identifier(ctx->ID()->toString()), param_assign, false));
     return this->advance_visit(ctx, ctrl);
 }
@@ -1315,8 +1322,9 @@ Any ELDOFrontend::visitComponent_value(ELDOParser::Component_valueContext *ctx)
 
 Any ELDOFrontend::visitComponent_parameter_list(ELDOParser::Component_parameter_listContext *ctx)
 {
-    if (ctx->PARAM_LIST_START())
+    if (ctx->PARAM_LIST_START()) {
         this->add_to_parent(_factory.parameter(nullptr, _factory.identifier(ctx->PARAM_LIST_START()->toString()), param_assign, false));
+    }
     return visitChildren(ctx);
 }
 
@@ -1327,36 +1335,41 @@ Any ELDOFrontend::visitComponent_analysis(ELDOParser::Component_analysisContext 
 
 Any ELDOFrontend::visitComponent_positional_keywork(ELDOParser::Component_positional_keyworkContext *ctx)
 {
-    if (ctx->NOISE())
+    if (ctx->NOISE()) {
         this->add_to_parent(_factory.parameter(nullptr, _factory.identifier(ctx->NOISE()->toString()), param_assign, false));
+    }
     return visitChildren(ctx);
 }
 
 Any ELDOFrontend::visitComponent_pin_list(ELDOParser::Component_pin_listContext *ctx)
 {
-    if (ctx->PIN_LIST_START())
+    if (ctx->PIN_LIST_START()) {
         this->add_to_parent(_factory.parameter(nullptr, _factory.identifier(ctx->PIN_LIST_START()->toString()), param_assign, false));
+    }
     return visitChildren(ctx);
 }
 
 Any ELDOFrontend::visitComponent_port_list(ELDOParser::Component_port_listContext *ctx)
 {
-    if (ctx->PORT_LIST_START())
+    if (ctx->PORT_LIST_START()) {
         this->add_to_parent(_factory.parameter(nullptr, _factory.identifier(ctx->PORT_LIST_START()->toString()), param_assign, false));
+    }
     return visitChildren(ctx);
 }
 
 Any ELDOFrontend::visitComponent_net_list(ELDOParser::Component_net_listContext *ctx)
 {
-    if (ctx->NET_LIST_START())
+    if (ctx->NET_LIST_START()) {
         this->add_to_parent(_factory.parameter(nullptr, _factory.identifier(ctx->NET_LIST_START()->toString()), param_assign, false));
+    }
     return visitChildren(ctx);
 }
 
 Any ELDOFrontend::visitComponent_coupling_list(ELDOParser::Component_coupling_listContext *ctx)
 {
-    if (ctx->COUPLING_LIST_START())
+    if (ctx->COUPLING_LIST_START()) {
         this->add_to_parent(_factory.parameter(nullptr, _factory.identifier(ctx->COUPLING_LIST_START()->toString()), param_assign, false));
+    }
     return visitChildren(ctx);
 }
 
@@ -1375,20 +1388,19 @@ Any ELDOFrontend::visitComponent_value_list(ELDOParser::Component_value_listCont
 {
     std::string name;
     Any result;
-    if (ctx->PULSE())
+    if (ctx->PULSE()) {
         name = ctx->PULSE()->toString();
-    else if (ctx->SIN())
+    } else if (ctx->SIN()) {
         name = ctx->SIN()->toString();
-    else if (ctx->SFFM())
+    } else if (ctx->SFFM()) {
         name = ctx->SFFM()->toString();
-    else if (ctx->PULSE())
-        name = ctx->PULSE()->toString();
-    else if (ctx->PWL())
+    } else if (ctx->PWL()) {
         name = ctx->PWL()->toString();
-    else if (ctx->EXP())
+    } else if (ctx->EXP()) {
         name = ctx->EXP()->toString();
-    else
+    } else {
         std::cerr << "Cannot identify the type of value list.\n";
+    }
     auto table_list = _factory.valueList(dlm_round);
     this->push(table_list);
     for (size_t i = 0; i < ctx->expression().size(); ++i) {
@@ -1571,8 +1583,9 @@ Any ELDOFrontend::visitSw(ELDOParser::SwContext *ctx)
 {
     auto component = utility::to_check<structure::Component>(this->back());
     component->setName(ctx->SW()->toString());
-    if (ctx->ID())
+    if (ctx->ID()) {
         component->setMaster(ctx->ID()->toString());
+    }
     return visitChildren(ctx);
 }
 
@@ -1580,24 +1593,30 @@ Any ELDOFrontend::visitOperational_amplifier(ELDOParser::Operational_amplifierCo
 {
     auto component = utility::to_check<structure::Component>(this->back());
     component->setName(ctx->OPA()->toString());
-    if (ctx->ID())
+    if (ctx->ID()) {
         component->setMaster(ctx->ID()->toString());
+    }
     return visitChildren(ctx);
 }
 
 Any ELDOFrontend::visitTwo_input_gate(ELDOParser::Two_input_gateContext *ctx)
 {
     auto component = utility::to_check<structure::Component>(this->back());
-    if (ctx->DIG_NAND())
+    if (ctx->DIG_NAND()) {
         component->setName(ctx->DIG_NAND()->toString());
-    if (ctx->DIG_AND())
+    }
+    if (ctx->DIG_AND()) {
         component->setName(ctx->DIG_AND()->toString());
-    if (ctx->DIG_OR())
+    }
+    if (ctx->DIG_OR()) {
         component->setName(ctx->DIG_OR()->toString());
-    if (ctx->DIG_NOR())
+    }
+    if (ctx->DIG_NOR()) {
         component->setName(ctx->DIG_NOR()->toString());
-    if (ctx->DIG_XOR())
+    }
+    if (ctx->DIG_XOR()) {
         component->setName(ctx->DIG_XOR()->toString());
+    }
     const auto n_ids = ctx->ID().size();
     if (n_ids == 1) {
         component->setMaster(ctx->ID(0)->toString());
@@ -1610,8 +1629,9 @@ Any ELDOFrontend::visitTwo_input_gate(ELDOParser::Two_input_gateContext *ctx)
             _factory.parameter(
                 _factory.identifier("REF2"),
                 _factory.string(ctx->ID(1)->toString()), param_assign, true));
-        if (n_ids == 3)
+        if (n_ids == 3) {
             component->setMaster(ctx->ID(2)->toString());
+}
     }
     return visitChildren(ctx);
 }
@@ -1741,23 +1761,26 @@ Any ELDOFrontend::visitFilepath_element(ELDOParser::Filepath_elementContext *ctx
 // ============================================================================
 std::shared_ptr<structure::Object> ELDOFrontend::back() const
 {
-    if (_stack.empty())
+    if (_stack.empty()) {
         return nullptr;
+    }
     return _stack.back();
 }
 
 void ELDOFrontend::push(const std::shared_ptr<structure::Object> &node)
 {
-    if (node == nullptr)
+    if (node == nullptr) {
         _error("Executing push and receiving a NULL node!");
+    }
     _stack.emplace_back(node);
 }
 
 std::shared_ptr<structure::Object> ELDOFrontend::pop()
 {
     auto node = this->back();
-    if (node == nullptr)
+    if (node == nullptr) {
         _error("Executing pop and receiving a NULL node!");
+    }
     _stack.pop_back();
     return node;
 }
@@ -1850,9 +1873,9 @@ void ELDOFrontend::add_to_parent(const std::shared_ptr<structure::Object> &node)
     auto control = utility::to<structure::Control>(parent);
     if (control) {
         auto control_parameter = utility::to<structure::Parameter>(node);
-        if (control_parameter)
+        if (control_parameter) {
             control->parameters.push_back(control_parameter);
-        else {
+        } else {
             _error("The parent is not meant to hold the given node..\n"
                    "(node:%s, parent:%s)",
                    node->toString().c_str(), parent->toString().c_str());
@@ -1868,38 +1891,41 @@ void ELDOFrontend::add_to_parent(const std::shared_ptr<structure::Object> &node)
 
     auto value_pair = utility::to<structure::ValuePair>(parent);
     if (value_pair) {
-        if (!value_pair->getFirst())
+        if (!value_pair->getFirst()) {
             value_pair->setFirst(utility::to<structure::Value>(node));
-        else if (!value_pair->getSecond())
+        } else if (!value_pair->getSecond()) {
             value_pair->setSecond(utility::to<structure::Value>(node));
-        else
+        } else {
             _error("The parent has no space for the node..\n"
                    "(node:%s, parent:%s)",
                    node->toString().c_str(), parent->toString().c_str());
+}
         return;
     }
 
     auto expression_unary = utility::to<structure::ExpressionUnary>(parent);
     if (expression_unary) {
-        if (!expression_unary->getValue())
+        if (!expression_unary->getValue()) {
             expression_unary->setValue(utility::to<structure::Value>(node));
-        else
+        } else {
             _error("The parent has no space for the node..\n"
                    "(node:%s, parent:%s)",
                    node->toString().c_str(), parent->toString().c_str());
+}
         return;
     }
 
     auto expression = utility::to<structure::Expression>(parent);
     if (expression) {
-        if (!expression->getFirst())
+        if (!expression->getFirst()) {
             expression->setFirst(utility::to<structure::Value>(node));
-        else if (!expression->getSecond())
+        } else if (!expression->getSecond()) {
             expression->setSecond(utility::to<structure::Value>(node));
-        else
+        } else {
             _error("The parent has no space for the node..\n"
                    "(node:%s, parent:%s)",
                    node->toString().c_str(), parent->toString().c_str());
+}
         return;
     }
 
@@ -1925,12 +1951,13 @@ void ELDOFrontend::add_to_parent(const std::shared_ptr<structure::Object> &node)
     auto include = utility::to<structure::Include>(parent);
     if (include) {
         auto include_parameter = utility::to<structure::Parameter>(node);
-        if (include_parameter)
+        if (include_parameter) {
             include->parameters.push_back(include_parameter);
-        else
+        } else {
             _error("The parent is not meant to hold the given node..\n"
                    "(node:%s, parent:%s)",
                    node->toString().c_str(), parent->toString().c_str());
+}
         return;
     }
 
@@ -1955,14 +1982,15 @@ void ELDOFrontend::add_to_parent(const std::shared_ptr<structure::Object> &node)
 
     auto parameter = utility::to<structure::Parameter>(parent);
     if (parameter) {
-        if (!parameter->getLeft())
+        if (!parameter->getLeft()) {
             parameter->setLeft(utility::to<structure::Value>(node));
-        else if (!parameter->getRight())
+        } else if (!parameter->getRight()) {
             parameter->setRight(utility::to<structure::Value>(node));
-        else
+        } else {
             _error("The parent has no space for the node..\n"
                    "(node:%s, parent:%s)",
                    node->toString().c_str(), parent->toString().c_str());
+}
         return;
     }
 
@@ -1995,40 +2023,52 @@ Any ELDOFrontend::advance_visit(antlr4::ParserRuleContext *ctx, const std::share
 // ============================================================================
 std::string to_string(ELDOParser::Filepath_elementContext *ctx)
 {
-    if (ctx == nullptr)
+    if (ctx == nullptr) {
         return "";
-    if (ctx->ID())
+}
+    if (ctx->ID()) {
         return ctx->ID()->toString() + to_string(ctx->filepath_element());
-    if (ctx->STRING())
+}
+    if (ctx->STRING()) {
         return ctx->STRING()->toString() + to_string(ctx->filepath_element());
-    if (!ctx->APEX().empty())
+}
+    if (!ctx->APEX().empty()) {
         return to_string(ctx->filepath_element());
-    if (ctx->SLASH())
+}
+    if (ctx->SLASH()) {
         return ctx->SLASH()->toString() + to_string(ctx->filepath_element());
-    if (ctx->DOT())
+}
+    if (ctx->DOT()) {
         return ctx->DOT()->toString() + to_string(ctx->filepath_element());
-    if (ctx->MINUS())
+}
+    if (ctx->MINUS()) {
         return ctx->MINUS()->toString() + to_string(ctx->filepath_element());
-    if (ctx->DOLLAR())
+}
+    if (ctx->DOLLAR()) {
         return ctx->DOLLAR()->toString() + to_string(ctx->filepath_element());
+}
     return to_string(ctx->filepath_element());
 }
 
 std::string to_string(ELDOParser::FilepathContext *ctx)
 {
-    if (ctx == nullptr)
+    if (ctx == nullptr) {
         return "";
+}
     return to_string(ctx->filepath_element());
 }
 
 std::string to_string(ELDOParser::Expression_atomContext *ctx)
 {
-    if (ctx->ID())
+    if (ctx->ID()) {
         return ctx->ID()->toString();
-    if (ctx->PERCENTAGE())
+}
+    if (ctx->PERCENTAGE()) {
         return ctx->PERCENTAGE()->toString();
-    if (ctx->STRING())
+}
+    if (ctx->STRING()) {
         return ctx->STRING()->toString();
+}
     _error("Cannot type expression variable!");
     return "";
 }
@@ -2038,42 +2078,51 @@ std::string to_string(const std::vector<antlr4::tree::TerminalNode *> &ctx)
     std::string s;
     for (size_t i = 0; i < ctx.size(); ++i) {
         s += ctx[i]->toString();
-        if (i < (ctx.size() - 1))
+        if (i < (ctx.size() - 1)) {
             s += ' ';
+}
     }
     return s;
 }
 
 DelimiterType to_delimiter(ELDOParser::Expression_listContext *ctx)
 {
-    if (ctx->OPEN_ROUND())
+    if (ctx->OPEN_ROUND()) {
         return dlm_round;
-    if (ctx->OPEN_SQUARE())
+}
+    if (ctx->OPEN_SQUARE()) {
         return dlm_square;
-    if (ctx->OPEN_CURLY())
+}
+    if (ctx->OPEN_CURLY()) {
         return dlm_curly;
+}
     _error("Cannot type delimiter!");
     return dlm_none;
 }
 
 DelimiterType to_delimiter(ELDOParser::Expression_function_callContext *ctx)
 {
-    if (ctx->OPEN_ROUND())
+    if (ctx->OPEN_ROUND()) {
         return dlm_round;
-    if (ctx->OPEN_SQUARE())
+}
+    if (ctx->OPEN_SQUARE()) {
         return dlm_square;
-    if (ctx->OPEN_CURLY())
+}
+    if (ctx->OPEN_CURLY()) {
         return dlm_curly;
+}
     _error("Cannot type delimiter!");
     return dlm_none;
 }
 
 Operator to_operator(ELDOParser::Expression_unaryContext *ctx)
 {
-    if (ctx->PLUS())
+    if (ctx->PLUS()) {
         return op_plus;
-    if (ctx->MINUS())
+}
+    if (ctx->MINUS()) {
         return op_minus;
+}
     _error("Cannot type operator of unary operation!");
     return op_none;
 }
@@ -2092,48 +2141,27 @@ Operator to_operator(ELDOParser::Expression_operatorContext *ctx)
     // | BITWISE_SHIFT_LEFT | BITWISE_SHIFT_RIGHT
     // | POWER_OPERATOR | CARET
     // | PERCENT
-    if (ctx->EQUAL())
-        return op_assign;
-    if (ctx->PLUS())
-        return op_plus;
-    if (ctx->MINUS())
-        return op_minus;
-    if (ctx->STAR())
-        return op_mult;
-    if (ctx->SLASH())
-        return op_div;
-    if (ctx->LOGIC_AND())
-        return op_and;
-    if (ctx->LOGIC_BITWISE_AND())
-        return op_band;
-    if (ctx->LOGIC_OR())
-        return op_or;
-    if (ctx->LOGIC_BITWISE_OR())
-        return op_bor;
-    if (ctx->LOGIC_EQUAL())
-        return op_eq;
-    if (ctx->LOGIC_NOT_EQUAL())
-        return op_neq;
-    if (ctx->LOGIC_XOR())
-        return op_xor;
-    if (ctx->LESS_THAN())
-        return op_lt;
-    if (ctx->LESS_THAN_EQUAL())
-        return op_le;
-    if (ctx->GREATER_THAN())
-        return op_lt;
-    if (ctx->GREATER_THAN_EQUAL())
-        return op_ge;
-    if (ctx->EXCLAMATION_MARK())
-        return op_not;
-    if (ctx->BITWISE_SHIFT_LEFT())
-        return op_bsl;
-    if (ctx->BITWISE_SHIFT_RIGHT())
-        return op_bsr;
-    if (ctx->POWER_OPERATOR() || ctx->CARET())
-        return op_pow;
-    if (ctx->PERCENT())
-        return op_mod;
+    if (ctx->EQUAL()) {       return op_assign;}
+    if (ctx->PLUS()) {       return op_plus;}
+    if (ctx->MINUS()) {       return op_minus;}
+    if (ctx->STAR()) {       return op_mult;}
+    if (ctx->SLASH()) {       return op_div;}
+    if (ctx->LOGIC_AND()) {       return op_and;}
+    if (ctx->LOGIC_BITWISE_AND()) {       return op_band;}
+    if (ctx->LOGIC_OR()) {       return op_or;}
+    if (ctx->LOGIC_BITWISE_OR()) {       return op_bor;}
+    if (ctx->LOGIC_EQUAL()) {       return op_eq;}
+    if (ctx->LOGIC_NOT_EQUAL()) {       return op_neq;}
+    if (ctx->LOGIC_XOR()) {       return op_xor;}
+    if (ctx->LESS_THAN()) {       return op_lt;}
+    if (ctx->LESS_THAN_EQUAL()) {       return op_le;}
+    if (ctx->GREATER_THAN()) {       return op_lt;}
+    if (ctx->GREATER_THAN_EQUAL()) {       return op_ge;}
+    if (ctx->EXCLAMATION_MARK()) {       return op_not;}
+    if (ctx->BITWISE_SHIFT_LEFT()) {       return op_bsl;}
+    if (ctx->BITWISE_SHIFT_RIGHT()) {       return op_bsr;}
+    if (ctx->POWER_OPERATOR() || ctx->CARET())       { return op_pow;}
+    if (ctx->PERCENT()){        return op_mod;}
     _error("Cannot type operator of binary operation!");
     return op_none;
 }
@@ -2143,11 +2171,11 @@ std::string to_string(ELDOParser::NodeContext *ctx)
     std::string name;
     for (ELDOParser::NodeContext *it = ctx; it; it = ctx->node()) {
         if (it->NUMBER())
-            name += it->NUMBER()->toString() + ".";
+            {name += it->NUMBER()->toString() + ".";}
         else if (it->ID())
-            name += it->ID()->toString() + ".";
+            {name += it->ID()->toString() + ".";}
         else
-            _error("Cannot type node context element.");
+            {_error("Cannot type node context element.");}
     }
     return name.substr(0, name.size() - 1);
 }

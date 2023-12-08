@@ -69,8 +69,11 @@ int EldoBackend::visitComponent(const std::shared_ptr<structure::Component> &e)
         }
     }
 
-    if (!e->getMaster().empty())
-        ss << ' ' << e->getMaster();
+    if (!e->getMaster().empty()) {
+        {
+            ss << ' ' << e->getMaster();
+        }
+    }
 
     if (e->parameters) {
         for (const auto &parameter : e->parameters) {
@@ -119,8 +122,11 @@ int EldoBackend::visitControl(const std::shared_ptr<structure::Control> &e)
         ss << ".meas";
     }
 
-    if (!e->getName().empty())
-        ss << " " << e->getName();
+    if (!e->getName().empty()) {
+        {
+            ss << " " << e->getName();
+        }
+    }
     for (const auto &parameter : e->parameters) {
         ss << ' ';
         parameter->accept(this);
@@ -159,8 +165,9 @@ int EldoBackend::visitFunctionCall(const std::shared_ptr<structure::FunctionCall
         size_t size = e->parameters.size(), i = 0;
         for (const auto &parameter : e->parameters) {
             parameter->accept(this);
-            if (i++ < (size - 1))
+            if (i++ < (size - 1)) {
                 ss << ", ";
+            }
         }
     }
     ss << ')';
@@ -169,8 +176,9 @@ int EldoBackend::visitFunctionCall(const std::shared_ptr<structure::FunctionCall
 
 int EldoBackend::visitIdentifier(const std::shared_ptr<structure::Identifier> &e)
 {
-    if (!e->getName().empty())
+    if (!e->getName().empty()) {
         ss << e->getName();
+    }
     return 0;
 }
 
@@ -210,40 +218,47 @@ int EldoBackend::visitNode(const std::shared_ptr<structure::Node> &e)
 int EldoBackend::visitUnsigned(const std::shared_ptr<structure::Number<unsigned>> &e)
 {
     ss << e->getValue();
-    if (!e->getUnit().empty())
+    if (!e->getUnit().empty()) {
         ss << e->getUnit();
+    }
     return 0;
 }
 
 int EldoBackend::visitInt(const std::shared_ptr<structure::Number<int>> &e)
 {
     ss << e->getValue();
-    if (!e->getUnit().empty())
+    if (!e->getUnit().empty()) {
         ss << e->getUnit();
+    }
     return 0;
 }
 
 int EldoBackend::visitDouble(const std::shared_ptr<structure::Number<double>> &e)
 {
     ss << e->getValue();
-    if (!e->getUnit().empty())
+    if (!e->getUnit().empty()) {
         ss << e->getUnit();
+    }
     return 0;
 }
 
 int EldoBackend::visitParameter(const std::shared_ptr<structure::Parameter> &e)
 {
     if ((e->getType() == param_assign) || (e->getType() == param_arithmetic)) {
-        if (e->getLeft() && !e->getHideName())
+        if (e->getLeft() && !e->getHideName()) {
             e->getLeft()->accept(this);
+        }
         if (e->getRight()) {
-            if (e->getLeft() && !e->getHideName())
+            if (e->getLeft() && !e->getHideName()) {
                 ss << '=';
-            if (e->getType() == param_arithmetic)
+            }
+            if (e->getType() == param_arithmetic) {
                 ss << '{';
+            }
             e->getRight()->accept(this);
-            if (e->getType() == param_arithmetic)
+            if (e->getType() == param_arithmetic) {
                 ss << '}';
+            }
         }
     } else if (e->getType() == param_tabular) {
         ss << "table ";
@@ -251,29 +266,34 @@ int EldoBackend::visitParameter(const std::shared_ptr<structure::Parameter> &e)
         if (table && (table->values.size() >= 2)) {
             for (size_t i = 0; i < table->values.size(); ++i) {
                 table->values[i]->accept(this);
-                if (i == 0)
+                if (i == 0) {
                     ss << '=';
-                else
+                } else {
                     ss << ' ';
+                }
             }
         }
     } else if (e->getType() == param_list) {
-        if (e->getLeft())
+        if (e->getLeft()) {
             e->getLeft()->accept(this);
+        }
         ss << "(";
         auto table = std::dynamic_pointer_cast<const structure::ValueList>(e->getRight());
         for (size_t i = 0; table && (i < table->values.size()); ++i) {
             table->values[i]->accept(this);
-            if (i < (table->values.size() - 1))
+            if (i < (table->values.size() - 1)) {
                 ss << ' ';
+            }
         }
         ss << ')';
     } else if (e->getType() == param_no_equal) {
-        if (e->getLeft())
+        if (e->getLeft()) {
             e->getLeft()->accept(this);
+        }
         if (e->getRight()) {
-            if (e->getLeft())
+            if (e->getLeft()) {
                 ss << " ";
+            }
             e->getRight()->accept(this);
         }
     }
@@ -327,14 +347,14 @@ int EldoBackend::visitValueList(const std::shared_ptr<structure::ValueList> &e)
         size_t size = e->values.size(), i = 0;
         for (const auto &value : e->values) {
             value->accept(this);
-            if (i++ < (size - 1))
+            if (i++ < (size - 1)) {
                 ss << ", ";
+            }
         }
     }
     ss << delimiter_type_close_char(e->getDelimiterType());
     return 0;
 }
-
 
 std::string write_eldo(const std::shared_ptr<structure::Object> &object)
 {

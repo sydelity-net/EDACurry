@@ -362,8 +362,9 @@ const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacur
 const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacurry::structure::Analysis> &rhs)
 {
     if (lhs["type"].get_value() == edacurry::TypeName<edacurry::structure::Analysis>::get()) {
-        if (rhs == nullptr)
+        if (rhs == nullptr) {
             rhs = std::make_shared<edacurry::structure::Analysis>();
+        }
         std::string name;
         lhs["name"] >> name;
         rhs->setName(name);
@@ -375,8 +376,9 @@ const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacur
 const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacurry::structure::Circuit> &rhs)
 {
     if (lhs["type"].get_value() == edacurry::TypeName<edacurry::structure::Circuit>::get()) {
-        if (rhs == nullptr)
+        if (rhs == nullptr) {
             rhs = std::make_shared<edacurry::structure::Circuit>();
+        }
         // Support variables.
         std::string str;
         // Read the values.
@@ -394,8 +396,9 @@ const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacur
 const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacurry::structure::Component> &rhs)
 {
     if (lhs["type"].get_value() == edacurry::TypeName<edacurry::structure::Component>::get()) {
-        if (rhs == nullptr)
+        if (rhs == nullptr) {
             rhs = std::make_shared<edacurry::structure::Component>();
+        }
         // Support variables.
         std::string str;
         // Read the values.
@@ -412,8 +415,9 @@ const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacur
 const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacurry::structure::Control> &rhs)
 {
     if (lhs["type"].get_value() == edacurry::TypeName<edacurry::structure::Control>::get()) {
-        if (rhs == nullptr)
+        if (rhs == nullptr) {
             rhs = std::make_shared<edacurry::structure::Control>();
+        }
         // Support variables.
         edacurry::ControlType type;
         std::string str;
@@ -430,8 +434,9 @@ const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacur
 const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacurry::structure::ControlScope> &rhs)
 {
     if (lhs["type"].get_value() == edacurry::TypeName<edacurry::structure::ControlScope>::get()) {
-        if (rhs == nullptr)
+        if (rhs == nullptr) {
             rhs = std::make_shared<edacurry::structure::ControlScope>();
+        }
         // Support variables.
         edacurry::ControlType type;
         std::string str;
@@ -450,8 +455,9 @@ const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacur
 const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacurry::structure::ExpressionUnary> &rhs)
 {
     if (lhs["type"].get_value() == edacurry::TypeName<edacurry::structure::ExpressionUnary>::get()) {
-        if (rhs == nullptr)
+        if (rhs == nullptr) {
             rhs = std::make_shared<edacurry::structure::ExpressionUnary>();
+        }
         // Support variables.
         std::shared_ptr<edacurry::structure::Value> value = nullptr;
         edacurry::Operator op;
@@ -467,8 +473,9 @@ const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacur
 const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacurry::structure::Expression> &rhs)
 {
     if (lhs["type"].get_value() == edacurry::TypeName<edacurry::structure::Expression>::get()) {
-        if (rhs == nullptr)
+        if (rhs == nullptr) {
             rhs = std::make_shared<edacurry::structure::Expression>();
+        }
         // Support variables.
         std::shared_ptr<edacurry::structure::Value> first = nullptr, second = nullptr;
         edacurry::Operator op;
@@ -486,8 +493,9 @@ const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacur
 const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacurry::structure::FunctionCall> &rhs)
 {
     if (lhs["type"].get_value() == edacurry::TypeName<edacurry::structure::FunctionCall>::get()) {
-        if (rhs == nullptr)
+        if (rhs == nullptr) {
             rhs = std::make_shared<edacurry::structure::FunctionCall>();
+        }
         // Support variables.
         std::string str;
         // Read the values.
@@ -501,8 +509,9 @@ const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacur
 const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacurry::structure::Identifier> &rhs)
 {
     if (lhs["type"].get_value() == edacurry::TypeName<edacurry::structure::Identifier>::get()) {
-        if (rhs == nullptr)
+        if (rhs == nullptr) {
             rhs = std::make_shared<edacurry::structure::Identifier>();
+        }
         // Support variables.
         std::string str;
         // Read the values.
@@ -515,8 +524,9 @@ const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacur
 const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacurry::structure::Include> &rhs)
 {
     if (lhs["type"].get_value() == edacurry::TypeName<edacurry::structure::Include>::get()) {
-        if (rhs == nullptr)
+        if (rhs == nullptr) {
             rhs = std::make_shared<edacurry::structure::Include>();
+        }
         // Support variables.
         edacurry::IncludeType include_type;
         std::string str;
@@ -533,8 +543,9 @@ const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacur
 const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacurry::structure::LibraryDef> &rhs)
 {
     if (lhs["type"].get_value() == edacurry::TypeName<edacurry::structure::LibraryDef>::get()) {
-        if (rhs == nullptr)
+        if (rhs == nullptr) {
             rhs = std::make_shared<edacurry::structure::LibraryDef>();
+        }
         // Support variables.
         std::string str;
         // Read the values.
@@ -548,8 +559,9 @@ const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacur
 const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacurry::structure::Library> &rhs)
 {
     if (lhs["type"].get_value() == edacurry::TypeName<edacurry::structure::Library>::get()) {
-        if (rhs == nullptr)
+        if (rhs == nullptr) {
             rhs = std::make_shared<edacurry::structure::Library>();
+        }
         // Support variables.
         std::string str;
         // Read the values.
@@ -564,8 +576,9 @@ const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacur
 const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacurry::structure::Model> &rhs)
 {
     if (lhs["type"].get_value() == edacurry::TypeName<edacurry::structure::Model>::get()) {
-        if (rhs == nullptr)
+        if (rhs == nullptr) {
             rhs = std::make_shared<edacurry::structure::Model>();
+        }
         // Support variables.
         std::string str;
         // Read the values.
@@ -589,10 +602,11 @@ const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacur
         std::string str;
         // Read the values.
         lhs["name"] >> str;
-        if (rhs == nullptr)
+        if (rhs == nullptr) {
             rhs = std::make_shared<edacurry::structure::Node>(str);
-        else
+        } else {
             rhs->setName(str);
+        }
     }
     return lhs;
 }
@@ -629,10 +643,11 @@ const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacur
         std::string str;
         // Read the values.
         lhs["string"] >> str;
-        if (rhs == nullptr)
+        if (rhs == nullptr) {
             rhs = std::make_shared<edacurry::structure::String>(str);
-        else
+        } else {
             rhs->setString(str);
+        }
     }
     return lhs;
 }
@@ -640,8 +655,9 @@ const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacur
 const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacurry::structure::Subckt> &rhs)
 {
     if (lhs["type"].get_value() == edacurry::TypeName<edacurry::structure::Subckt>::get()) {
-        if (rhs == nullptr)
+        if (rhs == nullptr) {
             rhs = std::make_shared<edacurry::structure::Subckt>();
+        }
         // Support variables.
         std::string str;
         // Read the values.
@@ -657,8 +673,9 @@ const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacur
 const json::jnode_t &operator>>(const json::jnode_t &lhs, std::shared_ptr<edacurry::structure::ValueList> &rhs)
 {
     if (lhs["type"].get_value() == edacurry::TypeName<edacurry::structure::ValueList>::get()) {
-        if (rhs == nullptr)
+        if (rhs == nullptr) {
             rhs = std::make_shared<edacurry::structure::ValueList>();
+        }
         // Support variables.
         edacurry::DelimiterType delimiter_type;
         // Read the values.
