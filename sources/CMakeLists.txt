@@ -155,6 +155,7 @@ pybind11_add_module(
     ${PROJECT_SOURCE_DIR}/src/edacurry/structure/subckt.cpp
     ${PROJECT_SOURCE_DIR}/src/edacurry/structure/include.cpp
     ${PROJECT_SOURCE_DIR}/src/edacurry/structure/library.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/structure/library_def.cpp
     ${PROJECT_SOURCE_DIR}/src/edacurry/structure/component.cpp
     ${PROJECT_SOURCE_DIR}/src/edacurry/structure/model.cpp
     ${PROJECT_SOURCE_DIR}/src/edacurry/structure/identifier.cpp

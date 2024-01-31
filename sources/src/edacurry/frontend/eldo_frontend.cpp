@@ -1074,7 +1074,7 @@ Any ELDOFrontend::visitChrent_pair(ELDOParser::Chrent_pairContext *ctx)
     auto ctrl = utility::to_check<structure::Control>(this->back());
     this->add_to_parent(
         _factory.parameter(
-            nullptr, 
+            nullptr,
             _factory.valuePair(to_number<double>(ctx->NUMBER(0)), to_number<double>(ctx->NUMBER(1))),
             param_assign, true));
     return visitChildren(ctx);
@@ -1138,7 +1138,7 @@ Any ELDOFrontend::visitFfile_storage_format(ELDOParser::Ffile_storage_formatCont
 
 Any ELDOFrontend::visitProbe(ELDOParser::ProbeContext *ctx)
 {
-    auto ctrl =_factory.control("", ctrl_probe);
+    auto ctrl = _factory.control("", ctrl_probe);
     ctrl->parameters.push_back(_factory.parameter(nullptr, _factory.identifier(ctx->ID()->toString()), param_assign, false));
     return this->advance_visit(ctx, ctrl);
 }

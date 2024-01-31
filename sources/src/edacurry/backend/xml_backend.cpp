@@ -21,22 +21,24 @@ int XmlBackend::visitCircuit(const std::shared_ptr<structure::Circuit> &e)
 {
     ss << "<circuit name='" << e->getName() << "'>\n"
        << ind_increase;
-
-    ss << "<nodes>\n"
-       << ind_increase;
-    for (auto it : e->nodes) it->accept(this);
-    ss << ind_decrease << "</nodes>\n";
-
-    ss << "<parameters>\n"
-       << ind_increase;
-    for (auto it : e->parameters) it->accept(this);
-    ss << ind_decrease << "</parameters>\n";
-
-    ss << "<content>\n"
-       << ind_increase;
-    for (auto it : e->content) it->accept(this);
-    ss << ind_decrease << "</content>\n";
-
+    if (!e->nodes.empty()) {
+        ss << "<nodes>\n"
+           << ind_increase;
+        for (auto it : e->nodes) it->accept(this);
+        ss << ind_decrease << "</nodes>\n";
+    }
+    if (!e->parameters.empty()) {
+        ss << "<parameters>\n"
+           << ind_increase;
+        for (auto it : e->parameters) it->accept(this);
+        ss << ind_decrease << "</parameters>\n";
+    }
+    if (!e->content.empty()) {
+        ss << "<content>\n"
+           << ind_increase;
+        for (auto it : e->content) it->accept(this);
+        ss << ind_decrease << "</content>\n";
+    }
     ss << ind_decrease << "</circuit>\n";
     return 0;
 }
@@ -45,12 +47,12 @@ int XmlBackend::visitAnalysis(const std::shared_ptr<structure::Analysis> &e)
 {
     ss << "<analysis name='" << e->getName() << "'>\n"
        << ind_increase;
-
-    ss << "<parameters>\n"
-       << ind_increase;
-    for (auto it : e->parameters) it->accept(this);
-    ss << ind_decrease << "</parameters>\n";
-
+    if (!e->parameters.empty()) {
+        ss << "<parameters>\n"
+           << ind_increase;
+        for (auto it : e->parameters) it->accept(this);
+        ss << ind_decrease << "</parameters>\n";
+    }
     ss << ind_decrease << "</analysis>\n";
     return 0;
 }
@@ -59,17 +61,18 @@ int XmlBackend::visitComponent(const std::shared_ptr<structure::Component> &e)
 {
     ss << "<component name='" << e->getName() << "' master='" << e->getMaster() << "'>\n"
        << ind_increase;
-
-    ss << "<nodes>\n"
-       << ind_increase;
-    for (auto it : e->nodes) it->accept(this);
-    ss << ind_decrease << "</nodes>\n";
-
-    ss << "<parameters>\n"
-       << ind_increase;
-    for (auto it : e->parameters) it->accept(this);
-    ss << ind_decrease << "</parameters>\n";
-
+    if (!e->nodes.empty()) {
+        ss << "<nodes>\n"
+           << ind_increase;
+        for (auto it : e->nodes) it->accept(this);
+        ss << ind_decrease << "</nodes>\n";
+    }
+    if (!e->parameters.empty()) {
+        ss << "<parameters>\n"
+           << ind_increase;
+        for (auto it : e->parameters) it->accept(this);
+        ss << ind_decrease << "</parameters>\n";
+    }
     ss << ind_decrease << "</component>\n";
     return 0;
 }
@@ -80,21 +83,24 @@ int XmlBackend::visitControlScope(const std::shared_ptr<structure::ControlScope>
        << control_type_to_plain_string(e->getControlType()) << "'>\n"
        << ind_increase;
 
-    ss << "<nodes>\n"
-       << ind_increase;
-    for (auto it : e->nodes) it->accept(this);
-    ss << ind_decrease << "</nodes>\n";
-
-    ss << "<parameters>\n"
-       << ind_increase;
-    for (auto it : e->parameters) it->accept(this);
-    ss << ind_decrease << "</parameters>\n";
-
-    ss << "<content>\n"
-       << ind_increase;
-    for (auto it : e->content) it->accept(this);
-    ss << ind_decrease << "</content>\n";
-
+    if (!e->nodes.empty()) {
+        ss << "<nodes>\n"
+           << ind_increase;
+        for (auto it : e->nodes) it->accept(this);
+        ss << ind_decrease << "</nodes>\n";
+    }
+    if (!e->parameters.empty()) {
+        ss << "<parameters>\n"
+           << ind_increase;
+        for (auto it : e->parameters) it->accept(this);
+        ss << ind_decrease << "</parameters>\n";
+    }
+    if (!e->content.empty()) {
+        ss << "<content>\n"
+           << ind_increase;
+        for (auto it : e->content) it->accept(this);
+        ss << ind_decrease << "</content>\n";
+    }
     ss << ind_decrease << "</control_scope>\n";
     return 0;
 }
@@ -104,12 +110,12 @@ int XmlBackend::visitControl(const std::shared_ptr<structure::Control> &e)
     ss << "<control name='" << e->getName() << "' type='" << control_type_to_plain_string(e->getControlType())
        << "'>\n"
        << ind_increase;
-
-    ss << "<parameters>\n"
-       << ind_increase;
-    for (auto it : e->parameters) it->accept(this);
-    ss << ind_decrease << "</parameters>\n";
-
+    if (!e->parameters.empty()) {
+        ss << "<parameters>\n"
+           << ind_increase;
+        for (auto it : e->parameters) it->accept(this);
+        ss << ind_decrease << "</parameters>\n";
+    }
     ss << ind_decrease << "</control>\n";
     return 0;
 }
@@ -157,12 +163,12 @@ int XmlBackend::visitFunctionCall(const std::shared_ptr<structure::FunctionCall>
 {
     ss << "<function_call name='" << e->getName() << "'>\n"
        << ind_increase;
-
-    ss << "<parameters>\n"
-       << ind_increase;
-    for (auto it : e->parameters) it->accept(this);
-    ss << ind_decrease << "</parameters>\n";
-
+    if (!e->parameters.empty()) {
+        ss << "<parameters>\n"
+           << ind_increase;
+        for (auto it : e->parameters) it->accept(this);
+        ss << ind_decrease << "</parameters>\n";
+    }
     ss << ind_decrease << "</function_call>\n";
     return 0;
 }
@@ -178,12 +184,12 @@ int XmlBackend::visitInclude(const std::shared_ptr<structure::Include> &e)
     ss << "<include path='" << e->getPath() << "' type='" << include_type_to_plain_string(e->getIncludeType())
        << "'>\n"
        << ind_increase;
-
-    ss << "<parameters>\n"
-       << ind_increase;
-    for (auto it : e->parameters) it->accept(this);
-    ss << ind_decrease << "</parameters>\n";
-
+    if (!e->parameters.empty()) {
+        ss << "<parameters>\n"
+           << ind_increase;
+        for (auto it : e->parameters) it->accept(this);
+        ss << ind_decrease << "</parameters>\n";
+    }
     ss << ind_decrease << "</include>\n";
     return 0;
 }
@@ -192,12 +198,12 @@ int XmlBackend::visitLibraryDef(const std::shared_ptr<structure::LibraryDef> &e)
 {
     ss << "<library_def name='" << e->getName() << "'>\n"
        << ind_increase;
-
-    ss << "<content>\n"
-       << ind_increase;
-    for (auto it : e->content) it->accept(this);
-    ss << ind_decrease << "</content>\n";
-
+    if (!e->content.empty()) {
+        ss << "<content>\n"
+           << ind_increase;
+        for (auto it : e->content) it->accept(this);
+        ss << ind_decrease << "</content>\n";
+    }
     ss << ind_decrease << "</library_def>\n";
     return 0;
 }
@@ -217,12 +223,12 @@ int XmlBackend::visitModel(const std::shared_ptr<structure::Model> &e)
        << " library_type='" << e->getLibraryType() << "'"
        << ">\n"
        << ind_increase;
-
-    ss << "<parameters>\n"
-       << ind_increase;
-    for (auto it : e->parameters) it->accept(this);
-    ss << ind_decrease << "</parameters>\n";
-
+    if (!e->parameters.empty()) {
+        ss << "<parameters>\n"
+           << ind_increase;
+        for (auto it : e->parameters) it->accept(this);
+        ss << ind_decrease << "</parameters>\n";
+    }
     ss << ind_decrease << "</model>\n";
     return 0;
 }
@@ -235,7 +241,7 @@ int XmlBackend::visitNode(const std::shared_ptr<structure::Node> &e)
 
 int XmlBackend::visitUnsigned(const std::shared_ptr<structure::Number<unsigned>> &e)
 {
-    ss << "<number value='" << e->getValue() << "'";
+    ss << "<number type='unsigned' value='" << e->getValue() << "' ";
     if (!e->getUnit().empty())
         ss << "unit = '" << e->getUnit() << "'";
     ss << "/>\n";
@@ -244,7 +250,7 @@ int XmlBackend::visitUnsigned(const std::shared_ptr<structure::Number<unsigned>>
 
 int XmlBackend::visitInt(const std::shared_ptr<structure::Number<int>> &e)
 {
-    ss << "<number value='" << e->getValue() << "'";
+    ss << "<number type='int' value='" << e->getValue() << "'";
     if (!e->getUnit().empty())
         ss << "unit = '" << e->getUnit() << "'";
     ss << "/>\n";
@@ -253,7 +259,7 @@ int XmlBackend::visitInt(const std::shared_ptr<structure::Number<int>> &e)
 
 int XmlBackend::visitDouble(const std::shared_ptr<structure::Number<double>> &e)
 {
-    ss << "<number value='" << e->getValue() << "'";
+    ss << "<number type='double' value='" << e->getValue() << "' ";
     if (!e->getUnit().empty())
         ss << "unit = '" << e->getUnit() << "'";
     ss << "/>\n";
@@ -288,22 +294,24 @@ int XmlBackend::visitSubckt(const std::shared_ptr<structure::Subckt> &e)
 {
     ss << "<subckt name='" << e->getName() << "'>\n"
        << ind_increase;
-
-    ss << "<nodes>\n"
-       << ind_increase;
-    for (auto it : e->nodes) it->accept(this);
-    ss << ind_decrease << "</nodes>\n";
-
-    ss << "<parameters>\n"
-       << ind_increase;
-    for (auto it : e->parameters) it->accept(this);
-    ss << ind_decrease << "</parameters>\n";
-
-    ss << "<content>\n"
-       << ind_increase;
-    for (auto it : e->content) it->accept(this);
-    ss << ind_decrease << "</content>\n";
-
+    if (!e->nodes.empty()) {
+        ss << "<nodes>\n"
+           << ind_increase;
+        for (auto it : e->nodes) it->accept(this);
+        ss << ind_decrease << "</nodes>\n";
+    }
+    if (!e->parameters.empty()) {
+        ss << "<parameters>\n"
+           << ind_increase;
+        for (auto it : e->parameters) it->accept(this);
+        ss << ind_decrease << "</parameters>\n";
+    }
+    if (!e->content.empty()) {
+        ss << "<content>\n"
+           << ind_increase;
+        for (auto it : e->content) it->accept(this);
+        ss << ind_decrease << "</content>\n";
+    }
     ss << ind_decrease << "</subckt>\n";
     return 0;
 }
@@ -343,14 +351,14 @@ int XmlBackend::visitValueList(const std::shared_ptr<structure::ValueList> &e)
 {
     ss << "<list delimiter='" << delimiter_type_to_plain_string(e->getDelimiterType()) << "'>\n"
        << ind_increase;
-
-    for (auto it : e->values) {
-        ss << "<value>\n"
-           << ind_increase;
-        it->accept(this);
-        ss << ind_decrease << "</value>\n";
+    if (!e->values.empty()) {
+        for (auto it : e->values) {
+            ss << "<value>\n"
+               << ind_increase;
+            it->accept(this);
+            ss << ind_decrease << "</value>\n";
+        }
     }
-
     ss << ind_decrease << "</list>\n";
     return 0;
 }
