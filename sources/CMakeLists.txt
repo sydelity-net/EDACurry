@@ -16,8 +16,17 @@ if(NOT CMAKE_BUILD_TYPE)
     message(STATUS "Setting build type to 'Debug' as none was specified.")
     set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Choose the type of build." FORCE)
 endif()
-
+# Add location of cmake modules.
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+
+# -----------------------------------------------------------------------------
+# OPTIONS
+# -----------------------------------------------------------------------------
+
+option(STRICT_WARNINGS "Enable strict compiler warnings" ON)
+option(WARNINGS_AS_ERRORS "Treat all warnings as errors" OFF)
+option(BUILD_EXAMPLES "Build examples" OFF)
+option(BUILD_TESTS "Build tests" OFF)
 
 # -----------------------------------------------------------------------------
 # ENABLE FETCH CONTENT
@@ -34,21 +43,16 @@ mark_as_advanced(FORCE
 )
 
 # -----------------------------------------------------------------------------
-# OPTIONS
+# DEPENDENCY (SYSTEM LIBRARIES)
 # -----------------------------------------------------------------------------
 
-option(STRICT_WARNINGS "Enable strict compiler warnings" ON)
-option(WARNINGS_AS_ERRORS "Treat all warnings as errors" OFF)
-option(BUILD_EXAMPLES "Build examples" OFF)
-option(BUILD_TESTS "Build tests" OFF)
-
-# -----------------------------------------------------------------------------
-# DEPENDENCY
-# -----------------------------------------------------------------------------
-
-find_package (Python COMPONENTS Interpreter Development)
+find_package(Python COMPONENTS Interpreter Development)
 find_package(Doxygen)
 find_package(ANTLR4 REQUIRED)
+
+# -----------------------------------------------------------------------------
+# DIPENDENCIES (REPOSITORIES)
+# -----------------------------------------------------------------------------
 
 # =====================================
 # PYBIND11
@@ -56,24 +60,15 @@ find_package(ANTLR4 REQUIRED)
 # Retrieve the pybind11.
 FetchContent_Declare(pybind11
     GIT_REPOSITORY "https://github.com/pybind/pybind11.git"
-    GIT_TAG master
-    GIT_SHALLOW TRUE
-    GIT_PROGRESS TRUE
+    GIT_TAG 0630807c3070287c716f6be3eacb00b8816b4215 # v2.11.1
 )
-# Get the properties of pybind11.
-FetchContent_GetProperties(pybind11)
-# If we did not made the pybind11 properties available yet, do it now.
-if(NOT pybind11_POPULATED)
-    message(STATUS "Retrieving `pybind11`...")
-    # Ensures the named dependencies have been populated.
-    FetchContent_MakeAvailable(pybind11)
-    # Hide fetchcontent variables, otherwise with ccmake it's a mess.
-    mark_as_advanced(FORCE
-        FETCHCONTENT_UPDATES_DISCONNECTED_pybind11
-        FETCHCONTENT_SOURCE_DIR_pybind11
-    )
-endif(NOT pybind11_POPULATED)
-# =====================================
+# Retrieve the properties related to the content.
+FetchContent_MakeAvailable(pybind11)
+# Hide fetchcontent variables.
+mark_as_advanced(FORCE
+    FETCHCONTENT_UPDATES_DISCONNECTED_PYBIND11
+    FETCHCONTENT_SOURCE_DIR_PYBIND11
+)
 
 # =====================================
 # PYBIND11-STUBGEN
@@ -81,24 +76,65 @@ endif(NOT pybind11_POPULATED)
 # Retrieve the stubgen.
 FetchContent_Declare(stubgen
     GIT_REPOSITORY "https://github.com/sizmailov/pybind11-stubgen.git"
-    GIT_TAG master
-    GIT_SHALLOW TRUE
-    GIT_PROGRESS TRUE
+    GIT_TAG 99f14a1c8486d1ad6a0bdd9ceca81df1531b31c3 # v2.4.2
 )
-# Get the properties of stubgen.
-FetchContent_GetProperties(stubgen)
-# If we did not made the stubgen properties available yet, do it now.
-if(NOT stubgen_POPULATED)
-    message(STATUS "Retrieving `stubgen`...")
-    # Ensures the named dependencies have been populated.
-    FetchContent_MakeAvailable(stubgen)
+# Retrieve the properties related to the content.
+FetchContent_MakeAvailable(stubgen)
+# Hide fetchcontent variables.
+mark_as_advanced(FORCE
+    FETCHCONTENT_UPDATES_DISCONNECTED_STUBGEN
+    FETCHCONTENT_SOURCE_DIR_STUBGEN
+)
+
+# =====================================
+# JSON
+# =====================================
+# Retrieve the json.
+FetchContent_Declare(json
+    GIT_REPOSITORY "https://github.com/Galfurian/json.git"
+    GIT_TAG d0888ac42fe967ba4a430f3fba860c2ae6140208 # v2.2.3
+)
+# Retrieve the properties related to the content.
+FetchContent_MakeAvailable(json)
+# Hide fetchcontent variables.
+mark_as_advanced(FORCE
+    FETCHCONTENT_UPDATES_DISCONNECTED_JSON
+    FETCHCONTENT_SOURCE_DIR_JSON
+)
+
+# =====================================
+# PUGIXML
+# =====================================
+# Retrieve the repository.
+FetchContent_Declare(pugixml
+    GIT_REPOSITORY "https://github.com/zeux/pugixml.git"
+    GIT_TAG db78afc2b7d8f043b4bc6b185635d949ea2ed2a8 # v1.14
+)
+# Retrieve the properties related to the content.
+FetchContent_MakeAvailable(pugixml)
+# Hide fetchcontent variables.
+mark_as_advanced(FORCE
+    FETCHCONTENT_UPDATES_DISCONNECTED_PUGIXML
+    FETCHCONTENT_SOURCE_DIR_PUGIXML
+)
+
+# =====================================
+# DOXYGENAWESOME
+# =====================================
+if(DOXYGEN_FOUND)
+    # Record the options that describe how to populate the specified content.
+    FetchContent_Declare(doxygenawesome
+        GIT_REPOSITORY https://github.com/jothepro/doxygen-awesome-css
+        GIT_TAG df88fe4fdd97714fadfd3ef17de0b4401f804052
+    )
+    # Retrieve the properties related to the content.
+    FetchContent_MakeAvailable(doxygenawesome)
     # Hide fetchcontent variables, otherwise with ccmake it's a mess.
     mark_as_advanced(FORCE
-        FETCHCONTENT_UPDATES_DISCONNECTED_stubgen
-        FETCHCONTENT_SOURCE_DIR_stubgen
+        FETCHCONTENT_UPDATES_DISCONNECTED_DOXYGENAWESOME
+        FETCHCONTENT_SOURCE_DIR_DOXYGENAWESOME
     )
-endif(NOT stubgen_POPULATED)
-# =====================================
+endif(DOXYGEN_FOUND)
 
 # -----------------------------------------------------------------------------
 # C++ Library with Python wrapping.
@@ -106,42 +142,42 @@ endif(NOT stubgen_POPULATED)
 # Add the python wrapped library.
 pybind11_add_module(
     ${PROJECT_NAME}
-    ${PROJECT_SOURCE_DIR}/src/edacurry.cpp
-    ${PROJECT_SOURCE_DIR}/src/enums.cpp
-    ${PROJECT_SOURCE_DIR}/src/factory.cpp
-    ${PROJECT_SOURCE_DIR}/src/structure/analysis.cpp
-    ${PROJECT_SOURCE_DIR}/src/structure/circuit.cpp
-    ${PROJECT_SOURCE_DIR}/src/structure/control.cpp
-    ${PROJECT_SOURCE_DIR}/src/structure/control_scope.cpp
-    ${PROJECT_SOURCE_DIR}/src/structure/node.cpp
-    ${PROJECT_SOURCE_DIR}/src/structure/object.cpp
-    ${PROJECT_SOURCE_DIR}/src/structure/parameter.cpp
-    ${PROJECT_SOURCE_DIR}/src/structure/subckt.cpp
-    ${PROJECT_SOURCE_DIR}/src/structure/include.cpp
-    ${PROJECT_SOURCE_DIR}/src/structure/library.cpp
-    ${PROJECT_SOURCE_DIR}/src/structure/library_def.cpp
-    ${PROJECT_SOURCE_DIR}/src/structure/component.cpp
-    ${PROJECT_SOURCE_DIR}/src/structure/model.cpp
-    ${PROJECT_SOURCE_DIR}/src/structure/identifier.cpp
-    ${PROJECT_SOURCE_DIR}/src/structure/function_call.cpp
-    ${PROJECT_SOURCE_DIR}/src/structure/expression.cpp
-    ${PROJECT_SOURCE_DIR}/src/structure/value_list.cpp
-    ${PROJECT_SOURCE_DIR}/src/structure/expression_unary.cpp
-    ${PROJECT_SOURCE_DIR}/src/structure/value.cpp
-    ${PROJECT_SOURCE_DIR}/src/structure/value_list.cpp
-    ${PROJECT_SOURCE_DIR}/src/structure/value_pair.cpp
-    ${PROJECT_SOURCE_DIR}/src/structure/number.cpp
-    ${PROJECT_SOURCE_DIR}/src/structure/string.cpp
-    ${PROJECT_SOURCE_DIR}/src/utility/logging.cpp
-    ${PROJECT_SOURCE_DIR}/src/utility/utility.cpp
-    ${PROJECT_SOURCE_DIR}/src/frontend/eldo_frontend.cpp
-    ${PROJECT_SOURCE_DIR}/src/frontend/json_frontend.cpp
-    ${PROJECT_SOURCE_DIR}/src/frontend/spectre_frontend.cpp
-    ${PROJECT_SOURCE_DIR}/src/backend/xml_backend.cpp
-    ${PROJECT_SOURCE_DIR}/src/backend/json_backend.cpp
-    ${PROJECT_SOURCE_DIR}/src/backend/eldo_backend.cpp
-    ${PROJECT_SOURCE_DIR}/src/features/named_object.cpp
-    ${PROJECT_SOURCE_DIR}/src/features/visitable_object.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/edacurry.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/enums.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/factory.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/structure/analysis.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/structure/circuit.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/structure/control.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/structure/control_scope.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/structure/node.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/structure/object.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/structure/parameter.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/structure/subckt.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/structure/include.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/structure/library.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/structure/component.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/structure/model.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/structure/identifier.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/structure/function_call.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/structure/expression.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/structure/value_list.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/structure/expression_unary.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/structure/value.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/structure/value_list.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/structure/value_pair.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/structure/number.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/structure/string.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/utility/logging.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/utility/utility.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/frontend/eldo_frontend.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/frontend/json_frontend.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/frontend/xml_frontend.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/frontend/spectre_frontend.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/backend/xml_backend.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/backend/json_backend.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/backend/eldo_backend.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/features/named_object.cpp
+    ${PROJECT_SOURCE_DIR}/src/edacurry/features/visitable_object.cpp
     ${PROJECT_SOURCE_DIR}/src/antlr4parser/ELDOLexer.cpp
     ${PROJECT_SOURCE_DIR}/src/antlr4parser/ELDOParser.cpp
     ${PROJECT_SOURCE_DIR}/src/antlr4parser/ELDOParserBaseListener.cpp
@@ -157,52 +193,24 @@ pybind11_add_module(
 )
 
 # Add a macro inside the C++, so that we can de-activate the python wrapping code.
-target_compile_definitions(
-    ${PROJECT_NAME} PRIVATE
-    PYTHON_INTERFACE_ENABLED
-)
+target_compile_definitions(${PROJECT_NAME} PRIVATE PYTHON_INTERFACE_ENABLED)
 
-# Include the python directories.
-target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/include)
-
-# Include the python directories.
-target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${ANTLR4_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/include/antlr4parser)
-
-# Add the libraries for linking (python wrapped).
+# Add antlr4 lib directories.
 target_link_directories(${PROJECT_NAME} PRIVATE ${ANTLR4_LINK_DIRECTORIES})
+
+# Include the project headers.
+target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${pybind11_SOURCE_DIR}/include)
+target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${json_SOURCE_DIR}/include)
+target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/include/antlr4parser)
+target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${ANTLR4_INCLUDE_DIRS})
+
+# Link libraries.
+target_link_libraries(${PROJECT_NAME} PRIVATE json)
+target_link_libraries(${PROJECT_NAME} PRIVATE pugixml-static)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${ANTLR4_LIBRARIES})
 
-# Inlcude header directories from pybind11.
-target_include_directories(${PROJECT_NAME} PRIVATE ${pybind11_SOURCE_DIR}/include)
-
-# =====================================
-# JSON
-# =====================================
-# Retrieve the json.
-FetchContent_Declare(json
-    GIT_REPOSITORY "https://github.com/Galfurian/json.git"
-    GIT_TAG main
-    GIT_SHALLOW TRUE
-    GIT_PROGRESS TRUE
-)
-# Get the properties of json.
-FetchContent_GetProperties(json)
-# If we did not made the json properties available yet, do it now.
-if(NOT json_POPULATED)
-    message(STATUS "Retrieving `json`...")
-    # Ensures the named dependencies have been populated.
-    FetchContent_MakeAvailable(json)
-    # Hide fetchcontent variables, otherwise with ccmake it's a mess.
-    mark_as_advanced(FORCE
-        FETCHCONTENT_UPDATES_DISCONNECTED_json
-        FETCHCONTENT_SOURCE_DIR_json
-    )
-endif(NOT json_POPULATED)
-# Inlcude header directories from json.
-target_include_directories(${PROJECT_NAME} PRIVATE ${json_SOURCE_DIR}/include)
-# Inlcude header directories from json.
-target_link_libraries(${PROJECT_NAME} PRIVATE json)
-# =====================================
+target_compile_options(${PROJECT_NAME} PRIVATE -fPIC)
 
 # -----------------------------------------------------------------------------
 # COMPILATION FLAGS
@@ -214,23 +222,20 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     if(WARNINGS_AS_ERRORS)
         target_compile_options(${PROJECT_NAME} PRIVATE /WX)
     endif()
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    if(WARNINGS_AS_ERRORS)
-        target_compile_options(${PROJECT_NAME} PRIVATE -Werror)
-    endif()
-endif()
-
-if(STRICT_WARNINGS)
-    if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    if(STRICT_WARNINGS)
         # Mark system headers as external for MSVC explicitly
         # https://devblogs.microsoft.com/cppblog/broken-warnings-theory
         target_compile_options(${PROJECT_NAME} PRIVATE /experimental:external)
         target_compile_options(${PROJECT_NAME} PRIVATE /external:I ${CMAKE_BINARY_DIR})
         target_compile_options(${PROJECT_NAME} PRIVATE /external:anglebrackets)
         target_compile_options(${PROJECT_NAME} PRIVATE /external:W0)
-
         target_compile_options(${PROJECT_NAME} PRIVATE /W4)
-    elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    endif()
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    if(WARNINGS_AS_ERRORS)
+        target_compile_options(${PROJECT_NAME} PRIVATE -Werror)
+    endif()
+    if(STRICT_WARNINGS)
         target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wconversion -pedantic)
     endif()
 endif()
@@ -258,27 +263,6 @@ add_custom_command(
 
 if(DOXYGEN_FOUND)
 
-    # Record the options that describe how to populate the specified content.
-    FetchContent_Declare(
-        doxygenawesome
-        GIT_REPOSITORY https://github.com/jothepro/doxygen-awesome-css
-        GIT_TAG 4cd62308d825fe0396d2f66ffbab45d0e247724c # 2.0.3
-    )
-    # Retrieve the properties related to the content.
-    FetchContent_GetProperties(doxygenawesome)
-    # If not populated, make the content available.
-    if(NOT doxygenawesome_POPULATED)
-        message(STATUS "Retrieving `doxygen-awesome-css`...")
-        # Ensures the named dependencies have been populated.
-        FetchContent_MakeAvailable(doxygenawesome)
-        # Hide fetchcontent variables, otherwise with ccmake it's a mess.
-        mark_as_advanced(FORCE
-            FETCHCONTENT_UPDATES_DISCONNECTED_DOXYGENAWESOME
-            FETCHCONTENT_SOURCE_DIR_DOXYGENAWESOME
-        )
-    endif()
-
-    # = CUSTOMIZATION =========================================================
     set(DOXYGEN_WARN_FORMAT "$file:$line: $text")
     set(DOXYGEN_PROJECT_NAME "Lumen et Umbra (LeU)")
     set(DOXYGEN_USE_MDFILE_AS_MAINPAGE ${PROJECT_SOURCE_DIR}/README.md)
@@ -334,4 +318,5 @@ if(DOXYGEN_FOUND)
         ${PROJECT_SOURCE_DIR}/include/utility/utility.hpp
         README.md
     )
-endif()
+
+endif(DOXYGEN_FOUND)
