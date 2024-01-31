@@ -1,14 +1,9 @@
-# == SET-UP LOGGER ============================================================
-# Import the logging library.
-from enum import Enum
-import re
 import os
 import sys
-import difflib
-from io import TextIOWrapper
 import edacurry
 import logging
 
+# == SET-UP LOGGER ============================================================
 # Get the C++ declared logger.
 logger = logging.getLogger("edacurry_logger")
 # Set the level.
@@ -24,10 +19,19 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 # =============================================================================
 
-def test_json(inp: str):
+def test_xml(inp: str, outp: str):
     # Get the content.
     print("Parsing `{}`".format(inp))
-    edacurry.test_json(inp)
+    root = edacurry.parse_xml(inp)
+
+    print(root)
+    
+    # Write to XML.
+    xml_content = edacurry.write_xml(root)
+    # If required generate the output file.
+    print("Writing `{}`".format(outp))
+    with open(outp, "w") as outf:
+        outf.write(xml_content)
 
 if len(sys.argv) == 1:
     print("You must provide either input files or folders.")
@@ -41,18 +45,22 @@ for i in range(1, len(sys.argv)):
     if os.path.isdir(argument):
         # Iterate the files inside the directory.
         for filename in os.listdir(argument):
-            # Get just the name.
-            name, _ = os.path.splitext(filename)
-            # Set the input path.
-            inp = os.path.join(argument, filename)
-            # Test JSON.
-            test_json(inp)
+            if filename.endswith(".xml"):
+                # Set the input path.
+                inp = os.path.join(argument, filename)
+                # Set the output path.
+                outp = os.path.join(argument, filename + ".out")
+                # Test xml.
+                test_xml(inp, outp)
     elif os.path.isfile(argument):
-        # Get the basename.
-        basename = os.path.basename(argument)
+        realpath = os.path.realpath(argument)
         # Get just the name.
-        name, _ = os.path.splitext(basename)
-            # Test JSON.
-        test_json(argument)
+        filename, _ = os.path.splitext(os.path.basename(realpath))
+        # Set the input path.
+        inp = argument
+        # Set the output path.
+        outp = realpath + ".out"
+        # Test xml.
+        test_xml(inp, outp)
     else:
         print("The argument `{}` is not valid!".format(argument))
