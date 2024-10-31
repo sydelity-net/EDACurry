@@ -15,12 +15,12 @@
 
 ## Pre-requisites
 
-Library tested on Ubuntu 20.04.2 LTS with Python 3.8.
+Library tested on Ubuntu 22.04.5 LTS with Python 3.10.
 
 From the terminal install the following packets:
 
 ```
-sudo apt-get install antlr4 libantlr4-runtime4.8 libantlr4-runtime-dev
+sudo apt install antlr4 libantlr4-runtime-dev
 ```
 
 ## Compile the project
@@ -41,24 +41,21 @@ implemented under `include` and `src`.
 
 ### Import the EDACurry library into Python
 
-Once the library is compiled (example: edacurry.cpython-38-x86_64-linux-gnu.so),
+Once the library is compiled (example: edacurry.cpython-310-x86_64-linux-gnu.so),
 from `build` folder import the library into Python. Make sure the `build` is 
 included in the search path.
 
 ```
-    $ python
-    >>> import sys
-    >>> sys.path.insert(0, '<path-to-build-folder>')
+    export PYTHONPATH=sources/build:$PYTHONPATH
+    $ python3
     >>> import edacurry
 ```
 
-### Library usage example
+### Library usage example - Read and write of an Eldo netlist
 
 ```
-    $ cd test
-    $ python
-    >>> import sys
-    >>> sys.path.insert(0, '<path-to-build-folder>')
+    $ python3
     >>> import edacurry
-    >>> edacurry.parse("eldo/components.cir")
+    >>> circuit = edacurry.parse_eldo("<file.cir>")
+    >>> edacurry.write_eldo(circuit)
 ```
