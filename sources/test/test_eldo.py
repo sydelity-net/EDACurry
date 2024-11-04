@@ -168,6 +168,9 @@ for i in range(1, len(sys.argv)):
         out_xml = os.path.join("eldo_result/", "{}.xml".format(name))
         out_json = os.path.join("eldo_result/", "{}.json".format(name))
         out_eldo = os.path.join("eldo_result/", "{}.cir".format(name))
+        # Get the content.
+        print("Parsing `{}`".format(argument))
+        root = edacurry.parse_eldo(argument)
         # Write to XML.
         xml_content = edacurry.write_xml(root)
         # If required generate the output file.
@@ -187,6 +190,6 @@ for i in range(1, len(sys.argv)):
         with open(out_eldo, "w") as outf:
             outf.write(eldo_content)
         # Compare the two files.
-        compare(inp, out_eldo)
+        compare(argument, out_eldo)
     else:
         print("The argument `{}` is not valid!".format(argument))

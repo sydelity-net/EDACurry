@@ -92,7 +92,7 @@ mark_as_advanced(FORCE
 # Retrieve the json.
 FetchContent_Declare(json
     GIT_REPOSITORY "https://github.com/Galfurian/json.git"
-    GIT_TAG d0888ac42fe967ba4a430f3fba860c2ae6140208 # v2.2.3
+    GIT_TAG main
 )
 # Retrieve the properties related to the content.
 FetchContent_MakeAvailable(json)
@@ -125,7 +125,7 @@ if(DOXYGEN_FOUND)
     # Record the options that describe how to populate the specified content.
     FetchContent_Declare(doxygenawesome
         GIT_REPOSITORY https://github.com/jothepro/doxygen-awesome-css
-        GIT_TAG df88fe4fdd97714fadfd3ef17de0b4401f804052
+        GIT_TAG main
     )
     # Retrieve the properties related to the content.
     FetchContent_MakeAvailable(doxygenawesome)
@@ -141,7 +141,7 @@ endif(DOXYGEN_FOUND)
 # -----------------------------------------------------------------------------
 # Add the python wrapped library.
 pybind11_add_module(
-    ${PROJECT_NAME}
+    edacurry
     ${PROJECT_SOURCE_DIR}/src/edacurry/edacurry.cpp
     ${PROJECT_SOURCE_DIR}/src/edacurry/enums.cpp
     ${PROJECT_SOURCE_DIR}/src/edacurry/factory.cpp
@@ -194,24 +194,24 @@ pybind11_add_module(
 )
 
 # Add a macro inside the C++, so that we can de-activate the python wrapping code.
-target_compile_definitions(${PROJECT_NAME} PRIVATE PYTHON_INTERFACE_ENABLED)
+target_compile_definitions(edacurry PUBLIC PYTHON_INTERFACE_ENABLED)
 
 # Add antlr4 lib directories.
-target_link_directories(${PROJECT_NAME} PRIVATE ${ANTLR4_LINK_DIRECTORIES})
+target_link_directories(edacurry PUBLIC ${ANTLR4_LINK_DIRECTORIES})
 
 # Include the project headers.
-target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/include)
-target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${pybind11_SOURCE_DIR}/include)
-target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${json_SOURCE_DIR}/include)
-target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/include/antlr4parser)
-target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${ANTLR4_INCLUDE_DIRS})
+target_include_directories(edacurry PUBLIC ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(edacurry PUBLIC SYSTEM ${pybind11_SOURCE_DIR}/include)
+target_include_directories(edacurry PUBLIC SYSTEM ${json_SOURCE_DIR}/include)
+target_include_directories(edacurry PUBLIC ${PROJECT_SOURCE_DIR}/include/antlr4parser)
+target_include_directories(edacurry PUBLIC SYSTEM ${ANTLR4_INCLUDE_DIRS})
 
 # Link libraries.
-target_link_libraries(${PROJECT_NAME} PRIVATE json)
-target_link_libraries(${PROJECT_NAME} PRIVATE pugixml-static)
-target_link_libraries(${PROJECT_NAME} PRIVATE ${ANTLR4_LIBRARIES})
+target_link_libraries(edacurry PUBLIC json)
+target_link_libraries(edacurry PUBLIC pugixml-static)
+target_link_libraries(edacurry PUBLIC ${ANTLR4_LIBRARIES})
 
-target_compile_options(${PROJECT_NAME} PRIVATE -fPIC)
+target_compile_options(edacurry PUBLIC -fPIC)
 
 # -----------------------------------------------------------------------------
 # COMPILATION FLAGS
@@ -219,25 +219,25 @@ target_compile_options(${PROJECT_NAME} PRIVATE -fPIC)
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     # Disable warnings that suggest using MSVC-specific safe functions
-    target_compile_definitions(${PROJECT_NAME} PRIVATE _CRT_SECURE_NO_WARNINGS)
+    target_compile_definitions(edacurry PUBLIC _CRT_SECURE_NO_WARNINGS)
     if(WARNINGS_AS_ERRORS)
-        target_compile_options(${PROJECT_NAME} PRIVATE /WX)
+        target_compile_options(edacurry PUBLIC /WX)
     endif()
     if(STRICT_WARNINGS)
         # Mark system headers as external for MSVC explicitly
         # https://devblogs.microsoft.com/cppblog/broken-warnings-theory
-        target_compile_options(${PROJECT_NAME} PRIVATE /experimental:external)
-        target_compile_options(${PROJECT_NAME} PRIVATE /external:I ${CMAKE_BINARY_DIR})
-        target_compile_options(${PROJECT_NAME} PRIVATE /external:anglebrackets)
-        target_compile_options(${PROJECT_NAME} PRIVATE /external:W0)
-        target_compile_options(${PROJECT_NAME} PRIVATE /W4)
+        target_compile_options(edacurry PUBLIC /experimental:external)
+        target_compile_options(edacurry PUBLIC /external:I ${CMAKE_BINARY_DIR})
+        target_compile_options(edacurry PUBLIC /external:anglebrackets)
+        target_compile_options(edacurry PUBLIC /external:W0)
+        target_compile_options(edacurry PUBLIC /W4)
     endif()
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     if(WARNINGS_AS_ERRORS)
-        target_compile_options(${PROJECT_NAME} PRIVATE -Werror)
+        target_compile_options(edacurry PUBLIC -Werror)
     endif()
     if(STRICT_WARNINGS)
-        target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wconversion -pedantic)
+        target_compile_options(edacurry PUBLIC -Wall -Wextra -Wconversion -pedantic)
     endif()
 endif()
 
@@ -248,14 +248,14 @@ endif()
 add_custom_target(
     stubs
     DEPENDS ${STUBGEN}
-    DEPENDS ${PROJECT_NAME}
+    DEPENDS edacurry
 )
 add_custom_command(
     TARGET stubs
     COMMAND echo "Generating python stubs..."
-    COMMAND PYTHONPATH=${stubgen_SOURCE_DIR} ${Python_EXECUTABLE} -c \"import pybind11_stubgen \; pybind11_stubgen.main() \;\" ${PROJECT_NAME}
+    COMMAND PYTHONPATH=${stubgen_SOURCE_DIR} ${Python_EXECUTABLE} -c \"import pybind11_stubgen \; pybind11_stubgen.main() \;\" edacurry
     COMMAND echo "Generating python stubs... done!"
-    DEPENDS ${PROJECT_NAME}
+    DEPENDS edacurry
 )
 
 # -----------------------------------------------------------------------------
@@ -277,7 +277,7 @@ if(DOXYGEN_FOUND)
         ${doxygenawesome_SOURCE_DIR}/doxygen-awesome-darkmode-toggle.js
     )
     doxygen_add_docs(
-        ${PROJECT_NAME}_documentation
+        edacurry_documentation
         ${PROJECT_SOURCE_DIR}/include/backend/eldo_backend.hpp
         ${PROJECT_SOURCE_DIR}/include/backend/indented_stream.hpp
         ${PROJECT_SOURCE_DIR}/include/backend/json_backend.hpp

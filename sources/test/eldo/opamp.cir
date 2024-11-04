@@ -1,0 +1,22 @@
+.subckt OPAMP1 inn inp out pd xpd vdda vssa
+xd1 vssa vdda prim_nwd AREA =6 .13907e -9 PJ =476 .6e -6 M =1
+xi0 vssa net69 prim_nd AREA =1 e -12 PJ =4 e -6 M =1
+xi3 net51 vdda prim_pd AREA =790 e -15 PJ =3 .3e -6 M =1
+xr0 vssa vdda net51 prim_rdiffp L =2 .1e -6 W =700 e -9 M =1
+xr1 vdda vdda net69 prim_rdiffp L =2 .1e -6 W =700 e -9 M =1
+xcc01 net12 out prim_cpoly AREA =4 .7e -9 PERI =453 .7e -6 M =1
+mnm12 net13 net56 vssa vssa nmos1
+mnm11 net56 net56 vssa vssa nmos1
+mnb02 net27 net27 net21 vssa nmos1
+mnpd1 net21 xpd vssa vssa nmos1
+mn001 out net13 vssa vssa nmos1
+mnpd2 net13 pd vssa vssa nmos1
+mnc01 net13 net69 net12 vssa nmos1
+mpb02 net27 net51 net158 vdda pmos1
+mppd1 net158 xpd vdda vdda pmos1
+mps11 net31 net158 vdda vdda pmos1
+mpd11 net56 inn net31 net31 pmos1
+mp001 out net158 vdda vdda pmos1
+mpd12 net13 inp net31 net31 pmos1
+mpb01 net158 net158 vdda vdda pmos1
+.ends
